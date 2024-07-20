@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-gray-100 " >
       {/* <TopBar /> */}
-      <Navbar />
+      {/* <Navbar /> */}
       {/* <Header /> */}
       {/* <Footer /> */}
     </div>
