@@ -12,76 +12,68 @@ import { useRouter } from "next/navigation";
 
 const navItems= [
     {
-        label: "Features",
+        label: "HOROSCOPES",
         link: "#",
         children: [
             {
-                label: "Todo list",
+                label: "DAILY",
                 link: "#"
             },
             {
-                label: "Calendar",
+                label: "WEEKLY",
                 link: "#"
             },
             {
-                label: "Reminders",
+                label: "MONTHLY",
                 link: "#"
             },
             {
-                label: "Calendar",
+                label: "2024 YEARLY",
                 link: "#"
             },
             {
-                label: "Calendar",
-                link: "#"
-            },
-            {
-                label: "Calendar",
-                link: "#"
-            },
-            {
-                label: "Calendar",
-                link: "#"
-            },
-            {
-                label: "Calendar",
-                link: "#"
-            },
-            {
-                label: "Calendar",
-                link: "#"
-            },
-            {
-                label: "Calendar",
-                link: "#"
-            },
-            {
-                label: "Calendar",
+                label: "MY SIGN",
                 link: "#"
             }
         ]
     },
     {
-        label: "Astro",
+        label: "ASTROLOGY",
         link: "#",
         children: [
             {
-                label: "Virgo",
+                label: "ASTROLOGY",
                 link: "#"
             },
             {
-                label: "our team",
+                label: "TAROT",
+                link: "#"
+            },
+            {
+                label: "LOVE + COMPATIBILITY",
+                link: "#"
+            },
+            {
+                label: "NUMEROLOGY",
+                link: "#"
+            },
+            {
+                label: "PARENTING",
                 link: "#"
             }
         ]
     },
     {
-        label: "Contact",
+        label: "BOOK A POOJA",
         link: "#"
     },
     {
-        label: 'About',
-        link: "#"
+        label: "CONTACT",
+        link: "/contact"
+    },
+    {
+        label: 'ABOUT',
+        link: "/about"
     }
 ]
 
@@ -111,20 +103,46 @@ export default function Navbar() {
                 
 
                 <div className="hidden md:flex items-center gap-4 transition-all">
-                    <Link href={""} className="relative group px-2 py-3 transition-all" >
-                        <p className="flex cursor-pointer items-center gap-2 text-neutral-400 group-hover:text-black" >
-                            <span>
-                                Features
-                            </span>
-                            <RiArrowDropDownLine className="rotate-180 transition-all group-hover:rotate-0" />
-                        </p>
-                        {/* dropdown  */}
-                        <div className="absolute right-0 top-10 hidden w-auto flex-col gap-1 rounded-lg bg-white py-3 shadow-md transition-all group-hover:flex ">
-                            <Link href={"#"} className="flex cursor-pointer items-center py-1 pl-6 pr-8 text-neutral-400 hover:text-black" >
-                                <span className="whitespace-nowrap" >Virgo</span>
+                    {
+                        navItems.map((d, i)=>(
+                            <Link 
+                            key={i}
+                            href={d.link?? "#"}
+                            className="relative group px-2 py-3 transition-all"
+                            >
+                                <p className="flex cursor-pointer items-center gap-2 text-neutral-400 group-hover:text-black" >
+                                    <span>
+                                        {d.label}
+                                    </span>
+                                    {
+                                        d.children && (
+                                            <RiArrowDropDownLine className="rotate-180 transition-all group-hover:rotate-0" />
+                                        )
+                                    }
+                                </p>
+                                {/* dropdown */}
+                                    {
+                                        d.children && (
+                                            <div className="absolute right-0 top-10 hidden w-auto flex-col gap-1 rounded-lg bg-white py-3 shadow-md transition-all group-hover:text-black">
+                                                {
+                                                    d.children.map((ch, i)=> (
+                                                        <Link 
+                                                        key={i}
+                                                        href={ch.link ?? "#"}
+                                                        className="flex cursor-pointer items-center py-1 pl-6 pr-8 text-neutral-400 hover:text-black" 
+                                                        >
+                                                            {/* items */}
+                                                            <span className="whitespace-nowrap pl-3">{ch.label}</span>
+                                                        </Link>
+                                                    ))
+                                                }
+                                            </div>
+                                        )
+                                    }
+
                             </Link>
-                        </div>
-                    </Link>
+                        ))
+                    }                    
                 </div>
             </section>
                 <section className="hidden md:flex items-center gap-8" >

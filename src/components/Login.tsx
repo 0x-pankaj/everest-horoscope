@@ -4,6 +4,7 @@ import useAuth from "@/context/useAuth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, {FormEvent, useEffect, useState} from "react";
+import logo from "@/assets/images/everest-logo.png"
 
 const Login = () => {
     /*
