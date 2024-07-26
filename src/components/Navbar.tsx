@@ -76,7 +76,7 @@ export default function Navbar() {
         <nav className="sticky top-0 z-50 bg-white shadow-md">
             <div className="mx-auto flex w-full max-w-7xl justify-between px-4 py-2 text-sm">
                 <section className="flex items-center gap-10">
-                    <Image onClick={() => handleNavigation("/")} src={logo} alt="logo" width={100} height={100} priority={true} className="cursor-pointer" />
+                    <Image onClick={() => handleNavigation("/")} src={logo} alt="logo" width={80} height={80} priority={true} className="cursor-pointer" />
                     
                     <div className="hidden md:flex items-center gap-4 transition-all">
                         {navItems.map((item, index) => (
@@ -94,12 +94,12 @@ export default function Navbar() {
                     </button>
                 </section>
 
-                <FiMenu onClick={toggleSideMenu} className="cursor-pointer text-4xl m-2 md:hidden" />
+                <FiMenu onClick={toggleSideMenu} className="cursor-pointer text-4xl my-7 mx-3 md:hidden" />
             </div>
 
             {isSideMenuOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
-                    <div ref={sidebarRef} className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg overflow-y-auto">
+                    <div ref={sidebarRef} className="fixed right-0 top-0 h-full w-64 bg-slate-100 shadow-lg overflow-y-auto">
                         <MobileNav closeSideMenu={() => setSideMenu(false)} handleNavigation={handleNavigation} />
                     </div>
                 </div>
@@ -117,7 +117,7 @@ function DesktopNavItem({ item }: DesktopNavItemProps) {
         <div className="relative group px-2 py-3 transition-all">
             <p className="flex cursor-pointer items-center gap-2 text-neutral-400 group-hover:text-black">
                 <Link href={item.link ?? "#"}>{item.label}</Link>
-                {item.children && <RiArrowDropDownLine className="rotate-180 transition-all group-hover:rotate-0" />}
+                {item.children && <RiArrowDropDownLine className=" rotate-180 transition-all group-hover:rotate-0" />}
             </p>
             {item.children && (
                 <div className="absolute right-0 top-10 hidden w-auto flex-col gap-1 rounded-lg bg-white py-3 shadow-md transition-all group-hover:block">
@@ -145,7 +145,7 @@ function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
     return (
         <div className="p-4">
             <section className="flex justify-end mb-4">
-                <MdClose onClick={closeSideMenu} className="cursor-pointer text-4xl" />
+                <MdClose onClick={closeSideMenu} className="cursor-pointer my-3 text-5xl" />
             </section>
             <div className="flex flex-col items-start text-base gap-2 transition-all">
                 {navItems.map((item, index) => (

@@ -5,7 +5,7 @@ import teamImage from '@/assets/images/team.jpg';
 
 const About: React.FC = () => {
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-1 py-4">
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold mb-6 text-center">About Us</h2>
         <div className="mb-6">
