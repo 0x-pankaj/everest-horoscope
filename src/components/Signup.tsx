@@ -1,7 +1,7 @@
 "use client"
 
 import appwriteService from "@/appwrite/config";
-import useAuth from "@/context/useAuth";
+import { useAuthStore } from "@/store/Auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
@@ -17,15 +17,14 @@ const SignUp = () => {
     });
     const [error, setError] = useState("");
 
-    const {setAuthStatus} = useAuth();
-
+    const useAuth = useAuthStore();
+    console.log("useAuth", useAuth);
     const createUser = async(e: FormEvent) =>  {
         e.preventDefault();
         try {
-            const userData = await appwriteService.createUserAccount(formData);
-            if(userData) {
-                setAuthStatus(true);
-                router.push("/profile");
+            const userData = await useAuth.createAccount(formData.email, formData.password, formData.name);
+            if(userData.success){
+                router.push("/login");
             }
         } catch (error: any) {
             setError(error.message)
@@ -117,7 +116,7 @@ const SignUp = () => {
                         <div>
                             <button
                                 type="submit"
-                                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-3.5 py-2.5 font-semibold leading-7 text-black hover:bg-primary/80"
+                                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-primary/80"
                             >
                                 Create Account
                             </button>

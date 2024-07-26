@@ -1,247 +1,204 @@
 "use client"
+
 import Image from "next/image"
 import logo from "@/assets/images/everest-logo.png"
 import Link from "next/link"
-import { RiArrowDropDownLine } from "react-icons/ri";
-import { FiMenu } from "react-icons/fi";
-import { MdClose } from "react-icons/md";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
-import useAuth from "@/context/useAuth";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { RiArrowDropDownLine } from "react-icons/ri"
+import { FiMenu } from "react-icons/fi"
+import { MdClose } from "react-icons/md"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
+import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 
-const navItems= [
+interface NavChild {
+    label: string;
+    link: string;
+}
+
+interface NavItem {
+    label: string;
+    link: string;
+    children?: NavChild[];
+}
+
+const navItems: NavItem[] = [
     {
         label: "HOROSCOPES",
         link: "#",
         children: [
-            {
-                label: "DAILY",
-                link: "#"
-            },
-            {
-                label: "WEEKLY",
-                link: "#"
-            },
-            {
-                label: "MONTHLY",
-                link: "#"
-            },
-            {
-                label: "2024 YEARLY",
-                link: "#"
-            },
-            {
-                label: "MY SIGN",
-                link: "#"
-            }
+            { label: "DAILY", link: "#" },
+            { label: "WEEKLY", link: "#" },
+            { label: "MONTHLY", link: "#" },
+            { label: "2024 YEARLY", link: "#" },
+            { label: "MY SIGN", link: "#" }
         ]
     },
     {
         label: "ASTROLOGY",
         link: "#",
         children: [
-            {
-                label: "ASTROLOGY",
-                link: "#"
-            },
-            {
-                label: "TAROT",
-                link: "#"
-            },
-            {
-                label: "LOVE + COMPATIBILITY",
-                link: "#"
-            },
-            {
-                label: "NUMEROLOGY",
-                link: "#"
-            },
-            {
-                label: "PARENTING",
-                link: "#"
-            }
+            { label: "ASTROLOGY", link: "#" },
+            { label: "TAROT", link: "#" },
+            { label: "LOVE + COMPATIBILITY", link: "#" },
+            { label: "NUMEROLOGY", link: "#" },
+            { label: "PARENTING", link: "#" }
         ]
     },
-    {
-        label: "BOOK A POOJA",
-        link: "#"
-    },
-    {
-        label: "CONTACT",
-        link: "/contact"
-    },
-    {
-        label: 'ABOUT',
-        link: "/about"
-    }
+    { label: "BOOK A POOJA", link: "#" },
+    { label: "CONTACT", link: "/contact" },
+    { label: 'ABOUT', link: "/about" }
 ]
 
-
-
-
 export default function Navbar() {
-    const [isSideMenuOpen, setSideMenu] = useState(false);
-    // const {authStatus} = useAuth();
-    // console.log(authStatus)
+    const [isSideMenuOpen, setSideMenu] = useState(false)
+    const router = useRouter()
+    const sidebarRef = useRef<HTMLDivElement>(null)
 
-    function openSideMenu() {
-        setSideMenu(true);
-    }
+    const toggleSideMenu = () => setSideMenu(!isSideMenuOpen)
 
-    function closeSideMenu() {
+    useEffect(() => {
+        const handleOutsideClick = (event: MouseEvent) => {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+                setSideMenu(false)
+            }
+        }
+
+        document.addEventListener("mousedown", handleOutsideClick)
+        return () => document.removeEventListener("mousedown", handleOutsideClick)
+    }, [])
+
+    const handleNavigation = (path: string) => {
         setSideMenu(false)
+        router.push(path)
     }
-    const router = useRouter();
+
     return (
-        <div className=" mx-auto flex w-full max-w-7xl justify-between px-4 py-5 text-sm" >
-            {/* left section */}
-            <section className="flex items-center gap-10" >
-                {/* logo */}
-                <Image onClick={()=> router.push("/")} src={logo} alt="logo" width={100} height={100}/>
-                {isSideMenuOpen && <MobileNav closeSideMenu={closeSideMenu}  />}
-                
+        <nav className="sticky top-0 z-50 bg-white shadow-md">
+            <div className="mx-auto flex w-full max-w-7xl justify-between px-4 py-2 text-sm">
+                <section className="flex items-center gap-10">
+                    <Image onClick={() => handleNavigation("/")} src={logo} alt="logo" width={100} height={100} priority={true} className="cursor-pointer" />
+                    
+                    <div className="hidden md:flex items-center gap-4 transition-all">
+                        {navItems.map((item, index) => (
+                            <DesktopNavItem key={index} item={item} />
+                        ))}
+                    </div>
+                </section>
 
-                <div className="hidden md:flex items-center gap-4 transition-all">
-                    {
-                        navItems.map((d, i)=>(
-                            <Link 
-                            key={i}
-                            href={d.link?? "#"}
-                            className="relative group px-2 py-3 transition-all"
-                            >
-                                <p className="flex cursor-pointer items-center gap-2 text-neutral-400 group-hover:text-black" >
-                                    <span>
-                                        {d.label}
-                                    </span>
-                                    {
-                                        d.children && (
-                                            <RiArrowDropDownLine className="rotate-180 transition-all group-hover:rotate-0" />
-                                        )
-                                    }
-                                </p>
-                                {/* dropdown */}
-                                    {
-                                        d.children && (
-                                            <div className="absolute right-0 top-10 hidden w-auto flex-col gap-1 rounded-lg bg-white py-3 shadow-md transition-all group-hover:text-black">
-                                                {
-                                                    d.children.map((ch, i)=> (
-                                                        <Link 
-                                                        key={i}
-                                                        href={ch.link ?? "#"}
-                                                        className="flex cursor-pointer items-center py-1 pl-6 pr-8 text-neutral-400 hover:text-black" 
-                                                        >
-                                                            {/* items */}
-                                                            <span className="whitespace-nowrap pl-3">{ch.label}</span>
-                                                        </Link>
-                                                    ))
-                                                }
-                                            </div>
-                                        )
-                                    }
-
-                            </Link>
-                        ))
-                    }                    
-                </div>
-            </section>
-                <section className="hidden md:flex items-center gap-8" >
-                    {/* right side data  */}
-                    <button  onClick={()=> router.push("/login")} className=" h-fit text-neutral-400 transition-all hover:text-black/90">
+                <section className="hidden md:flex items-center gap-8">
+                    <button onClick={() => handleNavigation("/login")} className="h-fit text-neutral-400 transition-all hover:text-black/90">
                         Login
                     </button>
-                     <button onClick={()=> router.push("/signup")} className="h-fit rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90 ">
+                    <button onClick={() => handleNavigation("/signup")} className="h-fit rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
                         Register
                     </button>
                 </section>
 
-             
-            <FiMenu onClick={openSideMenu} className="cursor-pointer text-4xl m-2 md:hidden" />
+                <FiMenu onClick={toggleSideMenu} className="cursor-pointer text-4xl m-2 md:hidden" />
+            </div>
+
+            {isSideMenuOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+                    <div ref={sidebarRef} className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg overflow-y-auto">
+                        <MobileNav closeSideMenu={() => setSideMenu(false)} handleNavigation={handleNavigation} />
+                    </div>
+                </div>
+            )}
+        </nav>
+    )
+}
+
+interface DesktopNavItemProps {
+    item: NavItem;
+}
+
+function DesktopNavItem({ item }: DesktopNavItemProps) {
+    return (
+        <div className="relative group px-2 py-3 transition-all">
+            <p className="flex cursor-pointer items-center gap-2 text-neutral-400 group-hover:text-black">
+                <Link href={item.link ?? "#"}>{item.label}</Link>
+                {item.children && <RiArrowDropDownLine className="rotate-180 transition-all group-hover:rotate-0" />}
+            </p>
+            {item.children && (
+                <div className="absolute right-0 top-10 hidden w-auto flex-col gap-1 rounded-lg bg-white py-3 shadow-md transition-all group-hover:block">
+                    {item.children.map((child, index) => (
+                        <Link 
+                            key={index}
+                            href={child.link ?? "#"}
+                            className="flex cursor-pointer items-center py-1 pl-6 pr-8 text-neutral-400 hover:text-black"
+                        >
+                            <span className="whitespace-nowrap pl-3">{child.label}</span>
+                        </Link>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }
 
-function MobileNav({closeSideMenu}: {closeSideMenu: ()=> {}}) {
-        const router = useRouter();
-    return (
-        <div className= " fixed left-0 top-0 flex h-full min-h-screen w-full justify-end bg-black/60 md:hidden ">
-            <div className="overflow-auto scroll-smooth h-full w-[75%] bg-white px-4 py-4">
-                <section className="flex justify-end">
-                    <MdClose onClick={closeSideMenu} className="cursor-pointer text-4xl"  />
-                </section>
-                <div className="flex flex-col items-center gap-4 transition-all">
-                    {
-                        navItems.map((d, i)=> (
-                            <SingleNavItem key={i} d={d} />
-                        ))
-                    }
-                </div>
-
-                <section className="flex flex-col items-center gap-8 mt-4" >
-                    {/* right side data  */}
-                    <button onClick={()=> (router.push("/login") )} className=" h-fit text-neutral-400 transition-all hover:text-black/90">
-                        Login
-                    </button>
-                     <button onClick={()=> ( router.push("/signup"))} className="h-fit rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90 ">
-                        Register
-                    </button>
-                </section>
-            </div>
-        </div>
-    );
+interface MobileNavProps {
+    closeSideMenu: () => void;
+    handleNavigation: (path: string) => void;
 }
 
-export function SingleNavItem({d}:{d: any}) {
-    const [isItemOpen, setItemOpen] = useState(false);
-    const [animateParent] = useAutoAnimate();
+function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
+    return (
+        <div className="p-4">
+            <section className="flex justify-end mb-4">
+                <MdClose onClick={closeSideMenu} className="cursor-pointer text-4xl" />
+            </section>
+            <div className="flex flex-col items-start text-base gap-2 transition-all">
+                {navItems.map((item, index) => (
+                    <MobileNavItem key={index} item={item} handleNavigation={handleNavigation} />
+                ))}
+            </div>
+            <section className="flex flex-col items-start gap-4 mt-8">
+                <button onClick={() => handleNavigation("/login")} className="text-neutral-400 transition-all hover:text-black/90">
+                    Login
+                </button>
+                <button onClick={() => handleNavigation("/signup")} className="rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
+                    Register
+                </button>
+            </section>
+        </div>
+    )
+}
 
-    function toggleItem() {
-        return setItemOpen(!isItemOpen);
-    }
+interface MobileNavItemProps {
+    item: NavItem;
+    handleNavigation: (path: string) => void;
+}
+
+function MobileNavItem({ item, handleNavigation }: MobileNavItemProps) {
+    const [isOpen, setIsOpen] = useState(false)
+    const [animateParent] = useAutoAnimate<HTMLDivElement>()
+
+    const toggleItem = () => setIsOpen(!isOpen)
 
     return (
-        <Link
-            ref={animateParent}
-            onClick={toggleItem}
-            href={d.link ?? "#"}
-            className="relative group px-2 py-3 transition-all"
-                >
-                <p className="flex cursor-pointer items-center gap-2 text-neutral-400 group-hover:text-black">
-                <span>{d.label} </span>
-                    {
-                        d.children && (
-                            //rotate-180
-                            <RiArrowDropDownLine
-                            className= {`text-xs transition-all `}
-                            />
-                        )
-                    }
-
-                </p>
-
-                {/* dropdown */}
-                {
-                    isItemOpen &&  d.children && (
-                        //rotate-180
-                        
-                        <div className=" w-auto flex flex-col gap-1 rounded-lg bg-white py-3  transition-all ">
-                            {
-                                d.children.map((ch: any, i: any)=> (
-                                    <Link
-                                    key={i}
-                                    href={ch.link ?? "#"}
-                                    className="flex cursor-pointer items-center py-1 pl-6 pr-8 text-neutral-400 hover:text-black"
-                                    >
-                                        {/* image */}
-                                        <span className="whitespace-nowrap pl-3 ">
-                                            {ch.label}
-                                        </span>
-                                    </Link>
-                                ))
-                            }
+        <div ref={animateParent} className="w-full">
+            <div
+                onClick={item.children ? toggleItem : () => handleNavigation(item.link)}
+                className="flex justify-between items-center cursor-pointer py-2 text-neutral-400 hover:text-black"
+            >
+                <span>{item.label}</span>
+                {item.children && (
+                    <RiArrowDropDownLine className={`text-2xl transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                )}
+            </div>
+            {isOpen && item.children && (
+                <div className="pl-4">
+                    {item.children.map((child, index) => (
+                        <div
+                            key={index}
+                            onClick={() => handleNavigation(child.link)}
+                            className="py-2 cursor-pointer text-neutral-400 hover:text-black"
+                        >
+                            {child.label}
                         </div>
-                    )
-                }
-        </Link>
+                    ))}
+                </div>
+            )}
+        </div>
     )
 }

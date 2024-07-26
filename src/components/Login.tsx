@@ -1,29 +1,16 @@
 "use client";
-import appwriteService from "@/appwrite/config";
-import useAuth from "@/context/useAuth";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, {FormEvent, useEffect, useState} from "react";
 import logo from "@/assets/images/everest-logo.png"
+import { useAuthStore } from "@/store/Auth";
 
 const Login = () => {
-    /*
-    useEffect(()=> {
-        (async() => {
-            const session = await appwriteService.isLoggedIn();
-            if(session) {
-                setAuthStatus(true);
-                console.log("session: ", session);
-                router.replace("/profile");
-            }
-        })();
-    },[]);
-    */
+    const authStore = useAuthStore();
 
     const router = useRouter()
-    
-    const {authStatus, setAuthStatus} = useAuth();
-    console.log("authstaus: ", authStatus);
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -33,14 +20,12 @@ const Login = () => {
     const login = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         try {
-            const session = await appwriteService.login(formData)
-            if (session) {
-                console.log("session: ",session);
-                setAuthStatus(true);
-                router.push("/profile")
+            const success =  await authStore.login(formData.email, formData.password);
+            if(success) {
+                alert("login successfully");
+                router.push("/");
             }
-            
-        } catch (error: any) {
+        }catch(error: any) {
             setError(error.message)
         }
     }
@@ -112,7 +97,7 @@ const Login = () => {
                         <div>
                             <button
                                 type="submit"
-                                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-3.5 py-2.5 font-semibold leading-7 text-black hover:bg-primary/80"
+                                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-primary/80"
                             >
                                 Sign in
                             </button>

@@ -3,14 +3,16 @@ import useAuth from "@/context/useAuth";
 import { useRouter } from "next/navigation";
 import React from "react";
 import Login from "@/components/Login";
+import { useAuthStore } from "@/store/Auth";
 
 const LoginPage = () => {
     const router = useRouter();
-    const { authStatus } = useAuth();
+   const useAuth = useAuthStore(); 
+    console.log("from start: ", useAuth);
 
-    if (authStatus) {
-        router.replace("/profile");
-        return <></>;
+    if(useAuth.session){
+        console.log("already logged in");
+        router.push("/");
     }
 
     return(

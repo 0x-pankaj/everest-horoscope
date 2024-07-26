@@ -1,19 +1,18 @@
-import Avatar from "@/components/Avatar";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import Navbar from "@/components/Navbar";
-import ProfileComponet from "@/components/ProfileComponet";
-import TopBar from "@/components/TopBar";
+"use client"
+
+
+import { useAuthStore } from "@/store/Auth";
 
 
 export default function Home() {
+  const useAuth = useAuthStore();
+  console.log("home authStore", useAuth )
   return (
     <div className="min-h-screen w-full bg-gray-100 " >
-      {/* <TopBar /> */}
-      {/* <Navbar /> */}
-      {/* <Header /> */}
-      {/* <Footer /> */}
-      <ProfileComponet />
+    
+    <button onClick={async()=> {
+      await useAuth.logout();
+    }} className="cursor-pointer">Logout</button>
     </div>
   );
 }
