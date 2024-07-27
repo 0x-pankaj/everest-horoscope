@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react';
 import Image from 'next/image';
 import { FaStar, FaComments } from 'react-icons/fa';
@@ -23,7 +25,7 @@ const AstrologerProfileCard: React.FC<AstrologerProfileCardProps> = ({
 }) => {
   return (
     <div className=" max-w-sm w-full rounded-xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out">
-      <div className="relative h-20 bg-gradient-to-r from-purple-500 to-indigo-600">
+      <div className="relative h-20 bg-gradient-to-r from-purple-300 to-indigo-400">
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
           <Image
             className="w-24 h-24 rounded-full border-4 border-white"

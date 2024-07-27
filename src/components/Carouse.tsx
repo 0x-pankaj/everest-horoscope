@@ -1,57 +1,54 @@
 "use client"
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { useState, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 interface CarouselProps {
-  images: string[]; // Array of image URLs
+  images: string[];
 }
 
 const Carousel: React.FC<CarouselProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handleNext = () => {
+  const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
   };
+
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 5000); // Auto-advance every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      <div className="relative w-full h-full">
+      {images.map((image, index) => (
         <div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{ height: 'calc(100% - 5rem)' }} // Adjust height to exclude navbar
-        >
-          <Image
-            src={images[currentIndex]}
-            alt={`Slide ${currentIndex + 1}`}
-            layout="fill"
-            objectFit="cover"
-            className="w-full h-full"
-          />
-        </div>
-
-        {/* Prev Button */}
-        <button
-          onClick={handlePrev}
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <FaChevronLeft className="text-gray-800" size={24} />
-        </button>
-
-        {/* Next Button */}
-        <button
-          onClick={handleNext}
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <FaChevronRight className="text-gray-800" size={24} />
-        </button>
-      </div>
+          key={index}
+          className={`absolute top-0 left-0 w-full h-full transition-opacity ${
+            index === currentIndex ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{
+            backgroundImage: `url(${image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+      ))}
+      <button
+        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+        onClick={prevSlide}
+      >
+        <FaChevronLeft />
+      </button>
+      <button
+        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+        onClick={nextSlide}
+      >
+        <FaChevronRight />
+      </button>
     </div>
   );
 };

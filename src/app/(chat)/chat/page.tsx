@@ -1,8 +1,7 @@
 "use client"
 
-import { database } from '@/appwrite/clientConfig';
+
 import AstrologerProfileCard from '@/components/AstroCard';
-import conf from '@/conf/conf';
 import React, { useEffect, useRef } from 'react';
 
 const Chat: React.FC = () => {
