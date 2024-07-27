@@ -2,6 +2,7 @@
 
 
 import AstrologerProfileCard from '@/components/AstroCard';
+import Navbar from '@/components/Navbar';
 import React, { useEffect, useRef } from 'react';
 
 const Chat: React.FC = () => {
@@ -95,6 +96,8 @@ const Chat: React.FC = () => {
   }];
 
   return (
+    <div>
+      <Navbar />
     <div className="container mx-auto px-4 py-6">
       <div className="grid grid-cols-1 justify-items-center md:grid-cols-2 lg:grid-cols-3 gap-4">
         {
@@ -112,6 +115,7 @@ const Chat: React.FC = () => {
           ))
         }
       </div>
+    </div>
     </div>
   );
 };

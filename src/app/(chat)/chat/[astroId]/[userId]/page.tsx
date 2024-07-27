@@ -8,5 +8,5 @@ export default function ChatRoomPage({
 }: {
   params: { astroId: string; userId: string };
 }) {
-  return <ChatRoom astroId={params.astroId} userId={params.userId} />;
+  return (< ChatRoom astroId={params.astroId} userId={params.userId}/>);
 }
