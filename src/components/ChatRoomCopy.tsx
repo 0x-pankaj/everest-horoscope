@@ -32,19 +32,16 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100"  style={{ height: 'calc(100vh - 4rem)'}}>
+    <div className="flex flex-col h-screen bg-gray-100">
       {/* Fixed upper section */}
-      {/*
       <div className="bg-white border-b border-gray-200 px-4 py-3">
         <h2 className="text-lg font-semibold">Chat with Receiver</h2>
-      </div> 
-      */}
+      </div>
 
       {/* Scrollable middle section */}
       <div 
         ref={chatContainerRef}
         className="flex-grow overflow-y-auto px-4 py-4"
-       
       >
         {messages.map((message) => (
           <div
@@ -81,7 +78,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <FaPaperPlane className="h-7 w-5" />
+            <FaPaperPlane className="h-5 w-5" />
           </button>
         </form>
       </div>
