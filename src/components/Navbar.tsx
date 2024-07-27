@@ -9,6 +9,8 @@ import { MdClose } from "react-icons/md"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
+import { useAuthStore } from "@/store/Auth"
+import { FaUserCircle } from "react-icons/fa"
 
 interface NavChild {
     label: string;
@@ -50,12 +52,16 @@ const navItems: NavItem[] = [
 ]
 
 export default function Navbar() {
-    const [isSideMenuOpen, setSideMenu] = useState(false)
+    const [isSideMenuOpen, setSideMenu] = useState(false);
+    const [isProfileModalOpen, setProfileModalOpen] = useState(false);
     const router = useRouter()
-    const sidebarRef = useRef<HTMLDivElement>(null)
+    const sidebarRef = useRef<HTMLDivElement>(null);
+    const profileModalRef = useRef<HTMLDivElement>(null);
+    const {user, logout} = useAuthStore();
 
     const toggleSideMenu = () => setSideMenu(!isSideMenuOpen)
 
+    /*
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
@@ -65,7 +71,33 @@ export default function Navbar() {
 
         document.addEventListener("mousedown", handleOutsideClick)
         return () => document.removeEventListener("mousedown", handleOutsideClick)
-    }, [])
+    }, []);
+    */
+
+    useEffect(()=> {
+        const handleOutsideClick = (event: MouseEvent) => {
+            if (profileModalRef.current && !profileModalRef.current.contains(event.target as Node)) {
+                setProfileModalOpen(false);
+            }
+        };
+
+        if (isProfileModalOpen) {
+            document.addEventListener("mousedown", handleOutsideClick);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        }
+
+    }, [isProfileModalOpen]);
+
+    const toggleProfileModal = () => setProfileModalOpen(!isProfileModalOpen);
+
+    const handleLogout = async() => {
+        await logout();
+        setProfileModalOpen(false);
+        router.push("/");
+    }
 
     const handleNavigation = (path: string) => {
         setSideMenu(false)
@@ -86,13 +118,32 @@ export default function Navbar() {
                 </section>
 
                 <section className="hidden md:flex items-center gap-8">
-                    <button onClick={() => handleNavigation("/login")} className="h-fit text-neutral-400 transition-all hover:text-black/90">
-                        Login
-                    </button>
-                    <button onClick={() => handleNavigation("/signup")} className="h-fit rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
-                        Register
-                    </button>
-                </section>
+                {user ? (
+                    <div className="relative">
+                        <FaUserCircle 
+                            onClick={toggleProfileModal} 
+                            className="cursor-pointer text-5xl text-neutral-400 hover:text-black/90"
+                        />
+                        {isProfileModalOpen && (
+                            <div ref={profileModalRef} >
+                            <ProfileModal 
+                                onClose={() => setProfileModalOpen(false)}
+                                onLogout={handleLogout}
+                                />
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <>
+                        <button onClick={() => handleNavigation("/login")} className="h-fit text-neutral-400 transition-all hover:text-black/90">
+                            Login
+                        </button>
+                        <button onClick={() => handleNavigation("/signup")} className="h-fit rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
+                            Register
+                        </button>
+                    </>
+                )}
+            </section>
 
                 <FiMenu onClick={toggleSideMenu} className="cursor-pointer text-4xl my-7 mx-3 md:hidden" />
             </div>
@@ -142,6 +193,15 @@ interface MobileNavProps {
 }
 
 function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
+
+    const {user, logout} = useAuthStore();
+
+    const handleLogout = async() => {
+        await logout();
+        closeSideMenu();
+        handleNavigation("/");
+    }
+
     return (
         <div className="p-4">
             <section className="flex justify-end mb-4">
@@ -153,12 +213,31 @@ function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
                 ))}
             </div>
             <section className="flex flex-col items-start gap-4 mt-8">
-                <button onClick={() => handleNavigation("/login")} className="text-neutral-400 transition-all hover:text-black/90">
-                    Login
-                </button>
-                <button onClick={() => handleNavigation("/signup")} className="rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
-                    Register
-                </button>
+                {user ? (
+                    <>
+                        <button onClick={() => handleNavigation("/manage-profile")} className="text-neutral-400 transition-all hover:text-black/90">
+                            Manage Profile
+                        </button>
+                        <button onClick={handleLogout} className="text-neutral-400 transition-all hover:text-black/90">
+                            Logout
+                        </button>
+                        <button onClick={() => {
+                            // Implement logout from all sessions
+                            handleLogout();
+                        }} className="text-neutral-400 transition-all hover:text-black/90">
+                            Logout from all sessions
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <button onClick={() => handleNavigation("/login")} className="text-neutral-400 transition-all hover:text-black/90">
+                            Login
+                        </button>
+                        <button onClick={() => handleNavigation("/signup")} className="rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
+                            Register
+                        </button>
+                    </>
+                )}
             </section>
         </div>
     )
@@ -201,4 +280,41 @@ function MobileNavItem({ item, handleNavigation }: MobileNavItemProps) {
             )}
         </div>
     )
+}
+
+
+interface ProfileModalProps {
+    onClose: () => void;
+    onLogout: () => void;
+}
+
+function ProfileModal({ onLogout }: ProfileModalProps) {
+    const router = useRouter();
+
+    return (
+        <div className="absolute right-0 top-10 w-48 flex-col gap-1 rounded-lg bg-white py-3 shadow-md">
+            <button 
+                onClick={() => router.push('/profile')}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+                Manage Profile
+            </button>
+            <button 
+                onClick={onLogout}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+                Logout
+            </button>
+            <button 
+                onClick={() => {
+                    // Implement logout from all sessions
+                    // onLogout();
+                    console.log("logout from all devices");
+                }}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+                Logout from all sessions
+            </button>
+        </div>
+    );
 }

@@ -31,10 +31,9 @@ const FeaturedAstrologers: React.FC = () => {
         <div className="flex flex-wrap justify-center gap-8">
           {astrologers.map((astrologer, index) => (
             <AstrologerProfileCard
-              key={index}
+              id={''} user_id={''} hourlyRate={0} isOnline={false} key={index}
               {...astrologer}
-              onChatClick={() => console.log(`Chat with ${astrologer.name}`)}
-            />
+              onChatClick={() => console.log(`Chat with ${astrologer.name}`)}            />
           ))}
         </div>
       </div>
