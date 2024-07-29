@@ -20,6 +20,7 @@ const Login = () => {
     const login = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         try {
+            console.log("form data: ", formData);
             const success =  await authStore.login(formData.email, formData.password);
             if(success) {
                 alert("login successfully");

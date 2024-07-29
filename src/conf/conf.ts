@@ -5,7 +5,8 @@ const conf = {
     appwriteApiKey: String(process.env.EVEREST_HOROSCOPE),
     appwriteHoroscopeDatabaseId: String(process.env.NEXT_PUBLIC_HOROSCOPE_DATABASE_ID),
     appwriteAstroCollectionId: String(process.env.NEXT_PUBLIC_ASTRO_COLLECTION_ID),
-    appwriteMessageCollectionId: String(process.env.NEXT_PUBLIC_MESSAGE_COLLECTION_ID)
+    appwriteMessageCollectionId: String(process.env.NEXT_PUBLIC_MESSAGE_COLLECTION_ID),
+    appwroteAdminCollectionId: String(process.env.NEXT_PUBLIC_ADMIN_COLLECTION_ID)
 }
 
 export default conf;

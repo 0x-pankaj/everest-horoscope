@@ -13,9 +13,12 @@ const ChatPage: React.FC = () => {
   const { astrologers, loading, error, fetchAstrologers } = useAstroStore();
   const {user} = useAuthStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const router = useRouter();
+  const router = useRouter(); 
 
   useEffect(() => {
+    // if(!astrologers){
+    //   fetchAstrologers();
+    // }
     fetchAstrologers();
   }, [fetchAstrologers]);
 
@@ -23,8 +26,8 @@ const ChatPage: React.FC = () => {
     router.push(`/chat/${astrologerId}/${user?.$id}`);
   };
 
-  const filteredAstrologers = astrologers;
-/*
+  // const filteredAstrologers = astrologers;
+
   const filteredAstrologers = astrologers.filter(
     (astrologer) =>
       astrologer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -32,7 +35,7 @@ const ChatPage: React.FC = () => {
         specialty.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
-    */
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;

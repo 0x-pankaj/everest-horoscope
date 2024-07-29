@@ -1,7 +1,7 @@
 
 
 import {create} from 'zustand';
-import { Query } from 'appwrite';
+import { Models, Query } from 'appwrite';
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import { ID } from 'node-appwrite';
@@ -17,6 +17,7 @@ interface ChatState {
   messages: Message[];
   loading: boolean;
   error: string | null;
+  addMessage:(message: Models.Document) => void;
   sendMessage: (senderId: string, receiverId: string, body: string) => Promise<void>;
   fetchMessages: (senderId: string, receiverId: string) => Promise<void>;
 }
@@ -25,6 +26,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
   messages: [],
   loading: false,
   error: null,
+
+  addMessage: (message: Models.Document) => {
+      set((state) => ({messages: [...state.messages, message as unknown as  Message]}))
+  },
+
   sendMessage: async (senderId: string, receiverId: string, body: string) => {
     try {
       set({ loading: true, error: null });
@@ -36,7 +42,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
           sender_id: senderId,
           receiver_id: receiverId,
           body,
-        //   created_at: new Date().toISOString(),
         }
       );
       console.log("Response from whiling sending message: ", response);
@@ -60,7 +65,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         ]
       );
       console.log("Response while fetching: ", response);
-      set({ messages: response.documents as Message[] });
+      set({ messages: response.documents as Message[]});
     } catch (error) {
       set({ error: 'Failed to fetch messages' });
     } finally {

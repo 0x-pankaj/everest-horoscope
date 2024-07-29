@@ -39,8 +39,7 @@ const ChatOptions: React.FC = () => {
   };
 
   const handleChatWithRepresentative = () => {
-    console.log('Initiating chat with representative');
-    // Add your logic to initiate chat with a representative
+    router.push("/admin-member")
   };
 
   return (

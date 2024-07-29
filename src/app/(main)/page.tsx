@@ -6,6 +6,7 @@ import HomeCarousel from '@/components/HomeCarousel';
 import InterActionCard from '@/components/InterActionCard';
 import BlogPreview from '@/components/BlogPreview';
 import Testimonials from '@/components/Testimonials';
+import AstroCardHome from '@/components/AstroCardHome';
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <HomeCarousel />
       {/* <FeaturedAstrologers /> */}
       <InterActionCard />
+      <AstroCardHome />
       <Testimonials />
       <BlogPreview />
       </main>

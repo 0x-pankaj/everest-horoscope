@@ -11,8 +11,8 @@ interface AstrologerProfileCardProps {
   name: string;
   photoUrl: string;
   bio: string;
-  // specialties: string[];
-  specialties: string;
+  specialties: string[];
+  // specialties: string;
   rating: number;
   experience: number;
   hourlyRate: number;
@@ -63,9 +63,7 @@ const AstrologerProfileCard: React.FC<AstrologerProfileCardProps> = ({
         <p className="text-gray-600 text-sm mb-4">{bio}</p>
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">Specialties</h3>
-          <div className="flex flex-wrap justify-center gap-2">
-            {specialties}
-            {/*
+          <div className="flex flex-wrap justify-center gap-2">            
             {specialties.map((specialty, index) => (
               <span
                 key={index}
@@ -74,8 +72,8 @@ const AstrologerProfileCard: React.FC<AstrologerProfileCardProps> = ({
                 {specialty}
               </span>
             ))}
-            */}
-          </div>
+            
+            </div>
         </div>
         <div className="text-sm text-gray-600 mb-2">
           {experience} years of experience

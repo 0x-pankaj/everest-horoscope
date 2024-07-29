@@ -1,4 +1,7 @@
+import { client } from '@/appwrite/clientConfig';
+import conf from '@/conf/conf';
 import { useChatStore } from '@/store/chatStore';
+import { Models } from 'appwrite';
 import React, { useEffect, useRef, useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
 
@@ -8,13 +11,32 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
-  const { messages, sendMessage, fetchMessages, loading, error } = useChatStore();
+  const {addMessage ,messages, sendMessage, fetchMessages, loading, error } = useChatStore();
   const [inputMessage, setInputMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isFetched = useRef(false);
 
   useEffect(() => {
-    fetchMessages(senderId, receiverId);
+    if(!isFetched.current) {
+      fetchMessages(senderId, receiverId);
+
+      client.subscribe(`databases.${conf.appwriteHoroscopeDatabaseId}.collections.${conf.appwriteMessageCollectionId}.documents`, (response) => {
+        console.log("response from realtime: ", response);
+        
+        const payload = response.payload as Models.Document
+
+        if(senderId !== payload["sender_id"]){
+          //setting chat
+          addMessage(payload); 
+          console.log(payload);
+
+        }
+      })
+
+
+    }
+    isFetched.current = true;
   }, [fetchMessages, senderId, receiverId]);
 
   useEffect(() => {
