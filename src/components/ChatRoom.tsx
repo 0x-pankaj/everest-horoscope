@@ -7,7 +7,7 @@ import { FaPaperPlane } from 'react-icons/fa';
 
 interface ChatRoomProps {
   senderId: string;
-  receiverId: string;
+  receiverId: string;  
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {

@@ -68,6 +68,7 @@ export const useAuthStore = create<IAuthStore>()(
                 try {
                     const session = await account.createEmailPasswordSession(email, password);
                     const user = await account.get();
+                    console.log("session, user ", session,user );
                     set({user: user, session: session})
                     return {success: true}
                 } catch (error) {

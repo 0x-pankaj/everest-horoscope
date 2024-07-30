@@ -13,10 +13,10 @@ const ChatPage: React.FC = () => {
   const { astrologers, loading, error, fetchAstrologers } = useAstroStore();
   const {user} = useAuthStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const router = useRouter(); 
+  const router = useRouter();
 
   useEffect(() => {
-    // if(!astrologers){
+    // if(!astrologers){  
     //   fetchAstrologers();
     // }
     fetchAstrologers();

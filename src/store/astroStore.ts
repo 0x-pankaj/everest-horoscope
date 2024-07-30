@@ -92,7 +92,7 @@ export const useAstroStore = create<AstroState>()(
           if (!error) state?.setHydrated()
         }
       }
-    }
+    } 
 
   )
 )

@@ -39,6 +39,9 @@ const Profile: React.FC = () => {
   };
 
   return (
+    <div className='min-h-screen bg-gray-100'>
+      <main>
+    
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
         <div className="md:flex">
@@ -46,8 +49,9 @@ const Profile: React.FC = () => {
             <div className="relative h-48 w-full md:w-48">
               <img
                 className="h-full w-full object-cover md:h-full md:w-48"
-                src={user.profilePicture || '/default-avatar.png'}
-                alt={user.name}
+                // src={user.profilePicture || '/default-avatar.png'}
+                src='https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2010/03/profile-picture.jpg?resize=200,300&ssl=1'
+                alt={user?.name}
               />
               <label htmlFor="profile-picture" className="absolute bottom-2 right-2 bg-white rounded-full p-2 cursor-pointer">
                 <FaCamera className="text-gray-600" />
@@ -70,7 +74,7 @@ const Profile: React.FC = () => {
                   <input
                     type="text"
                     name="name"
-                    value={editing ? editedUser.name : user.name}
+                    value={editing ? editedUser?.name : user?.name}
                     onChange={handleChange}
                     readOnly={!editing}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -81,7 +85,7 @@ const Profile: React.FC = () => {
                   <input
                     type="email"
                     name="email"
-                    value={editing ? editedUser.email : user.email}
+                    value={editing ? editedUser?.email : user?.email}
                     onChange={handleChange}
                     readOnly={!editing}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -92,7 +96,7 @@ const Profile: React.FC = () => {
                   <input
                     type="tel"
                     name="phone"
-                    value={editing ? editedUser.phone : user.phone}
+                    value={editing ? editedUser?.phone : user?.phone}
                     onChange={handleChange}
                     readOnly={!editing}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -131,6 +135,8 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+    </div>
+    </main>
     </div>
   );
 };
