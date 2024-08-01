@@ -22,7 +22,7 @@ const astrologers = [
     experience: 12,
   },
 ];
-
+    
 const FeaturedAstrologers: React.FC = () => {
   return (
     <section className="py-16 bg-gray-100">

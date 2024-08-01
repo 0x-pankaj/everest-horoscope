@@ -1,12 +1,10 @@
 // app/(default)/page.tsx
 import React from 'react';
-
-import FeaturedAstrologers from '@/components/FeaturedAstrologers';
 import HomeCarousel from '@/components/HomeCarousel';
 import InterActionCard from '@/components/InterActionCard';
 import BlogPreview from '@/components/BlogPreview';
 import Testimonials from '@/components/Testimonials';
-import AstroCardHome from '@/components/AstroCardHome';
+import AstroCarouselHome from '@/components/AstroCarouselHome';
 
 export default function Home() {
   return (
@@ -15,7 +13,8 @@ export default function Home() {
       <HomeCarousel />
       {/* <FeaturedAstrologers /> */}
       <InterActionCard />
-      <AstroCardHome />
+      {/* <AstroCardHome /> */}
+      <AstroCarouselHome />
       <Testimonials />
       <BlogPreview />
       </main>
