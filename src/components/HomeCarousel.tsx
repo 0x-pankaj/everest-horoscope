@@ -3,8 +3,8 @@
 import Carousel from "./Carouse"
 
 const carouselImages = [
-    '/jonatan-pie-3l3RwQdHRHg-unsplash.jpg',
-    '/team.jpg'
+    'https://cloud.appwrite.io/v1/storage/buckets/66998177000d52ac33b4/files/66adde7d00388ce0dc6a/view?project=6696bcc3003c30b6b228&mode=admin',
+    'https://cloud.appwrite.io/v1/storage/buckets/66998177000d52ac33b4/files/66addef10033c79f5525/view?project=6696bcc3003c30b6b228&mode=admin'
   ];
 
 const HomeCarousel: React.FC = () => {
