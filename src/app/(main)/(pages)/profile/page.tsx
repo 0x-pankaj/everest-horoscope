@@ -1,144 +1,226 @@
 "use client"
 
-import { useAuthStore } from '@/store/Auth';
-import React, { useState, useEffect } from 'react';
-import { FaCamera, FaEdit, FaCheck, FaTimes } from 'react-icons/fa';
+// types/user.ts
 
-const Profile: React.FC = () => {
-  const { user, updateUser, updateProfilePicture } = useAuthStore();
-  const [editing, setEditing] = useState(false);
-  const [editedUser, setEditedUser] = useState(user);
+export type UserType = 'simple' | 'premium' | 'astro' | 'admin';
+
+interface BaseUser {
+  id: string;
+  name: string;
+  email: string;
+  photoUrl?: string;
+  userType: UserType;
+}
+
+export interface SimpleUser extends BaseUser {
+  userType: 'simple' | 'premium';
+}
+
+export interface AstroUser extends BaseUser {
+  userType: 'astro';
+  bio: string;
+  experience: string;
+  // hourlyRate: number;
+  specialties: string[];
+}
+
+export interface AdminUser extends BaseUser {
+  userType: 'admin';
+}
+
+export type User = SimpleUser | AstroUser | AdminUser;
+
+
+// pages/profile.tsx
+
+import { useState, useEffect } from 'react';
+
+const ProfilePage: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    setEditedUser(user);
-  }, [user]);
+    // Fetch user data from API
+    // For now, we'll use mock data
+    const mockUser: User = {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      photoUrl: 'https://example.com/photo.jpg',
+      userType: 'astro',
+      bio: 'Experienced astrologer',
+      experience: '5 years',
+      // hourlyRate: 50,
+      specialties: ['Tarot', 'Numerology'],
+    };
+    setUser(mockUser);
+  }, []);
 
-  const handleEdit = () => {
-    setEditing(true);
+  const handleUpdate = (updatedUser: User) => {
+    // Update user data in the backend
+    // For now, we'll just update the local state
+    setUser(updatedUser);
+    setIsEditing(false);
   };
 
-  const handleCancel = () => {
-    setEditing(false);
-    setEditedUser(user);
-  };
-
-  const handleSave = async () => {
-    await updateUser(editedUser);
-    setEditing(false);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedUser({ ...editedUser, [e.target.name]: e.target.value });
-  };
-
-  const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      await updateProfilePicture(file);
-    }
-  };
+  if (!user) return <div>Loading...</div>;
 
   return (
-    <div className='min-h-screen bg-gray-100'>
-      <main>
-    
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="md:flex">
-          <div className="md:flex-shrink-0">
-            <div className="relative h-48 w-full md:w-48">
-              <img
-                className="h-full w-full object-cover md:h-full md:w-48"
-                // src={user.profilePicture || '/default-avatar.png'}
-                src='https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2010/03/profile-picture.jpg?resize=200,300&ssl=1'
-                alt={user?.name}
-              />
-              <label htmlFor="profile-picture" className="absolute bottom-2 right-2 bg-white rounded-full p-2 cursor-pointer">
-                <FaCamera className="text-gray-600" />
-                <input
-                  type="file"
-                  id="profile-picture"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleProfilePictureChange}
-                />
-              </label>
-            </div>
-          </div>
-          <div className="p-8 w-full">
-            <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-1">User Profile</div>
-            <form>
-              <div className="grid grid-cols-1 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={editing ? editedUser?.name : user?.name}
-                    onChange={handleChange}
-                    readOnly={!editing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={editing ? editedUser?.email : user?.email}
-                    onChange={handleChange}
-                    readOnly={!editing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Phone</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={editing ? editedUser?.phone : user?.phone}
-                    onChange={handleChange}
-                    readOnly={!editing}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  />
-                </div>
-              </div>
-              <div className="mt-6 flex items-center justify-end space-x-4">
-                {!editing ? (
-                  <button
-                    type="button"
-                    onClick={handleEdit}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded inline-flex items-center"
-                  >
-                    <FaEdit className="mr-2" /> Edit Profile
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleCancel}
-                      className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
-                    >
-                      <FaTimes className="mr-2" /> Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleSave}
-                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded inline-flex items-center"
-                    >
-                      <FaCheck className="mr-2" /> Save Changes
-                    </button>
-                  </>
-                )}
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    </main>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">User Profile</h1>
+      {isEditing ? (
+        <UpdateForm user={user} onUpdate={handleUpdate} onCancel={() => setIsEditing(false)} />
+      ) : (
+        <>
+          <UserDetails user={user} />
+          <button
+            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => setIsEditing(true)}
+          >
+            Edit Profile
+          </button>
+        </>
+      )}
     </div>
   );
 };
 
-export default Profile;
+export default ProfilePage;
+
+// components/UserDetails.tsx
+
+
+interface Props {
+  user: User;
+}
+
+const UserDetails: React.FC<Props> = ({ user }) => {
+  return (
+    <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <img src={user.photoUrl} alt={user.name} className="w-32 h-32 rounded-full mx-auto mb-4" />
+      <h2 className="text-xl font-bold mb-2">{user.name}</h2>
+      <p className="text-gray-600 mb-2">{user.email}</p>
+      <p className="text-gray-600 mb-2">User Type: {user.userType}</p>
+      {user.userType === 'astro' && (
+        <>
+          <p className="text-gray-600 mb-2">Bio: {user.bio}</p>
+          <p className="text-gray-600 mb-2">Experience: {user.experience}</p>
+          <p className="text-gray-600 mb-2">Hourly Rate: ${user.hourlyRate}</p>
+          <p className="text-gray-600 mb-2">Specialties: {user.specialties.join(', ')}</p>
+        </>
+      )}
+    </div>
+  );
+};
+
+
+// components/UpdateForm.tsx
+
+interface Props {
+  user: User;
+  onUpdate: (updatedUser: User) => void;
+  onCancel: () => void;
+}
+
+const UpdateForm: React.FC<Props> = ({ user, onUpdate, onCancel }) => {
+  const [formData, setFormData] = useState(user);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onUpdate(formData as User);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+          Name
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="name"
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+          Email
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="email"
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+      </div>
+      {formData.userType === 'astro' && (
+        <>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bio">
+              Bio
+            </label>
+            <textarea
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="bio"
+              name="bio"
+              value={(formData as any).bio}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="experience">
+              Experience
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="experience"
+              type="text"
+              name="experience"
+              value={(formData as any).experience}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="hourlyRate">
+              Hourly Rate
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="hourlyRate"
+              type="number"
+              name="hourlyRate"
+              value={(formData as any).hourlyRate}
+              onChange={handleChange}
+            />
+          </div>
+        </>
+      )}
+      <div className="flex items-center justify-between">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="submit"
+        >
+          Update
+        </button>
+        <button
+          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="button"
+          onClick={onCancel}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+};
+

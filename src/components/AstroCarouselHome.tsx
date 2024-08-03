@@ -14,7 +14,7 @@ const HomePage: React.FC = () => {
     },
     {
       id: '2',
-      name: 'Jane Smith',
+      name: 'Halia',
       photoUrl: 'https://cloud.appwrite.io/v1/storage/buckets/66998177000d52ac33b4/files/66addcf6002c746aeed2/view?project=6696bcc3003c30b6b228&mode=admin',
       speciality: 'Tarot Reading',
       experience: 8,
@@ -28,7 +28,7 @@ const HomePage: React.FC = () => {
     },
     {
       id: '4',
-      name: 'Bob Williams',
+      name: 'Zaniah',
       photoUrl: 'https://cloud.appwrite.io/v1/storage/buckets/66998177000d52ac33b4/files/66addded002efc6d48fa/view?project=6696bcc3003c30b6b228&mode=admin    ',
       speciality: 'Palmistry',
       experience: 15,
@@ -37,7 +37,7 @@ const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 py-12">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl md:text-4xl font-bold text-center mb-8">Welcome to AstroConnect</h1>
         <AstroCarousel astrologers={astrologers} />

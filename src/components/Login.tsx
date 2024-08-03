@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, {FormEvent, useEffect, useState} from "react";
-import logo from "@/assets/images/everest-logo.png"
 import { useAuthStore } from "@/store/Auth";
 
 const Login = () => {
@@ -102,6 +101,10 @@ const Login = () => {
                             >
                                 Sign in
                             </button>
+                            <div className="text-center">
+                                <span className="">Forgot Password</span>
+                                <Link className="px-2" href={"/forgot-password"}>Click here!</Link>
+                            </div>
                         </div>
                     </div>
                 </form>
