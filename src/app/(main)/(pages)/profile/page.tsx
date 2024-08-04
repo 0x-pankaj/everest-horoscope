@@ -2,7 +2,7 @@
 
 // types/user.ts
 
-export type UserType = 'simple' | 'premium' | 'astro' | 'admin';
+
 
 interface BaseUser {
   id: string;
@@ -34,6 +34,7 @@ export type User = SimpleUser | AstroUser | AdminUser;
 // pages/profile.tsx
 
 import { useState, useEffect } from 'react';
+import { UserType } from '../../../../../types';
 
 const ProfilePage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
