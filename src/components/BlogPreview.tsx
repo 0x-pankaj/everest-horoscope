@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Client, Databases, Query } from 'appwrite';
+import {  Query } from 'appwrite';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
