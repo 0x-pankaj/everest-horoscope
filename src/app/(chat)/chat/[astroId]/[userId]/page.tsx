@@ -35,7 +35,7 @@ export default function ChatRoomPage({
             <h1 className="text-xl font-semibold text-gray-900">Chat with Astrologer!</h1>
             <div className="w-6"></div> {/* Placeholder for alignment */}
           </div>
-        </div>
+        </div>   
       </div>
 
       <div className="flex-grow">

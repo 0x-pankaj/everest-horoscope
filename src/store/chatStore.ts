@@ -1,6 +1,4 @@
-
-
-import {create} from 'zustand';
+import { create } from 'zustand';
 import { Models, Query } from 'appwrite';
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
@@ -17,18 +15,25 @@ interface ChatState {
   messages: Message[];
   loading: boolean;
   error: string | null;
-  addMessage:(message: Models.Document) => void;
+  hasMore: boolean;
+  addMessage: (message: Models.Document) => void;
   sendMessage: (senderId: string, receiverId: string, body: string) => Promise<void>;
-  fetchMessages: (senderId: string, receiverId: string) => Promise<void>;
+  fetchMessages: (senderId: string, receiverId: string, page: number, limit: number) => Promise<void>;
+  setMessages: (messages: Message[]) => void;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
   messages: [],
   loading: false,
   error: null,
+  hasMore: true,
 
   addMessage: (message: Models.Document) => {
-      set((state) => ({messages: [...state.messages, message as unknown as  Message]}))
+    set((state) => ({ messages: [...state.messages, message as unknown as Message] }));
+  },
+
+  setMessages: (messages: Message[]) => {
+    set({ messages });
   },
 
   sendMessage: async (senderId: string, receiverId: string, body: string) => {
@@ -44,15 +49,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
           body,
         }
       );
-      console.log("Response from whiling sending message: ", response);
-      set((state) => ({ messages: [...state.messages, response as Message] }));
+      console.log("Response from while sending message: ", response);
+      set((state) => ({ messages: [...state.messages, response as unknown as Message] }));
     } catch (error) {
       set({ error: 'Failed to send message' });
     } finally {
       set({ loading: false });
     }
   },
-  fetchMessages: async (senderId: string, receiverId: string) => {
+
+  fetchMessages: async (senderId: string, receiverId: string, page: number, limit: number) => {
     try {
       set({ loading: true, error: null });
       const response = await database.listDocuments(
@@ -61,11 +67,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
         [
           Query.equal('sender_id', [senderId, receiverId]),
           Query.equal('receiver_id', [senderId, receiverId]),
-        //   Query.orderAsc('created_at'),
+          Query.orderDesc('$createdAt'),
+          Query.limit(limit),
+          Query.offset(page * limit), 
         ]
       );
       console.log("Response while fetching: ", response);
-      set({ messages: response.documents as Message[]});
+      set((state) => ({
+        messages: [...response.documents as unknown as Message[], ...state.messages],
+        hasMore: response.documents.length === limit,
+      }));
     } catch (error) {
       set({ error: 'Failed to fetch messages' });
     } finally {

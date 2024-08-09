@@ -41,6 +41,7 @@ interface IAuthStore {
     ):  Promise<{success: boolean, error?: AppwriteException | null}>
 
     logout() : Promise<void>
+    updateBalance: (newBalance: number) => void;
 }
 
 export const useAuthStore = create<IAuthStore>()(
@@ -96,8 +97,12 @@ export const useAuthStore = create<IAuthStore>()(
 
                 }
 
-            }
+            },
+            updateBalance: (newBalance: number) => set((state) => ({
+                user: state.user ? { ...state.user, balance: newBalance } : null
+              })),
         })),
+
         {
             name: "auth",
             onRehydrateStorage() {

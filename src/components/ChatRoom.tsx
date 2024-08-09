@@ -11,9 +11,10 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
-  const { addMessage, messages, sendMessage, fetchMessages, loading, error } = useChatStore();
+  const { messages, loading, error, hasMore, addMessage, sendMessage, fetchMessages } = useChatStore();
   const [inputMessage, setInputMessage] = useState('');
   const [showQuestionModal, setShowQuestionModal] = useState(false);
+  const [page, setPage] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,17 +55,23 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
     ]
   };
 
+  const fetchMoreMessages = async () => {
+    if (!hasMore || loading) return;
+    await fetchMessages(senderId, receiverId, page, 40);
+    setPage((prevPage) => prevPage + 1);
+  };
+
   useEffect(() => {
     if (!isFetched.current) {
-      fetchMessages(senderId, receiverId);
+      fetchMoreMessages();
 
       client.subscribe(`databases.${conf.appwriteHoroscopeDatabaseId}.collections.${conf.appwriteMessageCollectionId}.documents`, (response) => {
         console.log("response from realtime: ", response);
         
-        const payload = response.payload as Models.Document
+        const payload = response.payload as Models.Document;
 
         if (senderId !== payload["sender_id"]) {
-          addMessage(payload); 
+          addMessage(payload);
           console.log(payload);
         }
       });
@@ -77,6 +84,15 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const handleScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop } = chatContainerRef.current;
+      if (scrollTop === 0 && hasMore) {
+        fetchMoreMessages();
+      }
+    }
+  };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +111,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100" style={{ height: 'calc(100vh - 4rem)' }}>
-      <div ref={chatContainerRef} className="flex-grow overflow-y-auto px-4 py-4">
+      <div 
+        ref={chatContainerRef} 
+        className="flex-grow overflow-y-auto px-4 py-4"
+        onScroll={handleScroll}
+      >
+        {loading && <div className="text-center">Loading...</div>}
         {messages.map((message) => (
           <div
             key={message.$id}
@@ -118,7 +139,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
       <div className="bg-white border-t border-gray-200 px-4 py-3 sticky bottom-0 left-0 right-0">
         <div className="relative">
           <form onSubmit={handleSendMessage} className="flex items-center">
-            
             <button
               type="button"
               onClick={() => setShowQuestionModal(true)}
@@ -143,6 +163,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
           </form>
         </div>
       </div>
+
 
       {showQuestionModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
