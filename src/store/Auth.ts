@@ -42,6 +42,8 @@ interface IAuthStore {
 
     logout() : Promise<void>
     updateBalance: (newBalance: number) => void;
+    forgotPassword(email: string): Promise<{ success: boolean; error?: AppwriteException | null }>;
+    verifyAccount(userId: string, secret: string): Promise<{ success: boolean; error?: AppwriteException | null }>;
 }
 
 export const useAuthStore = create<IAuthStore>()(
@@ -98,9 +100,30 @@ export const useAuthStore = create<IAuthStore>()(
                 }
 
             },
+            async forgotPassword(email: string) {
+                try {
+                  await account.createRecovery(email, 'http://localhost:3000/reset-password');
+                  return { success: true };
+                } catch (error) {
+                  console.log("Error in forgot password: ", error);
+                  return { success: false, error: error instanceof AppwriteException ? error : null };
+                }
+              },
+
+              async verifyAccount(userId: string, secret: string) {
+                try {
+                  await account.updateVerification(userId, secret);
+                  return { success: true };
+                } catch (error) {
+                  console.log("Error in account verification: ", error);
+                  return { success: false, error: error instanceof AppwriteException ? error : null };
+                }
+              },
+        
             updateBalance: (newBalance: number) => set((state) => ({
                 user: state.user ? { ...state.user, balance: newBalance } : null
               })),
+              
         })),
 
         {
