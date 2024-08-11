@@ -1,23 +1,30 @@
 "use client"
 
 import { useRef, useState, useEffect } from 'react';
-
 import { useRouter } from 'next/router';
 import { useAuthStore } from '@/store/Auth';
 
 const VerifyAccount = () => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
   const [message, setMessage] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [secret, setSecret] = useState<string | null>(null);
   const inputRefs = useRef<HTMLInputElement[]>([]);
   const verifyAccount = useAuthStore((state) => state.verifyAccount);
   const router = useRouter();
-  const { userId, secret } = router.query
 
   useEffect(() => {
-    if (!userId || !secret) {
-      setMessage('Invalid verification link. Please request a new one.');
+    if (router.isReady) {
+      const { userId, secret } = router.query;
+      if (typeof userId === 'string' && typeof secret === 'string') {
+        setUserId(userId);
+        setSecret(secret);
+      } else {
+        setMessage('Invalid verification link. Please request a new one.');
+      }
     }
-  }, [userId, secret]);
+  }, [router.isReady, router.query]);
+
 
   const handleChange = (index: number, value: string) => {
     if (/^[0-9]?$/.test(value)) {
@@ -41,7 +48,7 @@ const VerifyAccount = () => {
     e.preventDefault();
     setMessage('');
     
-    if (!userId || !secret || typeof userId !== 'string' || typeof secret !== 'string') {
+    if (!userId || !secret) {
       setMessage('Invalid verification data. Please request a new verification link.');
       return;
     }
