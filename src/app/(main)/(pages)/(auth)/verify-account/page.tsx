@@ -75,7 +75,7 @@ const VerifyAccount = () => {
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   maxLength={1}
-                  ref={(el) => (inputRefs.current[index] = el as HTMLInputElement)}
+                  ref={(el) => {inputRefs.current[index] = el as HTMLInputElement}}
                   className="w-12 h-12 border border-gray-300 rounded-md text-center text-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               ))}
