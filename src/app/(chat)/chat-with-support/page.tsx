@@ -19,6 +19,7 @@ interface TeamMember {
 }
 
 const ChatWithTeam: React.FC = () => {
+  const router = useRouter();
   const {user} = useAuthStore();
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +55,6 @@ const ChatWithTeam: React.FC = () => {
   if (error) {
     return <div className="text-center py-10 text-red-500">{error}</div>;
   }
-const router = useRouter();
   function handleChatClick(teamMemberId: string) {
     router.push(`/chat-with-support/${teamMemberId}/${user?.$id}`)
   }
