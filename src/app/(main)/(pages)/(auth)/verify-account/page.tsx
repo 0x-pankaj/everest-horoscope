@@ -1,5 +1,14 @@
 "use client"
 
+export default function VerifyAccount() {
+  return (
+    <div>
+      Verify account 
+    </div>
+  )
+}
+
+/*
 import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuthStore } from '@/store/Auth';
@@ -101,3 +110,5 @@ const VerifyAccount = () => {
 };
 
 export default VerifyAccount;
+
+*/
