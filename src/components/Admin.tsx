@@ -1,6 +1,6 @@
 import AstroCard from "./AstroCard";
 
-export default function() {
+export default function Admin() {
     return (
         <div>
             admin

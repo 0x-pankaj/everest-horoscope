@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
           <div className="w-full md:w-1/3 mb-6 md:mb-0">
             <Image className='hidden md:block ' src={logo} alt="Everest Horoscope Logo" width={150} height={150} />
             <p className="mt-4 text-gray-400">
-              Empowering you with cosmic insights and spiritual guidance to help you navigate life's journey.
+              Empowering you with cosmic insights and spiritual guidance to help you navigate life journey.
             </p>
           </div>
 

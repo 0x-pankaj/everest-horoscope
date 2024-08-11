@@ -4,7 +4,7 @@ import SignUp from "@/components/Signup";
 import { useAuthStore } from "@/store/Auth";
 import { useRouter } from "next/navigation";
 
-export default function() {
+export default function SignUpHome () {
     const router = useRouter();
     const useAuth = useAuthStore();
     if(useAuth.session){
