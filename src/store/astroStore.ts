@@ -4,6 +4,7 @@ import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { AppwriteException } from 'appwrite';
 
 interface Astrologer {
   $id: string;
@@ -51,7 +52,7 @@ interface AstroState {
   hydrated: boolean;
   astrologers: Astrologer[];
   loading: boolean;
-  error: string | null;
+  error: AppwriteException | null;
 
   setHydrated(): void;
   fetchAstrologers(): Promise<void>;
@@ -77,11 +78,11 @@ export const useAstroStore = create<AstroState>()(
               conf.appwriteAstroCollectionId
                   );
                   console.log("astrologer: ", response)
-                  set({ astrologers: response.documents as Astrologer[], loading: false });
+                  set({ astrologers: response.documents as unknown as Astrologer[], loading: false });
 
-        } catch (error) {
+        } catch (error ) {
             console.log("error while fetching astro in store: ", error);
-            set({error:error, loading: false})
+            set({error: error instanceof AppwriteException? error : null, loading: false})
         }
       }
     })),

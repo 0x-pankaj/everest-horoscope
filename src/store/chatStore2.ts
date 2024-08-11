@@ -40,7 +40,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
           created_at: new Date().toISOString(),
         }
       );
-      set((state) => ({ messages: [...state.messages, response as Message] }));
+      set((state) => ({ messages: [...state.messages, response as unknown as Message] }));
     } catch (error) {
       set({ error: 'Failed to send message' });
     } finally {
@@ -59,7 +59,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
           Query.orderAsc('created_at'),
         ]
       );
-      set({ messages: response.documents as Message[] });
+      set({ messages: response.documents as unknown as Message[] });
     } catch (error) {
       set({ error: 'Failed to fetch messages' });
     } finally {

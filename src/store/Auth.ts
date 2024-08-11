@@ -102,7 +102,8 @@ export const useAuthStore = create<IAuthStore>()(
             },
             async forgotPassword(email: string) {
                 try {
-                  await account.createRecovery(email, 'http://localhost:3000/reset-password');
+                //   await account.createRecovery(email, 'http://localhost:3000/reset-password');
+                await account.createRecovery(email, 'https://everest-horoscope.vercel.app/reset-password');
                   return { success: true };
                 } catch (error) {
                   console.log("Error in forgot password: ", error);
