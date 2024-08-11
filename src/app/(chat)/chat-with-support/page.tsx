@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useEffect, useState } from 'react';
@@ -10,7 +9,6 @@ import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/Auth';
 
-
 interface TeamMember {
   $id: string;
   user_id: string;
@@ -20,7 +18,7 @@ interface TeamMember {
 
 const ChatWithTeam: React.FC = () => {
   const router = useRouter();
-  const {user} = useAuthStore();
+  const { user } = useAuthStore();
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +46,10 @@ const ChatWithTeam: React.FC = () => {
     fetchTeamMembers();
   }, []);
 
+  const handleChatClick = (teamMemberId: string) => {
+    router.push(`/chat-with-support/${teamMemberId}/${user?.$id}`);
+  };
+
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
   }
@@ -55,32 +57,26 @@ const ChatWithTeam: React.FC = () => {
   if (error) {
     return <div className="text-center py-10 text-red-500">{error}</div>;
   }
-  function handleChatClick(teamMemberId: string) {
-    router.push(`/chat-with-support/${teamMemberId}/${user?.$id}`)
-  }
-
- 
 
   return (
     <div>
-        <Navbar />
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Chat with Our Team</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {teamMembers.map((member) => (
+      <Navbar />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-center mb-8">Chat with Our Team</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {teamMembers.map((member) => (
             <TeamMemberCard
-            key={member.$id}
-            id={member.$id}
-            name={member.name}
-            photoUrl={member.photoUrl}
-            userId={member.user_id}
-            onChatClick={handleChatClick}
-
+              key={member.$id}
+              id={member.$id}
+              name={member.name}
+              photoUrl={member.photoUrl}
+              userId={member.user_id}
+              onChatClick={handleChatClick}
             />
-        ))}
+          ))}
+        </div>
       </div>
     </div>
-        </div>
   );
 };
 
