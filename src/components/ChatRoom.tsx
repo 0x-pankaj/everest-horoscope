@@ -65,7 +65,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
     if (!isFetched.current) {
       fetchMoreMessages();
 
-      client.subscribe(`databases.${conf.appwriteHoroscopeDatabaseId}.collections.${conf.appwriteMessageCollectionId}.documents`, (response) => {
+      const unsubscribe =  client.subscribe(`databases.${conf.appwriteHoroscopeDatabaseId}.collections.${conf.appwriteMessageCollectionId}.documents`, (response) => {
         console.log("response from realtime: ", response);
         
         const payload = response.payload as Models.Document;
@@ -76,6 +76,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
         }
       });
     }
+  
     isFetched.current = true;
   }, [fetchMessages, senderId, receiverId]);
 
@@ -144,26 +145,25 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
               onClick={() => setShowQuestionModal(true)}
               className="bg-gray-200 text-gray-600 px-4 py-2 rounded-r-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <FaChevronUp className="h-7 w-5" />
+              <FaChevronUp className="h-5 w-5" />
             </button>
             <input
-              type="text"
               ref={inputRef}
+              type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
+              className="flex-grow bg-gray-100 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Type your message..."
-              className="flex-grow px-4 py-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <FaPaperPlane className="h-7 w-5" />
+              <FaPaperPlane className="h-5 w-5" />
             </button>
           </form>
         </div>
       </div>
-
 
       {showQuestionModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">

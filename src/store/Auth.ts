@@ -21,6 +21,7 @@ import { account } from "@/appwrite/clientConfig";
 interface IAuthStore {
     session: Models.Session | null;
     user: Models.User<Models.Preferences> | null;
+    role: string | null;
     hydrated: boolean;
 
     setHydrated(): void;
@@ -52,6 +53,7 @@ export const useAuthStore = create<IAuthStore>()(
             session: null,
             user: null,
             hydrated: false,
+            role: null,
 
             setHydrated() {
                 set({hydrated: true})
