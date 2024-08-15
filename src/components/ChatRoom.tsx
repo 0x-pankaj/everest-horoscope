@@ -79,8 +79,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
           console.log("message added: ", payload);
         }
       });
-
-      console.log("unsubscribe: ", unsubscribe);
     }
   
     isFetched.current = true;

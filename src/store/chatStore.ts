@@ -116,22 +116,21 @@ export const useChatStore = create<ChatState>((set, get) => ({
         conf.appwriteHoroscopeDatabaseId,
         conf.appwriteMessageCollectionId,
         [
-          Query.search('sender_id', astroId),
-          Query.search('receiver_id', astroId),
+          Query.equal('receiver_id', [astroId]),
           Query.orderDesc('$createdAt'),
-          Query.limit(100) // Adjust this limit as needed
+          Query.limit(200)
         ]
       );
       console.log("response: ", response);
   
       const uniqueUsers = new Map<string, ChatUser>();
       response.documents.forEach((doc: Models.Document) => {
-        if (doc.sender_id === astroId) {
-          uniqueUsers.set(doc.receiver_id, { userId: doc.receiver_id, name: doc.receiver_name || 'Unknown User' });
-        } else {
-          uniqueUsers.set(doc.sender_id, { userId: doc.sender_id, name: doc.sender_name || 'Unknown User' });
-        }
+        if (doc.receiver_id === astroId && !uniqueUsers.has(doc.sender_id)) {
+          uniqueUsers.set(doc.sender_id, { userId: doc.sender_id, name: doc.name || 'Unknown User' });
+        };
       });
+
+      console.log("unique user: ", uniqueUsers);
   
       set({ chattedUsers: Array.from(uniqueUsers.values()) });
     } catch (error) {

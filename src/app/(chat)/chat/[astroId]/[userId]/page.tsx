@@ -1,5 +1,5 @@
 'use client';
-
+//path /[astroId]/[userId]
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ChatRoom from '@/components/ChatRoom';

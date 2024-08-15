@@ -120,10 +120,13 @@ export default function Navbar() {
                 <section className="hidden md:flex items-center gap-8">
                 {user ? (
                     <div className="relative">
+                        <div className="flex">
+                        <p className="font-bold py-2 px-4" >{user.name}</p>
                         <FaUserCircle 
                             onClick={toggleProfileModal} 
                             className="cursor-pointer text-5xl text-neutral-400 hover:text-black/90"
-                        />
+                            />
+                            </div>
                         {isProfileModalOpen && (
                             <div ref={profileModalRef} >
                             <ProfileModal 
@@ -215,6 +218,7 @@ function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
             <section className="flex flex-col items-start gap-4 mt-8">
                 {user ? (
                     <>
+                        <div>{user.name}</div>
                         <button onClick={() => handleNavigation("/manage-profile")} className="text-neutral-400 transition-all hover:text-black/90">
                             Manage Profile
                         </button>
