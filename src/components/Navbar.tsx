@@ -196,6 +196,7 @@ interface MobileNavProps {
 }
 
 function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
+    const router = useRouter();
 
     const {user, logout} = useAuthStore();
 
@@ -219,6 +220,10 @@ function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
                 {user ? (
                     <>
                         <div>{user.name}</div>
+                        <button onClick={()=> {
+                            router.push(`/chat/${user.$id}`)
+                            closeSideMenu();
+                        }} >Get All Messages</button>
                         <button onClick={() => handleNavigation("/manage-profile")} className="text-neutral-400 transition-all hover:text-black/90">
                             Manage Profile
                         </button>
@@ -294,9 +299,15 @@ interface ProfileModalProps {
 
 function ProfileModal({ onLogout }: ProfileModalProps) {
     const router = useRouter();
-
+    const {user} = useAuthStore();
     return (
         <div className="absolute right-0 top-10 w-48 flex-col gap-1 rounded-lg bg-white py-3 shadow-md">
+            <button onClick={()=> {
+                router.push(`/chat/${user?.$id}`)
+            }} 
+            className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                Get All Message
+            </button>
             <button 
                 onClick={() => router.push('/profile')}
                 className="w-full text-left px-4 py-2 hover:bg-gray-100"
