@@ -1,12 +1,10 @@
-
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ChatRoom from '@/components/ChatRoom';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useAuthStore } from '@/store/Auth';
-
 
 export default function ChatRoomPage({
   params,
@@ -32,8 +30,8 @@ export default function ChatRoomPage({
             >
               <FaArrowLeft className="h-6 w-6" />
             </button>
-            <h1 className="text-xl font-semibold text-gray-900">Chat with Astrologer!</h1>
-            <div className="w-6"></div> {/* Placeholder for alignment */}
+            <h1 className="text-xl font-semibold text-gray-900">Chat with astrologers </h1>
+            <div className="w-6"> {user.name} </div> {/* Placeholder for alignment */}
           </div>
         </div>   
       </div>

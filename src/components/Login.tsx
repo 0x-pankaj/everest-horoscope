@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, {FormEvent, useEffect, useState} from "react";
 import { useAuthStore } from "@/store/Auth";
+import toast from "react-hot-toast";
+import { AppwriteException } from "appwrite";
 
 const Login = () => {
     const authStore = useAuthStore();
@@ -21,12 +23,18 @@ const Login = () => {
         try {
             console.log("form data: ", formData);
             const success =  await authStore.login(formData.email, formData.password);
-            if(success) {
-                alert("login successfully");
+
+            if(success.success) {
                 router.push("/");
+                toast.success("login successfully")
             }
-        }catch(error: any) {
-            setError(error.message)
+            if(success.error)
+            {
+                setError(success.error?.message)
+            }
+        }catch(err: any) {
+            setError(err.message)
+            
         }
     }
 

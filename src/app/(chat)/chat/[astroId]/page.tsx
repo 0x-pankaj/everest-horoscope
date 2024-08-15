@@ -1,32 +1,36 @@
-// // app/(chat)/chat/page.tsx
+// // app/(chat)/chat/[astroId]/page.tsx
 // "use client"
 
 // import React, { useState } from 'react';
 // import ChatSidebar from '@/components/ChatSidebar';
-// import ChatRoom from '@/components/ChatRoom';
 // import { useAuthStore } from '@/store/Auth';
 // import Navbar from '@/components/Navbar';
+// import ChatRoomForSidebar from '@/components/ChatRoomForSidebar';
+// import { useParams } from 'next/navigation';
+// import toast from 'react-hot-toast';
 
-// const ChatPage: React.FC = () => {
+// const ChatPageForSidebar: React.FC = () => {
 //   const { user } = useAuthStore();
 //   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-
+//   const {astroId} = useParams();
 //   if (!user) {
 //     return <div>Please log in to access the chat.</div>;
 //   }
+//   {user.$id} {astroId}
 
-//   const handleSelectUser = (userId: string) => {
-//     setSelectedUserId(userId);  
+ 
+//   const handleSelectUser = () => {
+//     setSelectedUserId(user.$id);
 //   };
 
 //   return (
 //     <div className="flex flex-col h-screen">
 //       <Navbar />
 //       <div className="flex flex-1 overflow-hidden">
-//         {/* <ChatSidebar onSelectUser={handleSelectUser} /> */}
+//         <ChatSidebar onSelectUser={handleSelectUser} />
 //         <div className="flex-1">
 //           {selectedUserId ? (
-//             <ChatRoom senderId={user.$id} receiverId={selectedUserId} />
+//             <ChatRoomForSidebar senderId={user.$id} receiverId={selectedUserId} />
 //           ) : (
 //             <div className="flex items-center justify-center h-full">
 //               <p>Select a chat to start messaging</p>
@@ -38,10 +42,10 @@
 //   );
 // };
 
-// export default ChatPage;
+// export default ChatPageForSidebar;
 
-export default function ChatPageForAStro() {
-  return  <div>
-    chat page for astro
+export default function ChatPageForSidebar() {
+  return <div>
+    Chatpageforsidebar
   </div>
 }

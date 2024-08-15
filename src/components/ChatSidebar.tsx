@@ -15,8 +15,10 @@
 //   const { user } = useAuthStore();
 //   const [users, setUsers] = useState<ChatUser[]>([]);
 
+//   if(!user) return
+
 //   useEffect(() => {
-//     setChattedUsers();
+//     setChattedUsers(user?.$id);
 //   }, [setChattedUsers]);
 
 //   useEffect(() => {
@@ -65,7 +67,9 @@
 // export default ChatSidebar;
 
 export default function ChatSidebar() {
-  return <div>
-    chat bar side bar 
-  </div>
+    return (
+        <div>
+            ChatSideBar
+        </div>
+    )
 }

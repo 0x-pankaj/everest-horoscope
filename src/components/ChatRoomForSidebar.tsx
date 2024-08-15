@@ -12,7 +12,7 @@ interface ChatRoomProps {
   receiverId: string;
 }
 
-const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
+const ChatRoomForSidebar: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   const { messages, loading, error, hasMore, addMessage, sendMessage, fetchMessages } = useChatStore();
   const { user} = useAuthStore();
   const [inputMessage, setInputMessage] = useState('');
@@ -220,7 +220,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   );
 };
 
-export default ChatRoom;
+export default ChatRoomForSidebar;
 
 
 /*
