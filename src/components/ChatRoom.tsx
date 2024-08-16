@@ -13,7 +13,7 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
-  const { messages, loading, error, hasMore, addMessage, sendMessage, fetchMessages } = useChatStore();
+  const { messages, loading, error, hasMore, addMessage, sendMessage, fetchMessages, resetMessages } = useChatStore();
   const { user} = useAuthStore();
   const [inputMessage, setInputMessage] = useState('');
   const [showQuestionModal, setShowQuestionModal] = useState(false);
@@ -66,6 +66,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
  
 
   useEffect(() => {
+    resetMessages();
     if (!isFetched.current) {
       fetchMoreMessages();
 
@@ -73,8 +74,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
         console.log("response from realtime: ", response);
         
         const payload = response.payload as Models.Document;
+        console.log("payload: ", payload);
+        console.log("sender: ", payload.sender_id, "receiver: ", payload.receiver_id)
 
-        if (senderId !== payload["sender_id"] && receiverId !== payload["receiver_id"] ) {
+        if ( senderId === payload.receiver_id && receiverId === payload.sender_id ) {
           addMessage(payload);
           console.log("message added: ", payload);
         }

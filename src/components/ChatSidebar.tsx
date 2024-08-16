@@ -8,8 +8,10 @@ const ChatSidebar: React.FC<{ onSelectUser: (userId: string) => void }> = ({ onS
 
   useEffect(() => {
     if (astroId) {
+      console.log("astroId: ", astroId )
       setChattedUsers(astroId as string);
     }
+    console.log("chatted users: ", chattedUsers);
   }, [astroId, setChattedUsers]);
 
   return (
@@ -20,7 +22,11 @@ const ChatSidebar: React.FC<{ onSelectUser: (userId: string) => void }> = ({ onS
           <li key={chatUser.userId}>
             <button 
               className="w-full text-left p-4 hover:bg-gray-200"
-              onClick={() => onSelectUser(chatUser.userId)}
+              onClick={() => {
+                console.log("chattedUserId: ", chatUser.userId)
+                onSelectUser(chatUser.userId)}
+              } 
+
             >
               {chatUser.name}
             </button>
