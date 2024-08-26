@@ -1,10 +1,9 @@
 import { FiHome, FiUsers, FiStar } from 'react-icons/fi'
 import { ImBlog } from "react-icons/im";
 
-// These are placeholder components. Replace with your actual components.
 import Home from "../components/Home"; 
 import UserManagement from '../components/UserManagement';
-import AstroManagement from "../components/UserManagement";
+import AstroManagement from "../components/AstroManagement";
 import BlogManagement from "../components/BlogManagement";
 
 export const sidebarItems = [

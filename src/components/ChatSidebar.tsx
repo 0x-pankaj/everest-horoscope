@@ -20,13 +20,13 @@ const ChatSidebar: React.FC<{ onSelectUser: (userId: string) => void }> = ({ onS
       <ul>
         {chattedUsers.map((chatUser) => (
           <li key={chatUser.userId}>
+            {/* {chatUser.userId} */}
             <button 
               className="w-full text-left p-4 hover:bg-gray-200"
               onClick={() => {
-                console.log("chattedUserId: ", chatUser.userId)
+                console.log("chattedUserId: ", chatUser.userId );
                 onSelectUser(chatUser.userId)}
               } 
-
             >
               {chatUser.name}
             </button>

@@ -15,7 +15,7 @@ export default function DashboardPage() {
       <div className="flex flex-col flex-1">
         <Navbar />
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6">
-          <DashboardContent activeComponent={activeComponent} />
+          <DashboardContent activeComponent={activeComponent} />  
         </main>
       </div>
     </div>

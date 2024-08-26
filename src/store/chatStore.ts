@@ -1,8 +1,7 @@
 import { create } from 'zustand';
-import { Models, Query } from 'appwrite';
+import { Models, Query , ID } from 'appwrite';
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
-import { ID } from 'node-appwrite';
 
 interface Message {
   $id: string;
@@ -10,6 +9,8 @@ interface Message {
   receiver_id: string;
   body: string;
   name: string;
+  is_temp: boolean;
+  original_body: string;
   $createdAt: string;
 }
 
@@ -25,7 +26,7 @@ interface ChatState {
   error: string | null;
   hasMore: boolean;
   addMessage: (message: Models.Document) => void;
-  sendMessage: (senderId: string, receiverId: string, body: string, name: string) => Promise<void>;
+  sendMessage: (senderId: string, receiverId: string, body: string, name: string, sourceLanguage?: string, targetLanguage?: string, is_temp: boolean, original_body?: string) => Promise<void>;
   fetchMessages: (senderId: string, receiverId: string, page: number, limit: number) => Promise<void>;
   setMessages: (messages: Message[]) => void;
   resetMessages: () => void;
@@ -40,12 +41,20 @@ export const useChatStore = create<ChatState>((set, get) => ({
   hasMore: true,
 
   addMessage: (message: Models.Document) => {
-    set((state) => ({
-      messages: [message as unknown as Message, ...state.messages].sort(
-        (a, b) => new Date(a.$createdAt).getTime() - new Date(b.$createdAt).getTime()
-      ),
-    }));
+    set((state) => {
+      const messageExists = state.messages.some(m => m.$id === message.$id);
+      if (!messageExists) {
+        return {
+          messages: [message as unknown as Message, ...state.messages].sort(
+            (a, b) => new Date(a.$createdAt).getTime() - new Date(b.$createdAt).getTime()
+          ),
+        };
+      }
+      return state; // Return the current state if the message already exists
+    });
   },
+
+  
 
   setMessages: (messages: Message[]) => {
     set({ messages });
@@ -55,7 +64,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     set({ messages: [], hasMore: true });
   },
 
-  sendMessage: async (senderId: string, receiverId: string, body: string, name: string) => {
+  sendMessage: async (senderId: string, receiverId: string, body: string, name: string, sourceLanguage?: string, targetLanguage?: string, is_temp?: boolean, translated_body?: string) => {
     try {
       set({ loading: true, error: null });
       const response = await database.createDocument(
@@ -66,15 +75,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
           sender_id: senderId,
           receiver_id: receiverId,
           body,
-          name
+          name,
+          sourceLanguage: sourceLanguage,
+          targetLanguage: targetLanguage,
+          is_temp: is_temp,
+          translated_body: translated_body
         }
       );
       console.log("Response from while sending message: ", response);
-      set((state) => ({
-        messages: [response as unknown as Message, ...state.messages].sort(
-          (a, b) => new Date(a.$createdAt).getTime() - new Date(b.$createdAt).getTime()
-        ),
-      }));
+      get().addMessage(response);
     } catch (error) {
       set({ error: 'Failed to send message' });
     } finally {
@@ -91,24 +100,33 @@ export const useChatStore = create<ChatState>((set, get) => ({
         [
           Query.equal('sender_id', [senderId, receiverId]),
           Query.equal('receiver_id', [senderId, receiverId]),
+          // Query.equal('is_temp', false),
           Query.orderDesc('$createdAt'),
           Query.limit(limit),
           Query.offset(page * limit),
         ]
       );
-      console.log("Response while fetching: ", response);
-      set((state) => ({
-        messages: [...state.messages, ...response.documents as unknown as Message[]].sort(
-          (a, b) => new Date(a.$createdAt).getTime() - new Date(b.$createdAt).getTime()
-        ),
-        hasMore: response.documents.length === limit,
-      }));
+      
+      set((state) => {
+        const newMessages = response.documents
+          .filter((doc: Models.Document) => !state.messages.some(m => m.$id === doc.$id))
+          .map((doc: Models.Document) => doc as unknown as Message);
+  
+        return {
+          messages: [...newMessages, ...state.messages].sort(
+            (a, b) => new Date(a.$createdAt).getTime() - new Date(b.$createdAt).getTime()
+          ),
+          hasMore: response.documents.length === limit,
+        };
+      });
     } catch (error) {
       set({ error: 'Failed to fetch messages' });
     } finally {
       set({ loading: false });
     }
   },
+
+
 
   setChattedUsers: async (astroId: string) => {
     try {

@@ -12,12 +12,12 @@ interface AstrologerProfileCardProps {
   photoUrl: string;
   bio: string;
   specialties: string[];
-  // specialties: string;
   rating: number;
   experience: number;
   hourlyRate: number;
   isOnline: boolean;
   onChatClick: (id: string) => void;
+  language?: string[];
 }
 
 const AstrologerProfileCard: React.FC<AstrologerProfileCardProps> = ({
@@ -30,7 +30,8 @@ const AstrologerProfileCard: React.FC<AstrologerProfileCardProps> = ({
   experience,
   hourlyRate,
   isOnline,
-  onChatClick
+  onChatClick,
+  language
 }) => {
   return (
     <div className="max-w-sm w-full rounded-xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out">
@@ -70,6 +71,20 @@ const AstrologerProfileCard: React.FC<AstrologerProfileCardProps> = ({
                 className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full"
               >
                 {specialty}
+              </span>
+            ))}
+            
+            </div>
+        </div>
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Language</h3>
+          <div className="flex flex-wrap justify-center gap-2">            
+            {language?.map((lang, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full"
+              >
+                {lang}
               </span>
             ))}
             

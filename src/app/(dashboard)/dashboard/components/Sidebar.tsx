@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { sidebarItems } from '../data/SidebarItems';
 
-interface SidebarProps {
+interface SidebarProps {  
   activeComponent: string;
   setActiveComponent: (name: string) => void;
 }

@@ -9,7 +9,10 @@ const conf = {
     appwroteAdminCollectionId: String(process.env.NEXT_PUBLIC_ADMIN_COLLECTION_ID),
     appwriteTeamMemberCollectionId: String(process.env.NEXT_PUBLIC_TEAM_MEMBER_ID),
     appwriteMessageWithTeamCollectionId: String(process.env.NEXT_PUBLIC_MESSAGE_WITH_TEAM_COLLECTION_ID),
-    appwriteBlogCollectionId: String(process.env.NEXT_PUBLIC_BLOG_COLLECTION_ID)
+    appwriteBlogCollectionId: String(process.env.NEXT_PUBLIC_BLOG_COLLECTION_ID),
+    appwriteMessageWithTranslatorCollectionId: String(process.env.NEXT_PUBLIC_MESSAGE_WITH_TRANSLATOR),
+    appwriteHoroscopeBucket: String(process.env.NEXT_PUBLIC_HOROSCOPE_BUCKET),
+    appwriteTranslatorCollectionId: String(process.env.NEXT_PUBLIC_TRANSLATOR_COLLECTION_ID)
 }
 
-export default conf;
+export default conf;  

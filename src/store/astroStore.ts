@@ -12,11 +12,11 @@ interface Astrologer {
   photoUrl: string;
   bio: string;
   specialties: string[];
-// specialties: string;
   rating: number;
   experience: number;
   hourlyRate: number;
   isOnline: boolean;
+  language: string[];
 }
 
 interface AstroState {
@@ -32,7 +32,7 @@ interface AstroState {
 export const useAstroStore = create<AstroState>()(
   persist(
     immer((set) => ({
-      hydrated: false,
+      hydrated: false,  
       astrologers: [],
       loading: false,
       error: null,

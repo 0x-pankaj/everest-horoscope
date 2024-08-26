@@ -321,6 +321,14 @@ function ProfileModal({ onLogout }: ProfileModalProps) {
                 Logout
             </button>
             <button 
+                onClick={()=> {
+                    router.push(`/translator/${user?.$id}`)
+                }}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+                translator
+            </button>
+            <button 
                 onClick={() => {
                     // Implement logout from all sessions
                     // onLogout();

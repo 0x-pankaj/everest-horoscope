@@ -84,6 +84,7 @@ const ChatPage: React.FC = () => {
               hourlyRate={astrologer.hourlyRate}
               isOnline={astrologer.isOnline}
               onChatClick={handleChatClick}
+              language={astrologer?.language}
             />
           ))}
         </div>
