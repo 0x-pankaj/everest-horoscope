@@ -29,6 +29,7 @@ interface ChatState {
   sendMessage: (senderId: string, receiverId: string, body: string, name: string, sourceLanguage?: string, targetLanguage?: string, is_temp?: boolean, original_body?: string) => Promise<void>;
   fetchMessages: (senderId: string, receiverId: string, page: number, limit: number) => Promise<void>;
   setMessages: (messages: Message[]) => void;
+  setUpdatedMessage: (message: Models.Document) => void;
   resetMessages: () => void;
   setChattedUsers: (currentUserId: string) => Promise<void>;
 }
@@ -54,11 +55,31 @@ export const useChatStore = create<ChatState>((set, get) => ({
     });
   },
 
-  
+  setUpdatedMessage: (message: Models.Document) => {
+    set((state) => {
+      console.log("update message triggered: ",  message);
+      const updatedMessage = state.messages.map((m)=> {
+      if(m.$id === message.$id) {
+        return {
+          ...m,
+          ...message,
+        } as Message
+      }
+      return m;
+      });
+      return {
+        messages: updatedMessage.sort(
+          (a,b) => new Date(a.$createdAt).getTime() - new Date(b.$createdAt).getTime()
+        )
+      };
+    });
+  },  
 
   setMessages: (messages: Message[]) => {
     set({ messages });
   },
+
+
 
   resetMessages: () => {
     set({ messages: [], hasMore: true });

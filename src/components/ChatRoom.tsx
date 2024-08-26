@@ -13,7 +13,7 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
-  const { messages, loading, error, hasMore, addMessage, sendMessage, fetchMessages, resetMessages } = useChatStore();
+  const { messages, loading, error, hasMore, addMessage, sendMessage, fetchMessages, resetMessages, setUpdatedMessage } = useChatStore();
   const { user} = useAuthStore();
   const [inputMessage, setInputMessage] = useState('');
   const [showQuestionModal, setShowQuestionModal] = useState(false);
@@ -105,10 +105,21 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
         console.log("payload: ", payload);
         console.log("sender: ", payload.sender_id, "receiver: ", payload.receiver_id)
 
-        if ( payload.is_temp === false && senderId === payload.receiver_id && receiverId === payload.sender_id  ) {
-          addMessage(payload);
-          console.log("message added: ", payload);
+        if(response.events.includes("databases.*.collections.*.documents.*.create")){
+          if ( payload.is_temp === false && senderId === payload.receiver_id && receiverId === payload.sender_id  ) {
+            addMessage(payload);
+            console.log("message added: ", payload);
+          }
         }
+
+        if(response.events.includes("databases.*.collections.*.documents.*.update")) {
+          if ( payload.is_temp === false && senderId === payload.receiver_id && receiverId === payload.sender_id  ) {
+            addMessage(payload)
+            setUpdatedMessage(payload);
+            console.log("message updated: ", payload);
+          }
+        }
+
       });
 
       console.log("unsubscribe: ", unsubscribe);
