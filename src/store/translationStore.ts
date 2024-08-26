@@ -60,6 +60,8 @@ export const useTranslationStore = create<TranslationState>()(
       fetchTranslator: async (id: string) => {
         try {
           set({laoding: true})
+          console.log("database: ", conf.appwriteHoroscopeDatabaseId)
+          console.log("collectionId: ", conf.appwriteTranslatorCollectionId)
           const response = await database.listDocuments(
             conf.appwriteHoroscopeDatabaseId,
             conf.appwriteTranslatorCollectionId,
