@@ -25,7 +25,8 @@ const TranslatorPage = () => {
   const [translatedMessages, setTranslatedMessages] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
-    if (params.id) {
+    if (params.id) {  
+      console.log("id: ", params.id)
       fetchTranslator(params.id as string);
     }
   }, [params.id, fetchTranslator]);
@@ -77,9 +78,10 @@ const TranslatorPage = () => {
   if (!translator) {
     return <div> Unauthorized!</div>;
   }
-  if(error) {
-    return <div>Error: {error}</div>
-  }
+
+  // if(error) {
+  //   return <div>Error: {error}</div>
+  // }
 
   return (
     <div>

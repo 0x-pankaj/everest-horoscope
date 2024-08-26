@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { database, client } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
-import { ID, Query, Models } from 'appwrite';
+import {  Query  } from 'appwrite';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
@@ -57,12 +57,15 @@ export const useTranslationStore = create<TranslationState>()(
 
       fetchTranslator: async (id: string) => {
         try {
-          const response = await database.getDocument(
-            conf.appwriteHoroscopeDatabaseId, 
+          const response = await database.listDocuments(
+            conf.appwriteHoroscopeDatabaseId,
             conf.appwriteTranslatorCollectionId,
-            id
+            [
+              Query.equal("user_id", id)
+            ]
           );
-          set({ translator: response as unknown as Translator });
+          console.log("Translator: ", response.documents[0]);
+          set({ translator: response.documents[0] as unknown as Translator });
         } catch (error) {
           console.log("Error fetching translator: ", error);
           set({ error: "Failed to fetch translator details" });
