@@ -26,7 +26,7 @@ interface ChatState {
   error: string | null;
   hasMore: boolean;
   addMessage: (message: Models.Document) => void;
-  sendMessage: (senderId: string, receiverId: string, body: string, name: string, sourceLanguage?: string, targetLanguage?: string, is_temp: boolean, original_body?: string) => Promise<void>;
+  sendMessage: (senderId: string, receiverId: string, body: string, name: string, sourceLanguage?: string, targetLanguage?: string, is_temp?: boolean, original_body?: string) => Promise<void>;
   fetchMessages: (senderId: string, receiverId: string, page: number, limit: number) => Promise<void>;
   setMessages: (messages: Message[]) => void;
   resetMessages: () => void;
