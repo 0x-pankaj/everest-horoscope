@@ -320,7 +320,7 @@ function ProfileModal({ onLogout }: ProfileModalProps) {
             >
                 Logout
             </button>
-            <button 
+            <button   
                 onClick={()=> {
                     console.log("user: ", user?.$id)
                     router.push(`/translator/${user?.$id}`)

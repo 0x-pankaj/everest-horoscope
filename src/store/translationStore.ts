@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { database, client } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
-import {  Query  } from 'appwrite';
+import {  Models, Query  } from 'appwrite';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
@@ -29,6 +29,7 @@ interface TranslationState {
   hydrated: boolean;
   sourceLanguage: string;
   targetLanguage: string;
+  laoding: boolean;
   error: string | null;
   translator: Translator | null;
   messages: Message[];
@@ -49,6 +50,7 @@ export const useTranslationStore = create<TranslationState>()(
       sourceLanguage: "",
       targetLanguage: "",
       error: null,
+      laoding: false,
       translator: null,
       messages: [],
       setHydrated: () => set({ hydrated: true }),
@@ -57,6 +59,7 @@ export const useTranslationStore = create<TranslationState>()(
 
       fetchTranslator: async (id: string) => {
         try {
+          set({laoding: true})
           const response = await database.listDocuments(
             conf.appwriteHoroscopeDatabaseId,
             conf.appwriteTranslatorCollectionId,
@@ -65,12 +68,16 @@ export const useTranslationStore = create<TranslationState>()(
             ]
           );
           console.log("Translator: ", response.documents[0]);
-          set({ translator: response.documents[0] as unknown as Translator });
+          if (response.documents.length === 0) {
+            throw new Error("Translator not found");
+          }
+          set({laoding: false, translator: response.documents[0] as unknown as Translator });
         } catch (error) {
-          console.log("Error fetching translator: ", error);
-          set({ error: "Failed to fetch translator details" });
+          console.error("Error fetching translator: ", error);
+          set({ laoding: false, error: error instanceof Error ? error.message : "Failed to fetch translator details" });
         }
       },
+
       fetchMessages: async (translatorLanguages: string[]) => {
         try {
           const response = await database.listDocuments(
@@ -84,7 +91,20 @@ export const useTranslationStore = create<TranslationState>()(
             ]
           );
           console.log("messages: ", response);
-          set({ messages: response.documents as unknown as Message[] });
+          
+          set((state) => {
+            const newMessages = response.documents
+              .filter((doc: Models.Document) => !state.messages.some(m => m.$id === doc.$id))
+              .map((doc: Models.Document) => doc as unknown as Message);
+      
+            return {
+              messages: [...newMessages, ...state.messages].sort(
+                (a, b) => new Date(a.$createdAt).getTime() - new Date(b.$createdAt).getTime()
+              )
+            };
+          });
+
+          // set({ messages: response.documents as unknown as Message[] });
         } catch (error) {
           console.log("Error fetching messages: ", error);
           set({ error: "Failed to fetch messages" });
