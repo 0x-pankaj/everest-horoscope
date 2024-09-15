@@ -115,6 +115,11 @@ export default function Navbar() {
                             <DesktopNavItem key={index} item={item} />
                         ))}
                     </div>
+                    <div>
+                        <button>
+                        Language
+                        </button>
+                    </div>
                 </section>
 
                 <section className="hidden md:flex items-center gap-8">

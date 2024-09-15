@@ -3,6 +3,7 @@ import { FaUser, FaTrash, FaPlus, FaEdit, FaLock, FaUnlock } from 'react-icons/f
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import { ID, Query } from 'appwrite';
+import { useAuthStore } from '@/store/Auth';
 
 interface User {
   $id: string;
@@ -28,6 +29,10 @@ export default function UserManagement() {
     const [currentUser, setCurrentUser] = useState<Omit<User, '$id' | 'createdAt' | 'lastLogin'>>(initialUserState);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const {user} = useAuthStore();
+
+    console.log("user: ", user)
+    console.log("user pref: ", user?.prefs)
 
     useEffect(() => {
         fetchUsers();
