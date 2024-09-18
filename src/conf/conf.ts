@@ -12,7 +12,10 @@ const conf = {
     appwriteBlogCollectionId: String(process.env.NEXT_PUBLIC_BLOG_COLLECTION_ID),
     appwriteMessageWithTranslatorCollectionId: String(process.env.NEXT_PUBLIC_MESSAGE_WITH_TRANSLATOR),
     appwriteHoroscopeBucket: String(process.env.NEXT_PUBLIC_HOROSCOPE_BUCKET),
-    appwriteTranslatorCollectionId: String(process.env.NEXT_PUBLIC_TRANSLATOR_COLLECTION_ID)
+    appwriteTranslatorCollectionId: String(process.env.NEXT_PUBLIC_TRANSLATOR_COLLECTION_ID),
+    appwriteZodiacCollectionId: String(process.env.NEXT_PUBLIC_ZODIAC_COLLECTION_ID),
+    appwriteUserCollectionId: String(process.env.NEXT_PUBLIC_USER_COLLECTION_ID),
+    weatherApiKey: String(process.env.NEXT_PUBLIC_WEATHER_API_KEY)
 }
 
 export default conf;  

@@ -24,9 +24,9 @@ const Testimonials: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-12 bg-blue-50">
+    <section className="py-12 bg-yellow-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">What Our Clients Say</h2>
+        <h2 className="text-3xl font-bold text-center mb-8 text-yellow-800">What Our Clients Say</h2>
         <div className="relative h-64">
           {testimonials.map((testimonial, index) => (
             <div
@@ -35,8 +35,8 @@ const Testimonials: React.FC = () => {
                 index === currentIndex ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <blockquote className="text-xl italic text-center mb-4">"{testimonial.text}"</blockquote>
-              <div className="block text-center text-gray-600">- {testimonial.author} </div>
+              <blockquote className="text-xl italic text-center mb-4 text-yellow-700">"{testimonial.text}"</blockquote>
+              <div className="block text-center text-yellow-600">- {testimonial.author} </div>
             </div>
           ))}
         </div>
@@ -45,7 +45,7 @@ const Testimonials: React.FC = () => {
             <button
               key={index}
               className={`w-3 h-3 rounded-full mx-1 ${
-                index === currentIndex ? 'bg-blue-500' : 'bg-gray-300'
+                index === currentIndex ? 'bg-yellow-500' : 'bg-yellow-300'
               }`}
               onClick={() => setCurrentIndex(index)}
             />

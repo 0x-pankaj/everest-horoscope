@@ -11,6 +11,9 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/store/Auth"
 import { FaUserCircle } from "react-icons/fa"
+import { database } from "@/appwrite/clientConfig"
+import conf from "@/conf/conf"
+import { Query } from "appwrite"
 
 interface NavChild {
     label: string;
@@ -22,7 +25,6 @@ interface NavItem {
     link: string;
     children?: NavChild[];
 }
-
 const navItems: NavItem[] = [
     {
         label: "HOROSCOPES",
@@ -51,47 +53,44 @@ const navItems: NavItem[] = [
     { label: 'ABOUT', link: "/about" }
 ]
 
+const languages = ["english", "hindi", "spanish", "french", "german"]
+
 export default function Navbar() {
     const [isSideMenuOpen, setSideMenu] = useState(false);
     const [isProfileModalOpen, setProfileModalOpen] = useState(false);
+    const [isLanguageModalOpen, setLanguageModalOpen] = useState(false);
+    const [preferredLanguages, setPreferredLanguages] = useState<string[]>([]);
     const router = useRouter()
     const sidebarRef = useRef<HTMLDivElement>(null);
     const profileModalRef = useRef<HTMLDivElement>(null);
+    const languageModalRef = useRef<HTMLDivElement>(null);
     const {user, logout} = useAuthStore();
-
-    const toggleSideMenu = () => setSideMenu(!isSideMenuOpen)
-
-    /*
+/*
     useEffect(() => {
-        const handleOutsideClick = (event: MouseEvent) => {
-            if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-                setSideMenu(false)
-            }
+        if (user) {
+            fetchUserLanguages();
         }
-
-        document.addEventListener("mousedown", handleOutsideClick)
-        return () => document.removeEventListener("mousedown", handleOutsideClick)
-    }, []);
-    */
-
-    useEffect(()=> {
-        const handleOutsideClick = (event: MouseEvent) => {
-            if (profileModalRef.current && !profileModalRef.current.contains(event.target as Node)) {
-                setProfileModalOpen(false);
-            }
-        };
-
-        if (isProfileModalOpen) {
-            document.addEventListener("mousedown", handleOutsideClick);
+    }, [user]);
+        if (!user ) return;
+    const fetchUserLanguages = async () => {
+        try {
+            const response = await database.listDocuments(
+                conf.appwriteHoroscopeDatabaseId,
+                conf.appwriteUserCollectionId,
+                [
+                    Query.equal("email", [user?.email])
+                ]
+                
+            );
+            setPreferredLanguages(response.languages || []);
+        } catch (error) {
+            console.error("Error fetching user languages:", error);
         }
-
-        return () => {
-            document.removeEventListener("mousedown", handleOutsideClick);
-        }
-
-    }, [isProfileModalOpen]);
-
+    };
+*/
+    const toggleSideMenu = () => setSideMenu(!isSideMenuOpen)
     const toggleProfileModal = () => setProfileModalOpen(!isProfileModalOpen);
+    // const toggleLanguageModal = () => setLanguageModalOpen(!isLanguageModalOpen);
 
     const handleLogout = async() => {
         await logout();
@@ -103,9 +102,28 @@ export default function Navbar() {
         setSideMenu(false)
         router.push(path)
     }
+/*
+    const handleLanguageToggle = async (language: string) => {
+        const updatedLanguages = preferredLanguages.includes(language)
+            ? preferredLanguages.filter(lang => lang !== language)
+            : [...preferredLanguages, language];
+        
+        setPreferredLanguages(updatedLanguages);
 
+        try {
+            await database.updateDocument(
+                conf.appwriteHoroscopeDatabaseId,
+                conf.appwriteUserCollectionId,
+                user?.$id as string,
+                { languages: updatedLanguages }
+            );
+        } catch (error) {
+            console.error("Error updating user languages:", error);
+        }
+    };
+*/
     return (
-        <nav className="sticky top-0 z-50 bg-blue-50 shadow-md">
+        <nav className="sticky top-0 z-50 bg-yellow-100 shadow-md">
             <div className="mx-auto flex w-full max-w-7xl justify-between px-4 py-2 text-sm">
                 <section className="flex items-center gap-10">
                     <Image onClick={() => handleNavigation("/")} src={logo} alt="logo" width={80} height={80} priority={true} className="cursor-pointer" />
@@ -115,50 +133,60 @@ export default function Navbar() {
                             <DesktopNavItem key={index} item={item} />
                         ))}
                     </div>
+{/*                     
                     <div>
-                        <button>
-                        Language
+                        <button onClick={toggleLanguageModal} className="text-yellow-800 hover:text-yellow-900">
+                            Language: {preferredLanguages[0] || "Select"}
                         </button>
-                    </div>
+                        {isLanguageModalOpen && (
+                            <LanguageModal 
+                                languages={languages}
+                                preferredLanguages={preferredLanguages}
+                                onToggle={handleLanguageToggle}
+                                onClose={() => setLanguageModalOpen(false)}
+                            />
+                        )}
+                    </div> */}
+                    
                 </section>
 
                 <section className="hidden md:flex items-center gap-8">
                 {user ? (
                     <div className="relative">
-                        <div className="flex">
-                        <p className="font-bold py-2 px-4" >{user.name}</p>
-                        <FaUserCircle 
-                            onClick={toggleProfileModal} 
-                            className="cursor-pointer text-5xl text-neutral-400 hover:text-black/90"
+                        <div className="flex items-center">
+                            <p className="font-bold py-2 px-4 text-yellow-800">{user.name}</p>
+                            <FaUserCircle 
+                                onClick={toggleProfileModal} 
+                                className="cursor-pointer text-5xl text-yellow-600 hover:text-yellow-700"
                             />
-                            </div>
+                        </div>
                         {isProfileModalOpen && (
-                            <div ref={profileModalRef} >
-                            <ProfileModal 
-                                onClose={() => setProfileModalOpen(false)}
-                                onLogout={handleLogout}
+                            <div ref={profileModalRef}>
+                                <ProfileModal 
+                                    onClose={() => setProfileModalOpen(false)}
+                                    onLogout={handleLogout}
                                 />
                             </div>
                         )}
                     </div>
                 ) : (
                     <>
-                        <button onClick={() => handleNavigation("/login")} className="h-fit text-neutral-400 transition-all hover:text-black/90">
+                        <button onClick={() => handleNavigation("/login")} className="h-fit text-yellow-700 transition-all hover:text-yellow-800">
                             Login
                         </button>
-                        <button onClick={() => handleNavigation("/signup")} className="h-fit rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
+                        <button onClick={() => handleNavigation("/signup")} className="h-fit rounded-xl border-2 border-yellow-600 px-4 py-2 text-yellow-700 transition-all hover:border-yellow-700 hover:text-yellow-800">
                             Register
                         </button>
                     </>
                 )}
             </section>
 
-                <FiMenu onClick={toggleSideMenu} className="cursor-pointer text-4xl my-7 mx-3 md:hidden" />
+                <FiMenu onClick={toggleSideMenu} className="cursor-pointer text-4xl my-7 mx-3 md:hidden text-yellow-800" />
             </div>
 
             {isSideMenuOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
-                    <div ref={sidebarRef} className="fixed right-0 top-0 h-full w-64 bg-slate-100 shadow-lg overflow-y-auto">
+                    <div ref={sidebarRef} className="fixed right-0 top-0 h-full w-64 bg-yellow-50 shadow-lg overflow-y-auto">
                         <MobileNav closeSideMenu={() => setSideMenu(false)} handleNavigation={handleNavigation} />
                     </div>
                 </div>
@@ -306,44 +334,74 @@ function ProfileModal({ onLogout }: ProfileModalProps) {
     const router = useRouter();
     const {user} = useAuthStore();
     return (
-        <div className="absolute right-0 top-10 w-48 flex-col gap-1 rounded-lg bg-white py-3 shadow-md">
+        <div className="absolute right-0 top-10 w-48 flex-col gap-1 rounded-lg bg-yellow-50 py-3 shadow-md">
             <button onClick={()=> {
                 router.push(`/chat/${user?.$id}`)
             }} 
-            className="w-full text-left px-4 py-2 hover:bg-gray-100">
-                Get All Message
+            className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
+                Get All Messages
             </button>
             <button 
                 onClick={() => router.push('/profile')}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
             >
                 Manage Profile
             </button>
             <button 
                 onClick={onLogout}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
             >
                 Logout
             </button>
             <button   
                 onClick={()=> {
-                    console.log("user: ", user?.$id)
                     router.push(`/translator/${user?.$id}`)
                 }}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
             >
-                translator
+                Translator
             </button>
             <button 
                 onClick={() => {
                     // Implement logout from all sessions
-                    // onLogout();
                     console.log("logout from all devices");
                 }}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
             >
                 Logout from all sessions
             </button>
         </div>
     );
 }
+/*
+interface LanguageModalProps {
+    languages: string[];
+    preferredLanguages: string[];
+    onToggle: (language: string) => void;
+    onClose: () => void;
+}
+
+function LanguageModal({ languages, preferredLanguages, onToggle, onClose }: LanguageModalProps) {
+    return (
+        <div className="absolute left-0 top-10 w-48 flex-col gap-1 rounded-lg bg-yellow-50 py-3 shadow-md">
+            {languages.map(language => (
+                <button
+                    key={language}
+                    onClick={() => onToggle(language)}
+                    className={`w-full text-left px-4 py-2 hover:bg-yellow-100 ${
+                        preferredLanguages.includes(language) ? 'text-yellow-800 font-bold' : 'text-yellow-700'
+                    }`}
+                >
+                    {language}
+                </button>
+            ))}
+            <button
+                onClick={onClose}
+                className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800 font-bold"
+            >
+                Close
+            </button>
+        </div>
+    );
+}
+    */
