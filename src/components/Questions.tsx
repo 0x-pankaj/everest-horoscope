@@ -1,6 +1,9 @@
 'use client'
 import React, { useState } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import { useChatStore } from '@/store/chatStore';
+
 
 const questionsData = {
   'Personality & Life': [
@@ -11,7 +14,7 @@ const questionsData = {
     "Is there potential for unexpected recognition or honor?",
     "Are there any major changes on the horizon in my life?"
   ],
-  'Luck & Fortune': [
+  'Luck & Fortune': [  
     "Does luck seem to be on my side?",
     "When might I encounter the best opportunities for financial success?",
     "What actions can I take to improve my destiny?",
@@ -36,6 +39,13 @@ const questionsData = {
 
 const QuestionsComponent: React.FC = () => {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+  const router = useRouter();
+  const addQuestion = useChatStore((state) => state.addQuestion);
+
+  const handleQuestionClick = (question: string) => {
+    addQuestion(question);
+    router.push('/chat');
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -52,7 +62,13 @@ const QuestionsComponent: React.FC = () => {
           {openCategory === category && (
             <ul className="mt-2 pl-5 list-disc">
               {questions.map((question, index) => (
-                <li key={index} className="mb-2">{question}</li>
+                <li 
+                  key={index} 
+                  className="mb-2 cursor-pointer hover:text-blue-600"
+                  onClick={() => handleQuestionClick(question)}
+                >
+                  {question}
+                </li>
               ))}
             </ul>
           )}

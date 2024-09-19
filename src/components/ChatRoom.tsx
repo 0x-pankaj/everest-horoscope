@@ -13,7 +13,7 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
-  const { messages, loading, error, hasMore, addMessage, sendMessage, fetchMessages, resetMessages, setUpdatedMessage } = useChatStore();
+  const { messages, loading , hasMore, addMessage, sendMessage, fetchMessages, resetMessages, setUpdatedMessage, question } = useChatStore();
   const { user} = useAuthStore();
   const [inputMessage, setInputMessage] = useState('');
   const [showQuestionModal, setShowQuestionModal] = useState(false);
@@ -95,6 +95,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
 
   useEffect(() => {
     resetMessages();
+    
     if (!isFetched.current) {
       fetchMoreMessages();
 
@@ -137,6 +138,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+  if (question) {
+    setInputMessage(question);
+  }
+}, [question]);
 
   const handleScroll = () => {
     if (chatContainerRef.current) {

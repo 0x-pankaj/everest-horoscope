@@ -18,6 +18,9 @@ interface ChatUser {
   userId: string;
   name: string;
 }
+interface Question {
+  question: null
+}
 
 interface ChatState {
   messages: Message[];
@@ -25,6 +28,8 @@ interface ChatState {
   loading: boolean;
   error: string | null;
   hasMore: boolean;
+  question: string | null
+  addQuestion: (question: string) => void;
   addMessage: (message: Models.Document) => void;
   sendMessage: (senderId: string, receiverId: string, body: string, name: string, sourceLanguage?: string, targetLanguage?: string, is_temp?: boolean, original_body?: string) => Promise<void>;
   fetchMessages: (senderId: string, receiverId: string, page: number, limit: number) => Promise<void>;
@@ -40,7 +45,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
   loading: false,
   error: null,
   hasMore: true,
+  question: null,
 
+  addQuestion: (question: string) => {
+    set({question: question})
+  },
   addMessage: (message: Models.Document) => {
     set((state) => {
       const messageExists = state.messages.some(m => m.$id === message.$id);
