@@ -8,6 +8,7 @@ import WeatherComponent from '@/components/Weather';
 import HowItWorks from '@/components/HowItWork';
 import OurServices from '@/components/OurService';
 import QuestionsComponent from '@/components/Questions';
+import PanchangHome from '@/components/TodaysPanchang';
 
 
 export default function Home() {
@@ -17,8 +18,10 @@ export default function Home() {
         <HomeCarousel />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <WeatherComponent />
-          <ZodiacHoroscope />
+          <PanchangHome />
         </div>
+          <ZodiacHoroscope />
+
         <OurServices />
         <HowItWorks />
         <QuestionsComponent />
