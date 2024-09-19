@@ -1,5 +1,5 @@
 import React from 'react';
-import HomeCarousel from '@/components/HomeCarousel';
+// import HomeCarousel from '@/components/HomeCarousel';
 import InterActionCard from '@/components/InterActionCard';
 import BlogPreview from '@/components/BlogPreview';
 import Testimonials from '@/components/Testimonials';
@@ -9,13 +9,15 @@ import HowItWorks from '@/components/HowItWork';
 import OurServices from '@/components/OurService';
 import QuestionsComponent from '@/components/Questions';
 import PanchangHome from '@/components/TodaysPanchang';
+import ResponsiveCarousel from '@/components/ResponsiveCarousel';
 
 
 export default function Home() {
   return (
     <div className='min-h-screen flex flex-col bg-yellow-50'>
       <main className="container mx-auto px-2 py-8 space-y-8">
-        <HomeCarousel />
+        {/* <HomeCarousel /> */}
+        <ResponsiveCarousel />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <WeatherComponent />
           <PanchangHome />
