@@ -87,10 +87,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   const languages = [
     "English", "Spanish", "French", "German", "Italian"
   ];
-
-  // useEffect(()=> {
-  //   resetMessages();
-  // },[])
  
 
   useEffect(() => {

@@ -4,16 +4,16 @@ import { FaStroopwafel } from "react-icons/fa";
 import { TbZodiacVirgo } from "react-icons/tb";
 
 import Home from "../components/Home"; 
-import UserManagement from '../components/UserManagement';
 import AstroManagement from "../components/AstroManagement";
 import BlogManagement from "../components/BlogManagement";
 import AdminPanchangForm from '../components/AdminPanchangForm';
 import SubmitHoroscope from '../components/Zodiac';
+import UserManagementPage from '../components/UserManagementPage';
 
 
 export const sidebarItems = [
   { name: 'Home', icon: FiHome, component: Home },
-  { name: 'User Management', icon: FiUsers, component: UserManagement },
+  { name: 'User Management', icon: FiUsers, component: UserManagementPage },
   { name: 'Astro Management', icon: FiStar, component: AstroManagement },
   { name: 'Blog Managemet', icon: ImBlog, component: BlogManagement },
   {name:  "Panchang Form", icon: FaStroopwafel ,component: AdminPanchangForm},

@@ -2,7 +2,7 @@
 const conf = {
     appwriteUrl: String(process.env.NEXT_PUBLIC_APPWRITE_URL),
     appwriteProjectId: String(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID),
-    appwriteApiKey: String(process.env.EVEREST_HOROSCOPE),
+    appwriteApiKey: String(process.env.NEXT_PUBLIC_APPWRITE_API_KEY),
     appwriteHoroscopeDatabaseId: String(process.env.NEXT_PUBLIC_HOROSCOPE_DATABASE_ID),
     appwriteAstroCollectionId: String(process.env.NEXT_PUBLIC_ASTRO_COLLECTION_ID),
     appwriteMessageCollectionId: String(process.env.NEXT_PUBLIC_MESSAGE_COLLECTION_ID),
@@ -17,7 +17,7 @@ const conf = {
     appwriteUserCollectionId: String(process.env.NEXT_PUBLIC_USER_COLLECTION_ID),
     weatherApiKey: String(process.env.NEXT_PUBLIC_WEATHER_API_KEY),
 
-    appwritePanchangDetails: String(process.env.NEXT_PUBLIC_PANCHANG_DETAILS)
+    appwritePanchangDetails: String(process.env.NEXT_PUBLIC_PANCHANG_DETAILS)  
 }
 
 export default conf;  

@@ -6,12 +6,13 @@ import { ID, Query } from 'appwrite';
 
 export async function GET(request: NextRequest) {
   try {
+    const date = new Date().toISOString().split('T')[0];
     const response = await database.listDocuments(
-      conf.appwriteHoroscopeDatabaseId,
+      conf.appwriteHoroscopeDatabaseId, 
       conf.appwritePanchangDetails,
-      [Query.orderDesc('$createdAt'), Query.limit(1)]
+      [ Query.equal("date", [date])]
     );
-
+    console.log("response panchgnag: ", response)
     if (response.documents.length > 0) {
       const panchang = response.documents[0];
       // Convert Appwrite DateTime to ISO string for easier handling on the client side
@@ -34,9 +35,7 @@ export async function POST(request: NextRequest) {
     if (!date || Object.keys(otherData).length === 0) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
-
-    // Convert the date string to Appwrite DateTime format
-    const appwriteDate = new Date(date).toISOString();
+    
 
     const newPanchang = await database.createDocument(
       conf.appwriteHoroscopeDatabaseId,
@@ -44,7 +43,7 @@ export async function POST(request: NextRequest) {
       ID.unique(),
       {
         ...otherData,
-        date: appwriteDate
+        date
       }
     );
 

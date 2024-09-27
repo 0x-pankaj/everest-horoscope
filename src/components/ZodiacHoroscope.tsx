@@ -63,7 +63,7 @@ const ZodiacHoroscope: React.FC = () => {
     } else if (dateString === 'tomorrow') {
       date.setDate(date.getDate() + 1);
     }
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split('T')[0];  
   };
 
   return (

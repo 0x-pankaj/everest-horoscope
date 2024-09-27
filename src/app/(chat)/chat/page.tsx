@@ -41,7 +41,7 @@ const ChatPage: React.FC = () => {
       )
   );
 
-  if (loading && !hasFetched) return <div>Loading...</div>;
+  if (loading && !hasFetched) return <div >Loading...</div>;
   if (error) {
     console.error("Error:", error);
     return (
@@ -78,7 +78,7 @@ const ChatPage: React.FC = () => {
               name={astrologer.name}
               photoUrl={astrologer.photoUrl}
               bio={astrologer.bio}
-              specialties={astrologer.specialties}
+              specialties={astrologer?.specialties}
               rating={astrologer.rating}
               experience={astrologer.experience}
               hourlyRate={astrologer.hourlyRate}

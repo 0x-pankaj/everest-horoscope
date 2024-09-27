@@ -65,7 +65,7 @@ const AstrologerProfileCard: React.FC<AstrologerProfileCardProps> = ({
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">Specialties</h3>
           <div className="flex flex-wrap justify-center gap-2">            
-            {specialties.map((specialty, index) => (
+            {specialties?.map((specialty, index) => (
               <span
                 key={index}
                 className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full"
