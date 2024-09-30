@@ -1,246 +1,276 @@
+"use client"
 
-// import React, { useState, useEffect } from 'react';
-// import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
-// // import { database, storage } from '@/appwrite/clientConfig';
-// import { database } from '@/appwrite/clientConfig';
-// import conf from '@/conf/conf';
-// import { ID, Query } from 'appwrite';
+import React, { useEffect, useState, useRef } from 'react';
+import { ID, Query } from 'appwrite';
+import { database } from '@/appwrite/clientConfig';
+import conf from '@/conf/conf';
+import { Editor } from "@tinymce/tinymce-react";
 
-// interface Blog {
-//   $id: string;
-//   title: string;
-//   excerpt: string;
-//   slug: string;
-//   imageUrl: string;
-// }
-
-// const initialBlogState: Omit<Blog, '$id'> = {
-//   title: '',
-//   excerpt: '',
-//   slug: '',
-//   imageUrl: '',
-// };
-
-// export default function BlogManagement() {
-//     const [blogs, setBlogs] = useState<Blog[]>([]);
-//     const [currentBlog, setCurrentBlog] = useState<Omit<Blog, '$id'>>(initialBlogState);
-//     const [isModalOpen, setIsModalOpen] = useState(false);
-//     const [isEditing, setIsEditing] = useState(false);
-//     const [imageFile, setImageFile] = useState<File | null>(null);
-
-//     useEffect(() => {
-//         fetchBlogs();
-//     }, []);
-
-//     const fetchBlogs = async () => {
-//         try {
-//             const response = await database.listDocuments(
-//                 conf.appwriteHoroscopeDatabaseId,
-//                 conf.appwriteBlogCollectionId,
-//                 [Query.orderDesc('$createdAt')]
-//             );
-//             setBlogs(response.documents as unknown as Blog[]);
-//         } catch (error) {
-//             console.error('Error fetching blogs:', error);
-//         }
-//     };
-
-//     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-//         const { name, value } = e.target;
-//         setCurrentBlog(prev => ({ ...prev, [name]: value }));
-//     };
-
-//     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//         if (e.target.files && e.target.files[0]) {
-//             setImageFile(e.target.files[0]);
-//         }
-//     };
-
-//     const uploadImage = async (): Promise<string> => {
-//         if (!imageFile) return '';
-
-//         try {
-//             const response = await storage.createFile(
-//                 conf.appwriteBlogBucketId,
-//                 ID.unique(),
-//                 imageFile
-//             );
-//             const fileUrl = storage.getFileView(conf.appwriteBlogBucketId, response.$id);
-//             return fileUrl.href;
-//         } catch (error) {
-//             console.error('Error uploading image:', error);
-//             return '';
-//         }
-//     };
-
-//     const handleSubmit = async (e: React.FormEvent) => {
-//         e.preventDefault();
-//         try {
-//             let imageUrl = currentBlog.imageUrl;
-//             if (imageFile) {
-//                 imageUrl = await uploadImage();
-//             }
-
-//             const blogData = { ...currentBlog, imageUrl };
-
-//             if (isEditing) {
-//                 await database.updateDocument(
-//                     conf.appwriteBlogDatabaseId,
-//                     conf.appwriteBlogCollectionId,
-//                     currentBlog.slug,
-//                     blogData
-//                 );
-//             } else {
-//                 await database.createDocument(
-//                     conf.appwriteBlogDatabaseId,
-//                     conf.appwriteBlogCollectionId,
-//                     ID.unique(),
-//                     blogData
-//                 );
-//             }
-//             setIsModalOpen(false);
-//             setCurrentBlog(initialBlogState);
-//             setIsEditing(false);
-//             setImageFile(null);
-//             fetchBlogs();
-//         } catch (error) {
-//             console.error('Error saving blog:', error);
-//         }
-//     };
-
-//     const deleteBlog = async (id: string) => {
-//         try {
-//             await database.deleteDocument(
-//                 conf.appwriteBlogDatabaseId,
-//                 conf.appwriteBlogCollectionId,
-//                 id
-//             );
-//             fetchBlogs();
-//         } catch (error) {
-//             console.error('Error deleting blog:', error);
-//         }
-//     };
-
-//     const editBlog = (blog: Blog) => {
-//         setCurrentBlog(blog);
-//         setIsEditing(true);
-//         setIsModalOpen(true);
-//     };
-
-//     return (
-//         <div className="container mx-auto px-4 py-8">
-//             <h1 className="text-3xl font-bold mb-8 text-center">Blog Management</h1>
-            
-//             <div className="mb-4 text-right">
-//                 <button
-//                     onClick={() => {
-//                         setCurrentBlog(initialBlogState);
-//                         setIsEditing(false);
-//                         setIsModalOpen(true);
-//                     }}
-//                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
-//                 >
-//                     <FaPlus className="mr-2" />
-//                     Add New Blog
-//                 </button>
-//             </div>
-
-//             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-//                 {blogs.map((blog) => (
-//                     <div key={blog.$id} className="bg-white shadow-lg rounded-lg overflow-hidden">
-//                         <img src={blog.imageUrl} alt={blog.title} className="w-full h-48 object-cover" />
-//                         <div className="p-6">
-//                             <h2 className="text-xl font-semibold mb-2">{blog.title}</h2>
-//                             <p className="text-gray-600 mb-4">{blog.excerpt}</p>
-//                             <p className="text-gray-500 mb-4">Slug: {blog.slug}</p>
-//                             <div className="flex justify-between">
-//                                 <button
-//                                     onClick={() => editBlog(blog)}
-//                                     className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
-//                                 >
-//                                     <FaEdit className="mr-2" />
-//                                     Edit
-//                                 </button>
-//                                 <button
-//                                     onClick={() => deleteBlog(blog.$id)}
-//                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
-//                                 >
-//                                     <FaTrash className="mr-2" />
-//                                     Delete
-//                                 </button>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 ))}
-//             </div>
-
-//             {isModalOpen && (
-//                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-//                     <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-//                         <h3 className="text-lg font-semibold mb-4">{isEditing ? 'Edit Blog' : 'Add New Blog'}</h3>
-//                         <form onSubmit={handleSubmit}>
-//                             <input
-//                                 type="text"
-//                                 name="title"
-//                                 placeholder="Title"
-//                                 value={currentBlog.title}
-//                                 onChange={handleInputChange}
-//                                 className="w-full p-2 mb-4 border rounded"
-//                                 required
-//                             />
-//                             <textarea
-//                                 name="excerpt"
-//                                 placeholder="Excerpt"
-//                                 value={currentBlog.excerpt}
-//                                 onChange={handleInputChange}
-//                                 className="w-full p-2 mb-4 border rounded"
-//                                 required
-//                             />
-//                             <input
-//                                 type="text"
-//                                 name="slug"
-//                                 placeholder="Slug"
-//                                 value={currentBlog.slug}
-//                                 onChange={handleInputChange}
-//                                 className="w-full p-2 mb-4 border rounded"
-//                                 required
-//                             />
-//                             <input
-//                                 type="file"
-//                                 accept="image/*"
-//                                 onChange={handleImageChange}
-//                                 className="w-full p-2 mb-4 border rounded"
-//                             />
-//                             {currentBlog.imageUrl && (
-//                                 <img src={currentBlog.imageUrl} alt="Current" className="w-full h-32 object-cover mb-4" />
-//                             )}
-//                             <div className="flex justify-end">
-//                                 <button
-//                                     type="button"
-//                                     onClick={() => setIsModalOpen(false)}
-//                                     className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded mr-2"
-//                                 >
-//                                     Cancel
-//                                 </button>
-//                                 <button
-//                                     type="submit"
-//                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-//                                 >
-//                                     {isEditing ? 'Update' : 'Add'} Blog
-//                                 </button>
-//                             </div>
-//                         </form>
-//                     </div>
-//                 </div>
-//             )}
-//         </div>
-//     );
-// }
-
-export default function BlogManagement() {
-    return (
-        <div>
-            Blog BlogManagement
-        </div>
-    )
+interface BlogPost {
+  $id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  imageUrl: string;
+  slug: string;
 }
+
+const BlogAdmin: React.FC = () => {
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [newPost, setNewPost] = useState<Partial<BlogPost>>({
+    title: '',
+    excerpt: '',
+    content: '',
+    imageUrl: '',
+    slug: '',
+  });
+
+  const editorRef = useRef<any>(null);
+
+  useEffect(() => {
+    fetchBlogPosts();
+  }, [currentPage]);
+
+  const fetchBlogPosts = async () => {
+    try {
+      const response = await database.listDocuments(
+        conf.appwriteHoroscopeDatabaseId,
+        conf.appwriteBlogCollectionId,
+        [
+          Query.orderDesc('$createdAt'),
+          Query.limit(10),
+          Query.offset((currentPage - 1) * 10)
+        ]
+      );
+      setBlogPosts(response.documents as unknown as BlogPost[]);
+      setTotalPages(Math.ceil(response.total / 10));
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
+    }
+  };
+
+  const handleCreate = async () => {
+    try {
+      const content = editorRef.current?.getContent();
+      await database.createDocument(
+        conf.appwriteHoroscopeDatabaseId,
+        conf.appwriteBlogCollectionId,
+        ID.unique(),
+        { ...newPost, content }
+      );
+      setNewPost({ title: '', excerpt: '', content: '', imageUrl: '', slug: '' });
+      fetchBlogPosts();
+    } catch (error) {
+      console.error('Error creating blog post:', error);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!editingPost) return;
+    try {
+      const content = editorRef.current?.getContent();
+      await database.updateDocument(
+        conf.appwriteHoroscopeDatabaseId,
+        conf.appwriteBlogCollectionId,
+        editingPost.$id,
+        { ...editingPost, content }
+      );
+      setEditingPost(null);
+      fetchBlogPosts();
+    } catch (error) {
+      console.error('Error updating blog post:', error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await database.deleteDocument(
+        conf.appwriteHoroscopeDatabaseId,
+        conf.appwriteBlogCollectionId,
+        id
+      );
+      fetchBlogPosts();
+    } catch (error) {
+      console.error('Error deleting blog post:', error);
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Blog Admin</h1>
+      
+      {/* Create new post form */}
+      <div className="mb-8 p-4 border rounded">
+        <h2 className="text-xl font-semibold mb-2">Create New Post</h2>
+        <input
+          type="text"
+          placeholder="Title"
+          value={newPost.title}
+          onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        <input
+          type="text"
+          placeholder="Slug"
+          value={newPost.slug}
+          onChange={(e) => setNewPost({ ...newPost, slug: e.target.value })}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        <input
+          type="text"
+          placeholder="Image URL"
+          value={newPost.imageUrl}
+          onChange={(e) => setNewPost({ ...newPost, imageUrl: e.target.value })}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        <textarea
+          placeholder="Excerpt"
+          value={newPost.excerpt}
+          onChange={(e) => setNewPost({ ...newPost, excerpt: e.target.value })}
+          className="w-full p-2 mb-2 border rounded"
+          rows={3}
+        />
+        <Editor
+          apiKey= {conf.tinymceApiKey}
+          onInit={(evt, editor) => editorRef.current = editor}
+          initialValue="<p>Write your blog post content here.</p>"
+          init={{
+            height: 500,
+            menubar: false,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+            'bold italic backcolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+          }}
+        />
+        <button
+          onClick={handleCreate}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mt-4"
+        >
+          Create Post
+        </button>
+      </div>
+
+      {/* List of existing posts */}
+      <div>
+        <h2 className="text-xl font-semibold mb-2">Existing Posts</h2>
+        {blogPosts.map((post) => (
+          <div key={post.$id} className="mb-4 p-4 border rounded">
+            <h3 className="font-bold">{post.title}</h3>
+            <p className="text-sm text-gray-500 mb-2">Slug: {post.slug}</p>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setEditingPost(post)}
+                className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(post.$id)}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-4 flex justify-center">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`mx-1 px-4 py-2 rounded ${
+              currentPage === page
+                ? 'bg-blue-500 text-white'
+                : 'bg-white text-blue-500 hover:bg-blue-100'
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
+
+      {/* Edit post modal */}
+      {editingPost && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="bg-white rounded-lg p-8 max-w-2xl w-full my-8">
+      <h2 className="text-2xl font-bold mb-4">Edit Post</h2>
+      <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+        <input
+          type="text"
+          value={editingPost.title}
+          onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        <input
+          type="text"
+          value={editingPost.slug}
+          onChange={(e) => setEditingPost({ ...editingPost, slug: e.target.value })}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        <input
+          type="text"
+          value={editingPost.imageUrl}
+          onChange={(e) => setEditingPost({ ...editingPost, imageUrl: e.target.value })}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        <textarea
+          value={editingPost.excerpt}
+          onChange={(e) => setEditingPost({ ...editingPost, excerpt: e.target.value })}
+          className="w-full p-2 mb-2 border rounded"
+          rows={3}
+        />
+        <Editor
+          apiKey="YOUR_TINYMCE_API_KEY"
+          onInit={(evt, editor) => editorRef.current = editor}
+          initialValue={editingPost.content}
+          init={{
+            height: 400, // Reduced height
+            menubar: false,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+            'bold italic backcolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+          }}
+        />
+      </div>
+      <div className="flex justify-end space-x-2 mt-4">
+        <button
+          onClick={handleUpdate}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          Save Changes
+        </button>
+        <button
+          onClick={() => setEditingPost(null)}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+    </div>
+  );
+};
+
+export default BlogAdmin;

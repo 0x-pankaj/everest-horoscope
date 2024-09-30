@@ -4,33 +4,35 @@ import conf from '@/conf/conf';
 import { ID, Query } from 'appwrite';
 
 export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const page = parseInt(searchParams.get('page') || '1');
+  const limit = 10;
+
   try {
-    const today = new Date().toISOString().split('T')[0];
-    let response = await database.listDocuments(
-      conf.appwriteHoroscopeDatabaseId, 
+    const response = await database.listDocuments(
+      conf.appwriteHoroscopeDatabaseId,
       conf.appwritePanchangDetails,
-      [Query.equal("date", [today])]
+      [
+        Query.orderDesc('date'),
+        Query.limit(limit),
+        Query.offset((page - 1) * limit)
+      ]
     );
 
-    if (response.documents.length === 0) {
-      // If no panchang for today, get the latest available
-      response = await database.listDocuments(
-        conf.appwriteHoroscopeDatabaseId,
-        conf.appwritePanchangDetails,
-        [Query.orderDesc("date"), Query.limit(1)]
-      );
-    }
+    // Ensure consistent date format for all documents
+    const documents = response.documents.map(doc => ({
+      ...doc,
+      date: new Date(doc.date).toISOString().split('T')[0]
+    }));
 
-    if (response.documents.length > 0) {
-      const panchang = response.documents[0];
-      // Ensure the date is in YYYY-MM-DD format
-      panchang.date = new Date(panchang.date).toISOString().split('T')[0];
-      return NextResponse.json(panchang);
-    } else {
-      return NextResponse.json({ error: 'No panchang information found' }, { status: 404 });
-    }
+    return NextResponse.json({
+      documents,
+      total: response.total,
+      page,
+      pageSize: limit
+    });
   } catch (error) {
-    console.error('Error fetching panchang information:', error);
+    console.error('Error fetching panchang list:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

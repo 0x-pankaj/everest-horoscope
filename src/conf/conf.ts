@@ -17,7 +17,11 @@ const conf = {
     appwriteUserCollectionId: String(process.env.NEXT_PUBLIC_USER_COLLECTION_ID),
     weatherApiKey: String(process.env.NEXT_PUBLIC_WEATHER_API_KEY),
 
-    appwritePanchangDetails: String(process.env.NEXT_PUBLIC_PANCHANG_DETAILS)  
+    appwritePanchangDetails: String(process.env.NEXT_PUBLIC_PANCHANG_DETAILS),
+
+    appwriteQuestionCollectionId: String(process.env.NEXT_PUBLIC_QUESTIONS_COLLECTION_ID),
+    appwriteServicesCollectionId: String(process.env.NEXT_PUBLIC_SERVICES_COLLECTION_ID),
+    tinymceApiKey: String(process.env.NEXT_PUBLIC_TINYMCE_API_KEY)
 }
 
 export default conf;  

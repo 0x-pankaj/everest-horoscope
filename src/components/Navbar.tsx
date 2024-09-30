@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import logo from "@/assets/images/everest-logo.png"
+import logo from "@/../public/astro_logo_f.png"
 import Link from "next/link"
 import { RiArrowDropDownLine } from "react-icons/ri"
 import { FiMenu } from "react-icons/fi"

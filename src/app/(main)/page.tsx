@@ -18,6 +18,7 @@ export default function Home() {
       <main className="container mx-auto px-2 py-8 space-y-8">
         {/* <HomeCarousel /> */}
         <ResponsiveCarousel />
+        <QuestionsComponent />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <WeatherComponent />
           <PanchangHome />
@@ -26,7 +27,6 @@ export default function Home() {
 
         <OurServices />
         <HowItWorks />
-        <QuestionsComponent />
         <InterActionCard />
         <Testimonials />
         <BlogPreview />

@@ -1,8 +1,10 @@
-'use client'
+"use client"
 import React, { useEffect, useState } from 'react';
-import { FaSun, FaMoon, FaCalendarAlt } from 'react-icons/fa';
+import { FaSun, FaInfoCircle } from 'react-icons/fa';
+import Link from 'next/link';
 
 interface PanchangInfo {
+  $id: string;
   date: string;
   tithi: string;
   nakshatra: string;
@@ -25,7 +27,7 @@ const PanchangHome: React.FC = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch panchang information');
         }
-        const data = await response.json();
+        const data: PanchangInfo = await response.json();
         setPanchangInfo(data);
       } catch (err) {
         setError('Error loading panchang information');
@@ -52,9 +54,15 @@ const PanchangHome: React.FC = () => {
 
   return (
     <div className="bg-purple-800 text-yellow-100 rounded-lg shadow-md p-6 max-w-md mx-auto">
-      <div className="flex items-center mb-4">
-        <FaSun className="text-yellow-300 text-3xl mr-2" />
-        <h2 className="text-2xl font-bold">Today's Panchang</h2>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <FaSun className="text-yellow-300 text-3xl mr-2" />
+          <h2 className="text-2xl font-bold">Today's Panchang</h2>
+        </div>
+        <Link href="/panchang" className="bg-purple-600 text-yellow-100 px-4 py-2 rounded-lg hover:bg-purple-500 transition-colors flex items-center">
+          <FaInfoCircle className="mr-2" />
+          More Info
+        </Link>
       </div>
       <p className="text-sm mb-4">Identify important Tithis with Hindu Panchang</p>
       <div className="bg-purple-700 rounded-lg p-4">
@@ -69,9 +77,6 @@ const PanchangHome: React.FC = () => {
           <InfoItem label="Rahu Kalam" value={panchangInfo.rahuKalam} />
         </div>
       </div>
-      <button className="mt-4 bg-purple-600 text-yellow-100 px-4 py-2 rounded-lg hover:bg-purple-500 transition-colors">
-        Day Panchang
-      </button>
     </div>
   );
 };
