@@ -21,7 +21,8 @@ const conf = {
 
     appwriteQuestionCollectionId: String(process.env.NEXT_PUBLIC_QUESTIONS_COLLECTION_ID),
     appwriteServicesCollectionId: String(process.env.NEXT_PUBLIC_SERVICES_COLLECTION_ID),
-    tinymceApiKey: String(process.env.NEXT_PUBLIC_TINYMCE_API_KEY)
+    tinymceApiKey: String(process.env.NEXT_PUBLIC_TINYMCE_API_KEY),
+    appwriteCrouselCollectionId: String(process.env.NEXT_PUBLIC_CROUSEL_COLLECTION_ID)
 }
 
 export default conf;  

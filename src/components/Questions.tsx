@@ -82,8 +82,8 @@ const QuestionsComponent: React.FC = () => {
               onClick={() => handleSectionClick(section)}
             >
               <Image 
-                src={section.image}
-                alt={section.name}
+                src={section.image || '/astro_logo_f.png'}
+                alt={section.name || "default name"}
                 width={200}
                 height={200}
                 className="w-full h-auto rounded-lg shadow-md hover:shadow-lg transition-shadow"

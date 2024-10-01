@@ -16,9 +16,10 @@ export async function GET() {
     }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request) {  
     try {
         const body = await request.json();
+        // console.log("service backend body: ", body);
         const response = await database.createDocument(
             conf.appwriteHoroscopeDatabaseId,
             conf.appwriteServicesCollectionId,

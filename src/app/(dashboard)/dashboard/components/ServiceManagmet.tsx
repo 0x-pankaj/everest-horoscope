@@ -57,8 +57,9 @@ const ServicesManagement: React.FC = () => {
     if (!file) return;
 
     try {
+      console.log("file url: ", file);
       const { fileUrl } = await uploadFile(file);
-      if (isNewService) {
+      if (isNewService) { 
         setNewService({ ...newService, image: fileUrl });
       } else if (editingService) {
         setEditingService({ ...editingService, image: fileUrl });

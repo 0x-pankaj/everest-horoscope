@@ -5,6 +5,8 @@ import { ID, Query } from 'appwrite';
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import { Editor } from "@tinymce/tinymce-react";
+import { uploadFile } from '@/lib/fileUpload';
+import Image from 'next/image';
 
 interface BlogPost {
   $id: string;
@@ -98,6 +100,23 @@ const BlogAdmin: React.FC = () => {
     }
   };
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, isNewService: boolean) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      console.log("file url: ", file);
+      const { fileUrl } = await uploadFile(file);
+      if (isNewService) { 
+        setNewPost({ ...newPost, imageUrl: fileUrl });
+      } else if (editingPost) {
+        setEditingPost({ ...editingPost, imageUrl: fileUrl });
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Blog Admin</h1>
@@ -114,18 +133,26 @@ const BlogAdmin: React.FC = () => {
         />
         <input
           type="text"
-          placeholder="Slug"
+          placeholder="Slug must be unique and - seperated"
           value={newPost.slug}
           onChange={(e) => setNewPost({ ...newPost, slug: e.target.value })}
           className="w-full p-2 mb-2 border rounded"
         />
-        <input
+        {/* <input
           type="text"
           placeholder="Image URL"
           value={newPost.imageUrl}
           onChange={(e) => setNewPost({ ...newPost, imageUrl: e.target.value })}
           className="w-full p-2 mb-2 border rounded"
+        /> */}
+          <input
+          type="file"
+          onChange={(e) => handleFileUpload(e, true)}
+          className="w-full p-2 mb-2 border rounded"
         />
+        {newPost.imageUrl && (
+          <Image src={newPost.imageUrl} alt="New Post" width={100} height={100} className="mb-2" />
+        )}
         <textarea
           placeholder="Excerpt"
           value={newPost.excerpt}

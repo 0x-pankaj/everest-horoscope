@@ -23,6 +23,7 @@ const OurServices: React.FC = () => {
     try {
       const response = await fetch('/api/services');
       const data = await response.json();
+      console.log("service data: ", data);
       
       // Check if data is an array
       if (Array.isArray(data)) {
@@ -66,8 +67,8 @@ const OurServices: React.FC = () => {
             >
               <div className="relative w-full pt-[100%]">
                 <Image
-                  src={service.image}
-                  alt={service.name}
+                  src={service.image || '/astro_logo_f.png'}
+                  alt={service.name || "default name"}
                   layout="fill"
                   objectFit="cover"
                   className="rounded-lg"

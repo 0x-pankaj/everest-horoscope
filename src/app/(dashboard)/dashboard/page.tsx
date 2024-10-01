@@ -5,9 +5,21 @@ import { sidebarItems } from './data/SidebarItems'
 import DashboardContent from './components/DashboardContent'
 import Sidebar from './components/Sidebar'
 import Navbar from '@/components/Navbar'
+import { useRole} from "@/hooks/roleCheck"
+import { useAuthStore } from '@/store/Auth'
+
 
 export default function DashboardPage() {
   const [activeComponent, setActiveComponent] = useState(sidebarItems[0].name)
+   const {isAdmin} = useRole();
+   const {user} = useAuthStore()
+
+
+   console.log("user", user )
+
+  //  if(!isAdmin() ) {
+  //   return <div>Unauthorized</div>
+  //  }
 
   return (
     <div className="flex h-screen bg-gray-100">
