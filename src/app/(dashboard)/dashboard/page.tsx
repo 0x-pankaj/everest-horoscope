@@ -18,9 +18,9 @@ export default function DashboardPage() {
 
    console.log("user", user )
 
-   if(!isAdmin() ) {
-    return <UnauthorizedPage />
-   }
+  //  if(!isAdmin() ) {
+  //   return <UnauthorizedPage />
+  //  }
 
   return (
     <div className="flex h-screen bg-gray-100">
