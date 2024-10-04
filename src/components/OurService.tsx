@@ -90,23 +90,31 @@ const OurServices: React.FC = () => {
         ) : (
           <>
             <div className="flex justify-between items-center mb-3 md:mb-4">
-              <button 
+            {
+              services.length > 8 ? (
+                <button 
                 onClick={prevServices} 
                 disabled={currentIndex === 0}
                 className="bg-yellow-500 text-white px-2 py-1 md:px-4 md:py-2 rounded-full disabled:opacity-50 transition-colors duration-300"
               >
                 <FaChevronLeft />
               </button>
+              ) : null
+            }
               <span className="text-sm md:text-base text-yellow-600">
                 {currentIndex + 1}-{Math.min(currentIndex + servicesPerPage.mobile, services.length)} of {services.length}
               </span>
-              <button 
+              {
+                services.length > 8 ? (
+                  <button 
                 onClick={nextServices} 
                 disabled={currentIndex + servicesPerPage.mobile >= services.length}
                 className="bg-yellow-500 text-white px-2 py-1 md:px-4 md:py-2 rounded-full disabled:opacity-50 transition-colors duration-300"
               >
                 <FaChevronRight />
               </button>
+                ) : null
+              }
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 md:gap-4">
               {visibleServices.map((service, index) => (

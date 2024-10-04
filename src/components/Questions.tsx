@@ -93,23 +93,31 @@ const QuestionsComponent: React.FC = () => {
         ) : (
           <>
             <div className="flex justify-between items-center mb-3 md:mb-4">
-              <button 
+              {
+                sections.length > 9 ? (
+                  <button 
                 onClick={prevSections} 
                 disabled={currentIndex === 0}
                 className="bg-indigo-500 text-white px-2 py-1 md:px-4 md:py-2 rounded-full disabled:opacity-50 transition-colors duration-300"
               >
                 <FaChevronLeft />
               </button>
-              <span className="text-sm md:text-base text-indigo-600">
-                {currentIndex + 1}-{Math.min(currentIndex + sectionsToShow.mobile, sections.length)} of {sections.length}
-              </span>
-              <button 
+                ) : null
+              }
+              {/* <span className="text-sm md:text-base text-indigo-600">
+                {currentIndex + 1}-{Math.min(currentIndex + sectionsToShow.desktop, sections.length)} of {sections.length}
+              </span> */}
+              {
+                sections.length > 8 ? (
+                  <button 
                 onClick={nextSections} 
                 disabled={currentIndex + sectionsToShow.mobile >= sections.length}
                 className="bg-indigo-500 text-white px-2 py-1 md:px-4 md:py-2 rounded-full disabled:opacity-50 transition-colors duration-300"
               >
                 <FaChevronRight />
               </button>
+                ) : null
+              }
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6">
               {visibleSections.map((section, index) => (
