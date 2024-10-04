@@ -60,8 +60,13 @@ export const useAuthStore = create<IAuthStore>()(
 
             async login(email, password) {
                 try {
+
                     const session = await account.createEmailPasswordSession(email, password);
                     const user = await account.get();
+                    if (!user.emailVerification){
+                         const checkVerification = await account.createVerification("http://localhost:3000/verify-account");
+                         return {success: true}
+                    }
                     const roles = user.labels || [];
                     console.log("session, user ", session, user);
                     set({ user: user, session: session, roles: roles })
@@ -74,7 +79,12 @@ export const useAuthStore = create<IAuthStore>()(
 
             async createAccount(email, password, name) {
                 try {
-                    await account.create(ID.unique(), email, password, name);
+                    console.log("create account hitted")
+                    const x = await account.create(ID.unique(), email, password, name);
+                    const session = await account.createEmailPasswordSession(email, password);
+
+                    const link = await account.createVerification("http://localhost:3000/verify-account");
+
                     return { success: true }
                 } catch (error) {
                     console.log("error while creating account: ", error);
@@ -94,7 +104,7 @@ export const useAuthStore = create<IAuthStore>()(
 
             async forgotPassword(email: string) {
                 try {
-                    await account.createRecovery(email, 'https://everest-horoscope.vercel.app/reset-password');
+                    await account.createRecovery(email, 'http://localhost:3000/reset-password');
                     return { success: true };
                 } catch (error) {
                     console.log("Error in forgot password: ", error);
@@ -104,6 +114,7 @@ export const useAuthStore = create<IAuthStore>()(
 
             async verifyAccount(userId: string, secret: string) {
                 try {
+
                     await account.updateVerification(userId, secret);
                     return { success: true };
                 } catch (error) {

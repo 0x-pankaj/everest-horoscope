@@ -4,6 +4,7 @@ import { useAuthStore } from "@/store/Auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 
 
 const SignUp = () => {
@@ -23,6 +24,7 @@ const SignUp = () => {
         try {
             const userData = await useAuth.createAccount(formData.email, formData.password, formData.name);
             if(userData.success){
+                toast.success("check Your Email for Verification")
                 router.push("/login");
             }
         } catch (error: any) {

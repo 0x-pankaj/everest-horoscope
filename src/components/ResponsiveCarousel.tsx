@@ -1,8 +1,8 @@
-'use client'
+"use client"
+import React, { useState, useEffect } from 'react';
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import { Query, Models } from 'appwrite';
-import React, { useState, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import Image from 'next/image'
 
@@ -30,7 +30,6 @@ const ResponsiveCarousel = () => {
           conf.appwriteCrouselCollectionId,
           [Query.orderAsc('order')]
         );
-        // console.log("image: ", response.documents);
         
         const mobileUrls: string[] = [];
         const desktopUrls: string[] = [];
@@ -75,7 +74,6 @@ const ResponsiveCarousel = () => {
     return () => clearInterval(interval);
   }, [isDesktop, desktopImages.length, mobileImages.length]);
 
-
   const images = isDesktop ? desktopImages : mobileImages;
 
   const nextSlide = () => {
@@ -88,43 +86,43 @@ const ResponsiveCarousel = () => {
 
   if (loading) return <div>Loading carousel...</div>;
   if (error) return <div>Error: {error}</div>;
-  
-  console.log("mobile: ", mobileImages)
-  console.log("desktop: ", desktopImages)
-  console.log("images: ", images)
   if (images.length === 0) return null;
-  console.log("images: ", images)
 
   return (
-    <section className="relative w-full h-screen overflow-hidden">
-      {images.map((image, index) => (
-        <div
-          key={index}
-          className={`absolute inset-0 transition-opacity duration-500 ${
-            index === currentIndex ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
+    <section className="relative w-full overflow-hidden">
+      <div 
+        className={`relative ${isDesktop ? 'h-[270px]' : 'h-[386px]'}`}
+        style={{ width: isDesktop ? '1600px' : '864px', maxWidth: '100%', margin: '0 auto' }}
+      >
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-500 ${
+              index === currentIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
             <Image
-            src={image}
-            alt={`Slide ${index + 1}`}
-            layout="fill"
-            objectFit="cover"
-            priority={index === currentIndex}
-          />
-        </div>
-      ))}
-      <button
-        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
-        onClick={prevSlide}
-      >
-        <FaChevronLeft />
-      </button>
-      <button
-        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
-        onClick={nextSlide}
-      >
-        <FaChevronRight />
-      </button>
+              src={image}
+              alt={`Slide ${index + 1}`}
+              layout="fill"
+              objectFit="cover"
+              priority={index === currentIndex}
+            />
+          </div>
+        ))}
+        <button
+          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+          onClick={prevSlide}
+        >
+          <FaChevronLeft />
+        </button>
+        <button
+          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+          onClick={nextSlide}
+        >
+          <FaChevronRight />
+        </button>
+      </div>
     </section>
   );
 };

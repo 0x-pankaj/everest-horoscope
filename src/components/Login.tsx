@@ -25,6 +25,7 @@ const Login = () => {
             const success =  await authStore.login(formData.email, formData.password);
 
             if(success.success) {
+                
                 router.push("/");
                 toast.success("login successfully")
             }

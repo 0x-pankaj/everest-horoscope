@@ -7,6 +7,7 @@ import Sidebar from './components/Sidebar'
 import Navbar from '@/components/Navbar'
 import { useRole} from "@/hooks/roleCheck"
 import { useAuthStore } from '@/store/Auth'
+import UnauthorizedPage from '@/components/Unauthorized'
 
 
 export default function DashboardPage() {
@@ -17,9 +18,9 @@ export default function DashboardPage() {
 
    console.log("user", user )
 
-  //  if(!isAdmin() ) {
-  //   return <div>Unauthorized</div>
-  //  }
+   if(!isAdmin() ) {
+    return <UnauthorizedPage />
+   }
 
   return (
     <div className="flex h-screen bg-gray-100">
