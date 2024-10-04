@@ -55,14 +55,20 @@ const AdminQuestionsComponent: React.FC = () => {
   const handleUpdateSection = async () => {
     if (!editingSection) return;
     try {
+      const { name, image, questions } = editingSection;
+      const updatedSection = { name, image, questions };
+      
       const response = await fetch(`/api/sections/${editingSection.$id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editingSection),
+        body: JSON.stringify(updatedSection),
       });
       if (response.ok) {
         fetchSections();
         setEditingSection(null);
+      } else {
+        const errorData = await response.json();
+        console.error('Error updating section:', errorData);
       }
     } catch (error) {
       console.error('Error updating section:', error);

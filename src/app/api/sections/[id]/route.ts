@@ -1,4 +1,3 @@
-// app/api/sections/[id]/route.ts
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import { NextResponse } from 'next/server';
@@ -6,14 +5,23 @@ import { NextResponse } from 'next/server';
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const body = await request.json();
+    console.log("Original body:", body);
+
+    // Filter out the fields that should not be sent to Appwrite
+    const { name, image, questions } = body;
+    const filteredBody = { name, image, questions };
+
+    // console.log("Filtered body:", filteredBody);
+
     const response = await database.updateDocument(
       conf.appwriteHoroscopeDatabaseId,
       conf.appwriteQuestionCollectionId,
       params.id,
-      body
+      filteredBody
     );
     return NextResponse.json(response);
   } catch (error) {
+    console.error("Error updating section:", error);
     return NextResponse.json({ error: 'Failed to update section' }, { status: 500 });
   }
 }
@@ -27,6 +35,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     );
     return NextResponse.json({ message: 'Section deleted successfully' });
   } catch (error) {
+    console.error("Error deleting section:", error);
     return NextResponse.json({ error: 'Failed to delete section' }, { status: 500 });
   }
 }

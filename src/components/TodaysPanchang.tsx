@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import React, { useEffect, useState } from 'react';
 import { FaSun, FaInfoCircle } from 'react-icons/fa';
 import Link from 'next/link';
@@ -41,33 +41,50 @@ const PanchangHome: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center">Loading panchang information...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center text-lg text-yellow-200">Loading panchang information...</div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center text-red-500">{error}</div>
+      </div>
+    );
   }
 
   if (!panchangInfo) {
-    return <div className="text-center">No panchang information available</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center text-yellow-200">No panchang information available</div>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-purple-800 text-yellow-100 rounded-lg shadow-md p-6 max-w-md mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <FaSun className="text-yellow-300 text-3xl mr-2" />
-          <h2 className="text-2xl font-bold">Today's Panchang</h2>
+    <div className="bg-gradient-to-br from-purple-700 to-purple-900 text-yellow-100 rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-3">
+          <FaSun className="text-yellow-300 text-4xl" />
+          <h2 className="text-3xl font-bold">Today's Panchang</h2>
         </div>
-        <Link href="/panchang" className="bg-purple-600 text-yellow-100 px-4 py-2 rounded-lg hover:bg-purple-500 transition-colors flex items-center">
+        <Link
+          href="/panchang"
+          className="bg-purple-600 text-yellow-100 px-4 py-2 rounded-lg hover:bg-purple-500 transition-all flex items-center"
+        >
           <FaInfoCircle className="mr-2" />
           More Info
         </Link>
       </div>
-      <p className="text-sm mb-4">Identify important Tithis with Hindu Panchang</p>
-      <div className="bg-purple-700 rounded-lg p-4">
-        <p className="text-xl font-semibold mb-2">{panchangInfo.date}</p>
-        <div className="grid grid-cols-2 gap-2">
+      <p className="text-lg mb-6 text-center">
+        Identify important Tithis with Hindu Panchang
+      </p>
+      <div className="bg-purple-800 bg-opacity-50 rounded-lg p-6">
+        <p className="text-2xl font-semibold mb-4 text-center">{panchangInfo.date}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <InfoItem label="Tithi" value={panchangInfo.tithi} />
           <InfoItem label="Nakshatra" value={panchangInfo.nakshatra} />
           <InfoItem label="Yoga" value={panchangInfo.yoga} />
@@ -82,9 +99,9 @@ const PanchangHome: React.FC = () => {
 };
 
 const InfoItem: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div>
-    <p className="text-yellow-200 font-semibold">{label}:</p>
-    <p>{value}</p>
+  <div className="p-4 bg-purple-700 rounded-lg shadow-inner">
+    <p className="text-yellow-300 font-semibold mb-1">{label}:</p>
+    <p className="text-yellow-100">{value}</p>
   </div>
 );
 

@@ -50,7 +50,6 @@ const QuestionsComponent: React.FC = () => {
       setLoading(false);
     }
   };
-
   const handleQuestionClick = (question: string) => {
     addQuestion(question);
     router.push('/chat');
@@ -86,14 +85,14 @@ const QuestionsComponent: React.FC = () => {
   }
 
   return (
-    <div className="bg-gradient-to-r from-blue-100 to-purple-100 min-h-screen p-4 md:p-6">
-      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-4 md:p-6">
-        <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-center text-indigo-700">Common Questions</h2>
+    <div className="bg-gradient-to-r from-blue-100 to-purple-100  p-2 md:p-6">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-3 md:p-6">
+        <h2 className="text-xl md:text-3xl font-bold mb-3 md:mb-6 text-center text-indigo-700">Common Questions</h2>
         {sections.length === 0 ? (
           <p className="text-center text-gray-600">No sections available.</p>
         ) : (
           <>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex justify-between items-center mb-3 md:mb-4">
               <button 
                 onClick={prevSections} 
                 disabled={currentIndex === 0}
@@ -101,28 +100,9 @@ const QuestionsComponent: React.FC = () => {
               >
                 <FaChevronLeft />
               </button>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 flex-grow mx-2 md:mx-4">
-                {visibleSections.map((section, index) => (
-                  <div 
-                    key={section.$id} 
-                    className={`cursor-pointer transform hover:scale-105 transition-transform duration-300 ${index >= sectionsToShow.mobile ? 'hidden md:block' : ''}`}
-                    onClick={() => handleSectionClick(section)}
-                  >
-                    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                      <Image 
-                        src={section.image || '/astro_logo_f.png'}
-                        alt={section.name || "default name"}
-                        width={300}
-                        height={200}
-                        className="w-full h-32 md:h-48 object-cover"
-                      />
-                      <div className="p-2 md:p-4">
-                        <p className="text-center font-semibold text-indigo-600 text-sm md:text-base">{section.name}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <span className="text-sm md:text-base text-indigo-600">
+                {currentIndex + 1}-{Math.min(currentIndex + sectionsToShow.mobile, sections.length)} of {sections.length}
+              </span>
               <button 
                 onClick={nextSections} 
                 disabled={currentIndex + sectionsToShow.mobile >= sections.length}
@@ -131,8 +111,30 @@ const QuestionsComponent: React.FC = () => {
                 <FaChevronRight />
               </button>
             </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6">
+              {visibleSections.map((section, index) => (
+                <div 
+                  key={section.$id} 
+                  className={`cursor-pointer transform hover:scale-105 transition-transform duration-300 ${index >= sectionsToShow.mobile ? 'hidden md:block' : ''}`}
+                  onClick={() => handleSectionClick(section)}
+                >
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <Image 
+                      src={section.image || '/astro_logo_f.png'}
+                      alt={section.name || "default name"}
+                      width={300}
+                      height={200}
+                      className="w-full h-24 md:h-48 object-cover"
+                    />
+                    <div className="p-2 md:p-4">
+                      <p className="text-center font-semibold text-indigo-600 text-xs md:text-base">{section.name}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
             <div className="text-center mt-4 md:mt-6">
-              <Link href="/all-questions" className="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition-colors duration-300">
+              <Link href="/all-questions" className="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition-colors duration-300 text-sm md:text-base">
                 View All Sections
               </Link>
             </div>
@@ -142,12 +144,12 @@ const QuestionsComponent: React.FC = () => {
         {modalOpen && selectedSection && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
             <div className="bg-white rounded-lg p-4 md:p-6 max-w-md w-full">
-              <h2 className="text-xl md:text-2xl font-bold mb-4 text-indigo-700">{selectedSection.name}</h2>
+              <h2 className="text-lg md:text-2xl font-bold mb-4 text-indigo-700">{selectedSection.name}</h2>
               <ul className="list-disc pl-5">
                 {selectedSection.questions.map((question, index) => (
                   <li 
                     key={index} 
-                    className="mb-2 cursor-pointer hover:text-indigo-600 transition-colors duration-300 text-sm md:text-base"
+                    className="mb-2 cursor-pointer hover:text-indigo-600 transition-colors duration-300 text-xs md:text-base"
                     onClick={() => handleQuestionClick(question)}
                   >
                     {question}
@@ -155,7 +157,7 @@ const QuestionsComponent: React.FC = () => {
                 ))}
               </ul>
               <button 
-                className="mt-4 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors duration-300"
+                className="mt-4 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors duration-300 text-sm md:text-base"
                 onClick={() => setModalOpen(false)}
               >
                 Close
@@ -169,3 +171,7 @@ const QuestionsComponent: React.FC = () => {
 };
 
 export default QuestionsComponent;
+
+
+
+
