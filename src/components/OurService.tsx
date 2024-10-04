@@ -20,7 +20,7 @@ const OurServices: React.FC = () => {
 
   const servicesPerPage = {
     mobile: 2,
-    desktop: 4
+    desktop: 8
   };
 
   useEffect(() => {

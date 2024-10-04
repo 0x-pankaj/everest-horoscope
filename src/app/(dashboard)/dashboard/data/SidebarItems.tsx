@@ -1,6 +1,6 @@
 import { FiHome, FiUsers, FiStar } from 'react-icons/fi'
 import { ImBlog } from "react-icons/im";
-import { FaPhotoVideo, FaQuestion, FaStroopwafel } from "react-icons/fa";
+import { FaPhotoVideo, FaQuestion, FaStreetView, FaStroopwafel } from "react-icons/fa";
 import { TbZodiacVirgo } from "react-icons/tb";
 import { RiCustomerServiceLine } from "react-icons/ri";
 
@@ -14,6 +14,7 @@ import UserManagementPage from '../components/UserManagementPage';
 import ServicesManagement from '../components/ServiceManagmet';
 import AdminQuestionsComponent from '../components/QuestionManagement';
 import AdminCarouselPage from '../components/AdminCrouselPage';
+import AdminTestimonials from '../components/AdminTestimonials';
 
 
 export const sidebarItems = [
@@ -25,5 +26,6 @@ export const sidebarItems = [
   { name: "Zodiac Addition", icon: TbZodiacVirgo, component: SubmitHoroscope },
   { name: "Service Management", icon: RiCustomerServiceLine, component: ServicesManagement},
   { name: "Question Management", icon: FaQuestion, component: AdminQuestionsComponent},
-  { name: "Crousel Management", icon: FaPhotoVideo , component: AdminCarouselPage}
+  { name: "Crousel Management", icon: FaPhotoVideo , component: AdminCarouselPage},
+  { name: "Testimonial Management", icon: FaStreetView, component: AdminTestimonials}
 ]

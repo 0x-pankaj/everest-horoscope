@@ -91,7 +91,7 @@ const ResponsiveCarousel = () => {
   return (
     <section className="relative w-full overflow-hidden">
       <div 
-        className={`relative ${isDesktop ? 'h-[270px]' : 'h-[386px]'}`}
+        className={`relative ${isDesktop ? 'h-[460px]' : 'h-[386px]'}`}
         style={{ width: isDesktop ? '1600px' : '864px', maxWidth: '100%', margin: '0 auto' }}
       >
         {images.map((image, index) => (

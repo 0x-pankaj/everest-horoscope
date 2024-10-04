@@ -19,10 +19,17 @@ export default function Home() {
         {/* <HomeCarousel /> */}
         <ResponsiveCarousel />
         <QuestionsComponent />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <WeatherComponent />
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 items-start">
+        {/* PanchangHome will take up two-thirds width on desktop and full width on mobile */}
+        <div className="lg:col-span-3 order-1">
           <PanchangHome />
         </div>
+
+        {/* WeatherComponent will take one-third width on desktop and full width on mobile */}
+        <div className="lg:col-span-2 order-2">
+          <WeatherComponent />
+        </div>
+      </div>
           <ZodiacHoroscope />
 
         <OurServices />

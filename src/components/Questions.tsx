@@ -25,7 +25,7 @@ const QuestionsComponent: React.FC = () => {
 
   const sectionsToShow = {
     mobile: 2,
-    desktop: 4
+    desktop: 8
   };
 
   useEffect(() => {
@@ -86,7 +86,7 @@ const QuestionsComponent: React.FC = () => {
 
   return (
     <div className="bg-gradient-to-r from-blue-100 to-purple-100  p-2 md:p-6">
-      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-3 md:p-6">
+      <div className="max-w-6xl mx-auto bg-gradient-to-r from-purple-300 to-yellow-200  rounded-lg shadow-md p-3 md:p-6">
         <h2 className="text-xl md:text-3xl font-bold mb-3 md:mb-6 text-center text-indigo-700">Common Questions</h2>
         {sections.length === 0 ? (
           <p className="text-center text-gray-600">No sections available.</p>

@@ -106,21 +106,21 @@ const WeatherComponent: React.FC = () => {
       </select>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       {weather && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3">
           {/* Weather Icon & Main Info */}
           <div className="md:col-span-1 flex flex-col items-center">
             {getWeatherIcon(weather.weather[0].icon)}
             <h3 className="text-xl font-semibold mt-2 text-center">
               {weather.name}, {weather.sys.country}
             </h3>
-            <p className="text-5xl font-bold mt-4">
+            <p className="text-5xl font-bold mt-2">
               {Math.round(weather.main.temp)}°C
             </p>
             <p className="capitalize mt-1 text-lg">{weather.weather[0].description}</p>
             <p className="mt-2 text-sm">Local time: {formatTime(weather.timezone)}</p>
           </div>
           {/* Additional Weather Details */}
-          <div className="md:col-span-2 grid grid-cols-2 gap-4 mt-6 md:mt-0">
+          <div className="md:col-span-2 grid grid-cols-2 gap-4 mt-2 md:mt-0">
             <div className="bg-blue-500 bg-opacity-20 p-4 rounded-lg">
               <WiStrongWind className="w-8 h-8 inline-block mr-2" />
               <p>
