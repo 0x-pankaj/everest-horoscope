@@ -1,24 +1,21 @@
 "use client";
 
+import React, { Suspense } from 'react';
 import { useAuthStore } from "@/store/Auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
-const VerifyAccount = () => {
+const VerifyAccountContent = () => {
   const searchParams = useSearchParams();
-  const router =  useRouter();
+  const router = useRouter();
   const auth = useAuthStore();
 
   const userId = searchParams.get("userId");
   const secret = searchParams.get("secret");
 
   if (!userId || !secret) {
-    return null;
+    return <div className="text-center text-red-500 font-bold mt-8">Invalid verification link</div>;
   }
-
-  // if (auth.user?.$id !== userId) {
-  //   return <div className="text-center text-red-500 font-bold mt-8">Unauthorized</div>;
-  // }
 
   const updateVerify = async () => {
     try {
@@ -45,6 +42,14 @@ const VerifyAccount = () => {
         </button>
       </div>
     </div>
+  );
+};
+
+const VerifyAccount = () => {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+      <VerifyAccountContent />
+    </Suspense>
   );
 };
 
