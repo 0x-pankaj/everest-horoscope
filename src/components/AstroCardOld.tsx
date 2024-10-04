@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { FaStar, FaComments } from 'react-icons/fa';
 
 interface AstrologerProfileCardProps {

@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import Image from "next/legacy/image"
 import logo from "@/../public/astro_logo_f.png"
 import Link from "next/link"
 import { RiArrowDropDownLine } from "react-icons/ri"

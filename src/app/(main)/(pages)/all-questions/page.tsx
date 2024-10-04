@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { FaSpinner } from 'react-icons/fa';
 import { useChatStore } from '@/store/chatStore';
 

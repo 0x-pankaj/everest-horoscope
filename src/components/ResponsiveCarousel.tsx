@@ -4,7 +4,7 @@ import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import { Query, Models } from 'appwrite';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import Image from 'next/image'
+import Image from "next/legacy/image"
 
 interface CarouselImage {
   mobile: boolean;

@@ -6,7 +6,7 @@ import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import { Editor } from "@tinymce/tinymce-react";
 import { uploadFile } from '@/lib/fileUpload';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 
 interface BlogPost {
   $id: string;

@@ -1,7 +1,7 @@
 // app/admin/questions/page.tsx
 'use client'
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { FaSpinner, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import { storage } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';

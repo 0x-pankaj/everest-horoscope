@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import Link from 'next/link';
 import { Query } from 'appwrite';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';

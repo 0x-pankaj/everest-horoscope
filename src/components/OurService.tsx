@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { FaSpinner, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 interface Service {
@@ -32,7 +32,7 @@ const OurServices: React.FC = () => {
       setLoading(true);
       const response = await fetch('/api/services');
       const data = await response.json();
-      console.log("service data: ", data);
+      // console.log("service data: ", data);
       
       if (Array.isArray(data)) {
         setServices(data);
