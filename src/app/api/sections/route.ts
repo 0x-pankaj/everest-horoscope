@@ -1,6 +1,5 @@
 // app/api/sections/route.ts
 import { NextResponse } from 'next/server';
-
 import { ID } from 'appwrite';
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
@@ -27,7 +26,8 @@ export async function POST(request: Request) {
       {
         name: body.name,
         image: body.image,
-        questions: body.questions
+        questions: body.questions,
+        category: body.category  // Add category field
       }
     );
     return NextResponse.json(response);
@@ -36,3 +36,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create section' }, { status: 500 });
   }
 }
+

@@ -12,13 +12,14 @@ interface Section {
   name: string;
   image: string;
   questions: string[];
+  category: string;
 }
 
 const AdminQuestionsComponent: React.FC = () => {
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingSection, setEditingSection] = useState<Section | null>(null);
-  const [newSection, setNewSection] = useState<Omit<Section, '$id'>>({ name: '', image: '', questions: [] });
+  const [newSection, setNewSection] = useState<Omit<Section, '$id'>>({ name: '', image: '', questions: [], category: '' });
 
   useEffect(() => {
     fetchSections();
@@ -45,7 +46,7 @@ const AdminQuestionsComponent: React.FC = () => {
       });
       if (response.ok) {
         fetchSections();
-        setNewSection({ name: '', image: '', questions: [] });
+        setNewSection({ name: '', image: '', questions: [], category: '' });
       }
     } catch (error) {
       console.error('Error creating section:', error);
@@ -55,8 +56,8 @@ const AdminQuestionsComponent: React.FC = () => {
   const handleUpdateSection = async () => {
     if (!editingSection) return;
     try {
-      const { name, image, questions } = editingSection;
-      const updatedSection = { name, image, questions };
+      const { name, image, questions, category } = editingSection;
+      const updatedSection = { name, image, questions, category };
       
       const response = await fetch(`/api/sections/${editingSection.$id}`, {
         method: 'PUT',
@@ -125,6 +126,13 @@ const AdminQuestionsComponent: React.FC = () => {
           className="w-full p-2 mb-2 border rounded"
         />
         <input
+          type="text"
+          placeholder="Category"
+          value={newSection.category}
+          onChange={(e) => setNewSection({ ...newSection, category: e.target.value })}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        <input
           type="file"
           onChange={(e) => handleFileUpload(e, true)}
           className="mb-2"
@@ -159,6 +167,12 @@ const AdminQuestionsComponent: React.FC = () => {
                 className="w-full p-2 mb-2 border rounded"
               />
               <input
+                type="text"
+                value={editingSection.category}
+                onChange={(e) => setEditingSection({ ...editingSection, category: e.target.value })}
+                className="w-full p-2 mb-2 border rounded"
+              />
+              <input
                 type="file"
                 onChange={(e) => handleFileUpload(e, false)}
                 className="mb-2"
@@ -186,6 +200,7 @@ const AdminQuestionsComponent: React.FC = () => {
           ) : (
             <>
               <h3 className="text-lg font-semibold">{section.name}</h3>
+              <p className="text-sm text-gray-600 mb-2">Category: {section.category}</p>
               <Image src={section.image} alt={section.name} width={100} height={100} className="my-2" />
               <ul className="list-disc pl-5 mb-2">
                 {section.questions.map((question, index) => (
