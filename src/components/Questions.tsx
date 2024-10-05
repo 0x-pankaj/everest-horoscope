@@ -24,7 +24,7 @@ const QuestionsComponent: React.FC = () => {
   const addQuestion = useChatStore((state) => state.addQuestion);
 
   const sectionsToShow = {
-    mobile: 2,
+    mobile: 8,
     desktop: 8
   };
 

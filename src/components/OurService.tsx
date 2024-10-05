@@ -19,7 +19,7 @@ const OurServices: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const servicesPerPage = {
-    mobile: 2,
+    mobile: 8,
     desktop: 8
   };
 
