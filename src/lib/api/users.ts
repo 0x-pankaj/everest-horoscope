@@ -12,6 +12,11 @@ const API_BASE_URL = '/api/users';
  };
  */
 
+ export const fetchUserById = async(userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/${userId}`)
+  return response.data;
+ }
+
 export const fetchUsers = async() => {
   const response = await axios.get(API_BASE_URL);
   return response.data;
@@ -33,6 +38,7 @@ export const updateUserEmail = async (userId: string, email: string) => {
 };
 
 export const updateUserName = async (userId: string, name: string) => {
+  console.log("updatedName: ", name);
   const response = await axios.patch(`${API_BASE_URL}/${userId}`, { name });
   return response.data;
 };

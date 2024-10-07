@@ -19,9 +19,14 @@ export async function PATCH(
   { params }: { params: { userId: string } }
 ) {
   try {
-    const { name, email, phone, status, emailVerification, phoneVerification, labels } = await request.json();
-    let result;
 
+  
+
+    const { name, email, phone, status, emailVerification, phoneVerification, labels } = await request.json();
+    console.log("paramsId: ", params.userId)
+    console.log("name: ", name)
+    let result;
+     result = await users.get(params.userId)
     if (name) result = await users.updateName(params.userId, name);
     if (email) result = await users.updateEmail(params.userId, email);
     if (phone) result = await users.updatePhone(params.userId, phone);

@@ -1,5 +1,5 @@
-// src/components/UserManagement/UserDetails.tsx
-import React, { useState } from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
 import { User } from '@/types/user';
 import {
   updateUserEmail,
@@ -11,13 +11,13 @@ import {
   updateUserEmailVerification,
   updateUserPhoneVerification,
   deleteUser,
-  getUserPrefs,
-  updateUserPrefs,
   listUserSessions,
   deleteUserSessions,
   deleteUserSession,
   listUserLogs,
+  fetchUserById
 } from '@/lib/api/users';
+import { users } from '@/appwrite/serverConfig';
 
 interface UserDetailsProps {
   user: User;
@@ -26,14 +26,48 @@ interface UserDetailsProps {
 }
 
 const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) => {
-  const [editMode, setEditMode] = useState(false);
   const [editedUser, setEditedUser] = useState(user);
+  const [userPrefs, setUserPrefs] = useState<any>({});
+
+  useEffect(() => {
+    fetchUserPrefs();
+  }, [user.$id]);
+
+  const fetchUserPrefs = async () => {
+    try {
+      const prefs = await users.getPrefs(user.$id);
+      setUserPrefs(prefs);
+    } catch (error) {
+      console.error('Error fetching user preferences:', error);
+    }
+  };
+
+  const refreshUserData = async () => {
+    try {
+      const updatedUser = await fetchUserById(user.$id);
+      if (updatedUser) {
+        setEditedUser(updatedUser);
+        setUserPrefs(updatedUser.prefs);
+      }
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setEditedUser((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+
+  const handlePrefChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserPrefs((prev: any) => ({
+      ...prev,
+      [name]: value,
     }));
   };
 
@@ -44,152 +78,224 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
     setEditedUser((prev) => ({ ...prev, labels: newLabels }));
   };
 
-  const handleSave = async () => {
-    await updateUserEmail(user.$id, editedUser.email);
-    await updateUserName(user.$id, editedUser.name);
-    await updateUserPhone(user.$id, editedUser.phone);
-    await updateUserLabels(user.$id, editedUser.labels);
-    await updateUserStatus(user.$id, editedUser.status);
-    await updateUserEmailVerification(user.$id, editedUser.emailVerification);
-    await updateUserPhoneVerification(user.$id, editedUser.phoneVerification);
-    setEditMode(false);
-    onUpdate();
+  const updateField = async (field: string, value: any) => {
+    console.log("prefs: ", userPrefs )
+    try {
+      switch (field) {
+        case 'name':
+          await updateUserName(user.$id, value);
+          break;
+        case 'email':
+          await updateUserEmail(user.$id, value);
+          break;
+        case 'phone':
+          await updateUserPhone(user.$id, value);
+          break;
+        case 'status':
+          await updateUserStatus(user.$id, value);
+          break;
+        case 'emailVerification':
+          await updateUserEmailVerification(user.$id, value);
+          break;
+        case 'phoneVerification':
+          await updateUserPhoneVerification(user.$id, value);
+          break;
+        case 'labels':
+          await updateUserLabels(user.$id, value);
+          break;
+        default:
+          // For preferences
+          const updatedPrefs = { ...userPrefs, [field]: value };
+          await users.updatePrefs(user.$id, updatedPrefs);
+          setUserPrefs(updatedPrefs);
+          break;
+      }
+      await refreshUserData();
+      onUpdate();
+      alert(`${field} updated successfully`);
+    } catch (error) {
+      console.error(`Error updating ${field}:`, error);
+      alert(`Error updating ${field}`);
+    }
   };
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      await deleteUser(user.$id);
-      onClose();
-      onUpdate();
+      try {
+        await deleteUser(user.$id);
+        onClose();
+        onUpdate();
+        alert('User deleted successfully');
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Error deleting user');
+      }
     }
   };
 
   const handleUpdatePassword = async () => {
     const newPassword = prompt('Enter new password:');
     if (newPassword) {
-      await updateUserPassword(user.$id, newPassword);
-      alert('Password updated successfully');
-    }
-  };
-
-  const handleViewPrefs = async () => {
-    const prefs = await getUserPrefs(user.$id);
-    alert(JSON.stringify(prefs, null, 2));
-  };
-
-  const handleUpdatePrefs = async () => {
-    const newPrefs = prompt('Enter new preferences (JSON format):');
-    if (newPrefs) {
       try {
-        const prefsObj = JSON.parse(newPrefs);
-        await updateUserPrefs(user.$id, prefsObj);
-        alert('Preferences updated successfully');
+        await updateUserPassword(user.$id, newPassword);
+        alert('Password updated successfully');
       } catch (error) {
-        alert('Invalid JSON format');
+        console.error('Error updating password:', error);
+        alert('Error updating password');
       }
     }
   };
 
   const handleViewSessions = async () => {
-    const sessions = await listUserSessions(user.$id);
-    alert(JSON.stringify(sessions, null, 2));
+    try {
+      const sessions = await listUserSessions(user.$id);
+      alert(JSON.stringify(sessions, null, 2));
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+      alert('Error fetching sessions');
+    }
   };
 
   const handleDeleteAllSessions = async () => {
     if (window.confirm('Are you sure you want to delete all sessions?')) {
-      await deleteUserSessions(user.$id);
-      alert('All sessions deleted successfully');
+      try {
+        await deleteUserSessions(user.$id);
+        alert('All sessions deleted successfully');
+      } catch (error) {
+        console.error('Error deleting all sessions:', error);
+        alert('Error deleting all sessions');
+      }
     }
   };
 
   const handleDeleteSession = async () => {
     const sessionId = prompt('Enter session ID to delete:');
     if (sessionId) {
-      await deleteUserSession(user.$id, sessionId);
-      alert('Session deleted successfully');
+      try {
+        await deleteUserSession(user.$id, sessionId);
+        alert('Session deleted successfully');
+      } catch (error) {
+        console.error('Error deleting session:', error);
+        alert('Error deleting session');
+      }
     }
   };
 
   const handleViewLogs = async () => {
-    const logs = await listUserLogs(user.$id);
-    alert(JSON.stringify(logs, null, 2));
+    try {
+      const logs = await listUserLogs(user.$id);
+      alert(JSON.stringify(logs, null, 2));
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      alert('Error fetching logs');
+    }
   };
+
+  const renderField = (label: string, name: string, type: string = 'text', isPreference: boolean = false) => {
+    const value = isPreference ? userPrefs[name] : editedUser[name as keyof User];
+    const onChange = isPreference ? handlePrefChange : handleInputChange;
+
+    return (
+      <div className="mb-4">
+        <label className="block mb-2">{label}:</label>
+        <div className="flex">
+          <input
+            type={type}
+            name={name}
+            value={value || ''}
+            onChange={onChange}
+            className="w-full p-2 border rounded mr-2"
+          />
+          <button
+            onClick={() => updateField(name, isPreference ? userPrefs[name] : value)}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Update
+          </button>
+        </div>
+      </div>
+    );
+  };
+
 
   return (
     <div className="bg-white p-4 rounded shadow">
       <h2 className="text-xl font-bold mb-4">User Details</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
+      <div>
+        <div className="mb-4">
           <label className="block mb-2">ID:</label>
           <input type="text" value={user.$id} readOnly className="w-full p-2 border rounded" />
         </div>
-        <div>
-          <label className="block mb-2">Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={editedUser.name}
-            onChange={handleInputChange}
-            readOnly={!editMode}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-2">Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={editedUser.email}
-            onChange={handleInputChange}
-            readOnly={!editMode}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-2">Phone:</label>
-          <input
-            type="tel"
-            name="phone"
-            value={editedUser.phone}
-            onChange={handleInputChange}
-            readOnly={!editMode}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
+        {renderField('Name', 'name')}
+        {renderField('Email', 'email', 'email')}
+        {renderField('Phone', 'phone', 'tel')}
+        {renderField('Date of Birth', 'dob', 'text', true)}
+        {renderField('Country', 'birthCountry', 'text', true)}
+        {renderField('State', 'birthState', 'text', true)}
+        {renderField('District', 'birthDistrict', 'text', true)}
+        {renderField('City', 'birthCity', 'text', true)}
+        
+        <div className="mb-4">
           <label className="block mb-2">Status:</label>
-          <input
-            type="checkbox"
-            name="status"
-            checked={editedUser.status}
-            onChange={handleInputChange}
-            disabled={!editMode}
-          />
-          Active
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="status"
+              checked={editedUser.status}
+              onChange={handleInputChange}
+              className="mr-2"
+            />
+            <span>Active</span>
+            <button
+              onClick={() => updateField('status', editedUser.status)}
+              className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
+            >
+              Update
+            </button>
+          </div>
         </div>
-        <div>
+        
+        <div className="mb-4">
           <label className="block mb-2">Email Verification:</label>
-          <input
-            type="checkbox"
-            name="emailVerification"
-            checked={editedUser.emailVerification}
-            onChange={handleInputChange}
-            disabled={!editMode}
-          />
-          Verified
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="emailVerification"
+              checked={editedUser.emailVerification}
+              onChange={handleInputChange}
+              className="mr-2"
+            />
+            <span>Verified</span>
+            <button
+              onClick={() => updateField('emailVerification', editedUser.emailVerification)}
+              className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
+            >
+              Update
+            </button>
+          </div>
         </div>
-        <div>
+
+        <div className="mb-4">
           <label className="block mb-2">Phone Verification:</label>
-          <input
-            type="checkbox"
-            name="phoneVerification"
-            checked={editedUser.phoneVerification}
-            onChange={handleInputChange}
-            disabled={!editMode}
-          />
-          Verified
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="phoneVerification"
+              checked={editedUser.phoneVerification}
+              onChange={handleInputChange}
+              className="mr-2"
+            />
+            <span>Verified</span>
+            <button
+              onClick={() => updateField('phoneVerification', editedUser.phoneVerification)}
+              className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
+            >
+              Update
+            </button>
+          </div>
         </div>
-        <div>
+        
+        <div className="mb-4">
           <label className="block mb-2">Labels:</label>
           {['admin', 'astro', 'user', 'translator'].map((label) => (
             <label key={label} className="mr-2">
@@ -197,36 +303,25 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
                 type="checkbox"
                 checked={editedUser.labels.includes(label)}
                 onChange={() => handleLabelChange(label)}
-                disabled={!editMode}
               />
               {label}
             </label>
           ))}
+          <button
+            onClick={() => updateField('labels', editedUser.labels)}
+            className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
+          >
+            Update Labels
+          </button>
         </div>
       </div>
+      
       <div className="mt-4">
-        <button
-          onClick={() => setEditMode(!editMode)}
-          className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
-        >
-          {editMode ? 'Cancel' : 'Edit'}
-        </button>
-        {editMode && (
-          <button onClick={handleSave} className="bg-green-500 text-white px-4 py-2 rounded mr-2">
-            Save
-          </button>
-        )}
         <button onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded mr-2">
           Delete User
         </button>
         <button onClick={handleUpdatePassword} className="bg-yellow-500 text-white px-4 py-2 rounded mr-2">
           Update Password
-        </button>
-        <button onClick={handleViewPrefs} className="bg-purple-500 text-white px-4 py-2 rounded mr-2">
-          View Preferences
-        </button>
-        <button onClick={handleUpdatePrefs} className="bg-indigo-500 text-white px-4 py-2 rounded mr-2">
-          Update Preferences
         </button>
         <button onClick={handleViewSessions} className="bg-pink-500 text-white px-4 py-2 rounded mr-2">
           View Sessions
