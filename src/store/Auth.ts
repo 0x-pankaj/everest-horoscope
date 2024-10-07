@@ -13,6 +13,7 @@ interface IAuthStore {
     hydrated: boolean;
 
     setHydrated(): void;
+    updateUser: (updatedUser: Models.User<Models.Preferences>) => void;
     verifySession(): Promise<void>;
     login(
         email: string,
@@ -45,6 +46,7 @@ export const useAuthStore = create<IAuthStore>()(
             setHydrated() {
                 set({ hydrated: true })
             },
+            updateUser: (updatedUser) => set({ user: updatedUser }),
 
             async verifySession() {
                 try {
@@ -63,10 +65,10 @@ export const useAuthStore = create<IAuthStore>()(
 
                     const session = await account.createEmailPasswordSession(email, password);
                     const user = await account.get();
-                    if (!user.emailVerification){
-                         const checkVerification = await account.createVerification("http://localhost:3000/verify-account");
-                         return {success: true}
-                    }
+                    // if (!user.emailVerification){
+                    //      const checkVerification = await account.createVerification("http://localhost:3000/verify-account");
+                    //      return {success: true}
+                    // }
                     const roles = user.labels || [];
                     console.log("session, user ", session, user);
                     set({ user: user, session: session, roles: roles })

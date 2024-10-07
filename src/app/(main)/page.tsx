@@ -10,6 +10,7 @@ import OurServices from '@/components/OurService';
 import QuestionsComponent from '@/components/Questions';
 import PanchangHome from '@/components/TodaysPanchang';
 import ResponsiveCarousel from '@/components/ResponsiveCarousel';
+import DobComponent from '@/components/DobComponent';
 
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
       <main className="container mx-auto px-2 py-8 space-y-8">
         {/* <HomeCarousel /> */}
         <ResponsiveCarousel />
+        <DobComponent />
         <QuestionsComponent />
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 items-start">
         {/* PanchangHome will take up two-thirds width on desktop and full width on mobile */}

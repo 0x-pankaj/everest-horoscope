@@ -14,7 +14,10 @@ export interface User {
     labels: string[];
     accessedAt: string;
     phone: string;
-    prefs: Record<string, any>;
+    // prefs: Record<string, any>;
+    prefs: {
+      dob?: string;
+    }
   }
 
   export interface UserFilters {
