@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import Login from "@/components/Login";
 import { useAuthStore } from "@/store/Auth";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
     const router = useRouter();
@@ -12,6 +13,7 @@ const LoginPage = () => {
 
     if(useAuth.session){
         console.log("already logged in");
+        toast.success("User already logged in!")
         router.push("/");
     }
 

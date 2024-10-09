@@ -15,6 +15,7 @@ const DobComponent: React.FC = () => {
     const [district, setDistrict] = useState('');
     const [city, setCity] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const [hidden, setHidden] = useState<boolean>(false);
 
     useEffect(() => {
         if (user) {
@@ -79,7 +80,7 @@ const DobComponent: React.FC = () => {
     if (!user) return null;
 
     return (
-        <div className="p-4">            
+        <div className={` ${hidden ? "hidden" : "p-4" }`}>            
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -146,6 +147,12 @@ const DobComponent: React.FC = () => {
                                 className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
                             >
                                 Save
+                            </button>
+                            <button
+                            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+                            onClick={()=> setHidden(!hidden)}
+                            >
+                                Close
                             </button>
                         </form>
                     </div>

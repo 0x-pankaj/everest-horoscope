@@ -14,6 +14,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { database } from "@/appwrite/clientConfig";
 import conf from "@/conf/conf";
 import { Query } from "appwrite";
+import ClearStorageButton from "./ClearStorageButton";
 
 interface NavChild {
   label: string;
@@ -60,10 +61,21 @@ export default function Navbar() {
   const router = useRouter();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const profileModalRef = useRef<HTMLDivElement>(null);
-  const { user, logout } = useAuthStore();
+  const { user, logout, verifySession } = useAuthStore();
+
 
   const toggleSideMenu = () => setSideMenu(!isSideMenuOpen);
   const toggleProfileModal = () => setProfileModalOpen(!isProfileModalOpen);
+
+    useEffect(() => {
+        const checkAndUpdateUserState = async () => {
+            if (user) {
+                await verifySession();
+            }
+        };
+
+        checkAndUpdateUserState();
+    }, [user, verifySession, router]);
 
   const handleLogout = async () => {
     await logout();
@@ -75,6 +87,8 @@ export default function Navbar() {
     setSideMenu(false);
     router.push(path);
   };
+
+  console.log("user: ", user);
 
   return (
     <nav className="sticky top-0 z-50 bg-gradient-to-r from-purple-800 via-indigo-800 to-blue-800 shadow-md text-white">
@@ -89,6 +103,7 @@ export default function Navbar() {
           priority={true}
           className="cursor-pointer hover:opacity-90 transition-opacity"
         />
+          {/* {user && <ClearStorageButton />} */}
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">

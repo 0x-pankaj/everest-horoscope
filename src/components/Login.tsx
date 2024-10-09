@@ -6,6 +6,7 @@ import React, {FormEvent, useEffect, useState} from "react";
 import { useAuthStore } from "@/store/Auth";
 import toast from "react-hot-toast";
 import { AppwriteException } from "appwrite";
+import { account } from "@/appwrite/clientConfig";
 
 const Login = () => {
     const authStore = useAuthStore();
@@ -22,20 +23,16 @@ const Login = () => {
         e.preventDefault()
         try {
             console.log("form data: ", formData);
-            const success =  await authStore.login(formData.email, formData.password);
-
-            if(success.success) {
-                
-                toast.success("login successfully")
-                router.push("/");
-            }
-            if(success.error)
-            {
-                setError(success.error?.message)
-            }
-        }catch(err: any) {
-            setError(err.message)
+            const result = await authStore.login(formData.email, formData.password)
             
+            if (result.success) {
+                toast.success("Login successful")
+                router.push("/");
+            } else {
+                setError(result.error?.message || "Login failed")
+            }
+        } catch (err: any) {
+            setError(err.message)
         }
     }
 

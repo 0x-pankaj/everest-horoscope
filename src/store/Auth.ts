@@ -31,8 +31,6 @@ interface IAuthStore {
 
     logout(): Promise<void>;
     updateBalance: (newBalance: number) => void;
-    forgotPassword(email: string): Promise<{ success: boolean; error?: AppwriteException | null }>;
-    verifyAccount(userId: string, secret: string): Promise<{ success: boolean; error?: AppwriteException | null }>;
 }
 
 export const useAuthStore = create<IAuthStore>()(
@@ -83,9 +81,9 @@ export const useAuthStore = create<IAuthStore>()(
                 try {
                     console.log("create account hitted")
                     const x = await account.create(ID.unique(), email, password, name);
-                    const session = await account.createEmailPasswordSession(email, password);
+                    // const session = await account.createEmailPasswordSession(email, password);
 
-                    const link = await account.createVerification("http://localhost:3000/verify-account");
+                    // const link = await account.createVerification("http://localhost:3000/verify-account");
 
                     return { success: true }
                 } catch (error) {
@@ -97,8 +95,11 @@ export const useAuthStore = create<IAuthStore>()(
             async logout() {
                 try {
                     console.log("logoutcalled")
+                    localStorage.clear();
                     await account.deleteSession("current");
                     set({ session: null, user: null, roles: [] });
+                    // localStorage.removeItem('auth'); // Clear the persisted state
+
                 } catch (error) {
                     console.log("error while logout: ", error);
                 }
