@@ -31,7 +31,10 @@ interface IAuthStore {
 
     logout(): Promise<void>;
     updateBalance: (newBalance: number) => void;
+    forgotPassword(email: string): Promise<{ success: boolean; error?: AppwriteException | null }>;
+    verifyAccount(userId: string, secret: string): Promise<{ success: boolean; error?: AppwriteException | null }>;
 }
+
 
 export const useAuthStore = create<IAuthStore>()(
     persist(
