@@ -80,11 +80,11 @@ const DobComponent: React.FC = () => {
     if (!user) return null;
 
     return (
-        <div className={` ${hidden ? "hidden" : "p-4" }`}>            
+        <div className={` ${hidden ? "hidden" : "p-4 m-4" }`}>            
             {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-scroll">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h2 className="text-xl font-semibold mb-4">Set Your Date and Place of Birth</h2>
+                        <h2 className="text-xl font-semibold py-4 my-6">Set Your Date and Place of Birth</h2>
                         {error && <p className="text-red-500 mb-4">{error}</p>}
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <input

@@ -60,19 +60,26 @@ export const useAuthStore = create<IAuthStore>()(
 
             async login(email, password) {
                 try {
+                    // First, try to get the current session
+                    try {
+                        await account.getSession("current");
+                        // If this succeeds, we have an active session
+                        console.log("Active session found, logging out first");
+                        await account.deleteSession("current");
+                    } catch (sessionError) {
+                        // No active session, proceed with login
+                        console.log("No active session found, proceeding with login");
+                    }
 
+                    // Now attempt to create a new session
                     const session = await account.createEmailPasswordSession(email, password);
                     const user = await account.get();
-                    // if (!user.emailVerification){
-                    //      const checkVerification = await account.createVerification("http://localhost:3000/verify-account");
-                    //      return {success: true}
-                    // }
                     const roles = user.labels || [];
-                    console.log("session, user ", session, user);
+                    console.log("New session created, user logged in");
                     set({ user: user, session: session, roles: roles })
                     return { success: true }
                 } catch (error) {
-                    console.log("error while login : ", error);
+                    console.log("Error while login: ", error);
                     return { success: false, error: error instanceof AppwriteException ? error : null }
                 }
             },
