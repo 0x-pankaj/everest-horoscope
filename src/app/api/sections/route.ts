@@ -1,6 +1,6 @@
 // app/api/sections/route.ts
 import { NextResponse } from 'next/server';
-import { ID } from 'appwrite';
+import { ID, Query } from 'appwrite';
 import { database } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 
@@ -8,7 +8,10 @@ export async function GET() {
   try {
     const response = await database.listDocuments(
       conf.appwriteHoroscopeDatabaseId,
-      conf.appwriteQuestionCollectionId
+      conf.appwriteQuestionCollectionId,
+      [
+        Query.limit(100)
+      ]
     );
     return NextResponse.json(response.documents);
   } catch (error) {

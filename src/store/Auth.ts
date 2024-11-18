@@ -1,3 +1,5 @@
+//src/store/Auth.ts
+
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
@@ -6,12 +8,15 @@ import { AppwriteException, ID, Models } from "appwrite";
 
 import { account } from "@/appwrite/clientConfig";
 
+type BalanceOperation = 'ADD' | 'SUBTRACT';
+
 interface IAuthStore {
     session: Models.Session | null;
     user: Models.User<Models.Preferences> | null;
     roles: string[];
     hydrated: boolean;
-
+    
+    
     setHydrated(): void;
     updateUser: (updatedUser: Models.User<Models.Preferences>) => void;
     verifySession(): Promise<void>;
@@ -30,7 +35,13 @@ interface IAuthStore {
     ): Promise<{ success: boolean; error?: AppwriteException | null }>;
 
     logout(): Promise<void>;
-    updateBalance: (newBalance: number) => void;
+
+    updateBalance: (amount: number, operation: BalanceOperation) => Promise<{ 
+        success: boolean; 
+        newBalance: number | null;
+        error?: string; 
+    }>;
+
     forgotPassword(email: string): Promise<{ success: boolean; error?: AppwriteException | null }>;
     verifyAccount(userId: string, secret: string): Promise<{ success: boolean; error?: AppwriteException | null }>;
 }
@@ -95,6 +106,10 @@ export const useAuthStore = create<IAuthStore>()(
 
                     // const link = await account.createVerification("http://localhost:3000/verify-account");
 
+                    await account.updatePrefs({
+                        balance: 0
+                    });
+
                     return { success: true }
                 } catch (error) {
                     console.log("error while creating account: ", error);
@@ -108,6 +123,7 @@ export const useAuthStore = create<IAuthStore>()(
                     localStorage.clear();
                     await account.deleteSession("current");
                     set({ session: null, user: null, roles: [] });
+                    console.log("logout done!");
                     // localStorage.removeItem('auth'); // Clear the persisted state
 
                 } catch (error) {
@@ -117,7 +133,7 @@ export const useAuthStore = create<IAuthStore>()(
 
             async forgotPassword(email: string) {
                 try {
-                    await account.createRecovery(email, 'http://localhost:3000/reset-password');
+                    await account.createRecovery(email, `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password`);
                     return { success: true };
                 } catch (error) {
                     console.log("Error in forgot password: ", error);
@@ -127,7 +143,6 @@ export const useAuthStore = create<IAuthStore>()(
 
             async verifyAccount(userId: string, secret: string) {
                 try {
-
                     await account.updateVerification(userId, secret);
                     return { success: true };
                 } catch (error) {
@@ -136,9 +151,66 @@ export const useAuthStore = create<IAuthStore>()(
                 }
             },
 
-            updateBalance: (newBalance: number) => set((state) => ({
-                user: state.user ? { ...state.user, balance: newBalance } : null
-            })),
+            updateBalance: async (amount: number, operation: BalanceOperation) => {
+                try {
+                    const currentUser = await account.get();
+                    if (!currentUser?.prefs) {
+                        return {
+                            success: false,
+                            newBalance: null,
+                            error: "User preferences not found"
+                        };
+                    }
+
+                    // Get current balance, defaulting to 0 if undefined
+                    const currentBalance = (currentUser.prefs.balance as number) || 0;
+                    
+                    // Calculate new balance based on operation
+                    let newBalance: number;
+                    if (operation === 'ADD') {
+                        newBalance = currentBalance + amount;
+                    } else {
+                        // Check if there's enough balance for subtraction
+                        if (currentBalance < amount) {
+                            return {
+                                success: false,
+                                newBalance: currentBalance,
+                                error: "Insufficient balance"
+                            };
+                        }
+                        newBalance = currentBalance - amount;
+                    }
+
+                    // Update preferences in Appwrite
+                    await account.updatePrefs({
+                        balance: newBalance
+                    });
+
+                    // Update local state
+                    set((state) => ({
+                        user: state.user ? {
+                            ...state.user,
+                            prefs: {
+                                ...state.user.prefs,
+                                balance: newBalance
+                            }
+                        } : null
+                    }));
+
+                    return {
+                        success: true,
+                        newBalance: newBalance,
+                        error: undefined
+                    };
+                } catch (error) {
+                    console.error("Error updating balance:", error);
+                    return {
+                        success: false,
+                        newBalance: null,
+                        error: error instanceof Error ? error.message : "Unknown error occurred"
+                    };
+                }
+            },
         })),
 
         {

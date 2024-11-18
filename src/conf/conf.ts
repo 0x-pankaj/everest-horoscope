@@ -23,7 +23,8 @@ const conf = {
     appwriteServicesCollectionId: String(process.env.NEXT_PUBLIC_SERVICES_COLLECTION_ID),
     tinymceApiKey: String(process.env.NEXT_PUBLIC_TINYMCE_API_KEY),
     appwriteCrouselCollectionId: String(process.env.NEXT_PUBLIC_CROUSEL_COLLECTION_ID),
-    appwriteTestimonialCollectionId: String(process.env.NEXT_PUBLIC_APPWRITE_TESTIMONIALS_COLLECTION_ID)
+    appwriteTestimonialCollectionId: String(process.env.NEXT_PUBLIC_APPWRITE_TESTIMONIALS_COLLECTION_ID),
+    appwriteTransactionHistoryCollectionId: String(process.env.NEXT_PUBLIC_TRANSACTIONS_HISTROY_COLLECTION_ID)
 }
 
 export default conf;  

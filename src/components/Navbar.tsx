@@ -75,7 +75,7 @@ export default function Navbar() {
         };
 
         checkAndUpdateUserState();
-    }, [user, verifySession, router]);
+    }, []);
 
   const handleLogout = async () => {
     await logout();
