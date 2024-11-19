@@ -74,7 +74,7 @@ const QuestionsComponent: React.FC = () => {
       if (!balanceCheck.success) {
         // toast.error(balanceCheck.error);
         if (balanceCheck.error?.includes("Insufficient balance")) {
-          router.push('/credits');
+          router.push('/credit');
         }
         return;
       }
