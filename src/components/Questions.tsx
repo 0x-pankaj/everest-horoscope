@@ -72,7 +72,9 @@ const QuestionsComponent: React.FC = () => {
       const balanceCheck = await checkAndDeductBalance(INITIAL_QUESTION_COST);
       
       if (!balanceCheck.success) {
-        // toast.error(balanceCheck.error);
+        if(balanceCheck.error){
+          toast.error(balanceCheck.error);
+        }
         if (balanceCheck.error?.includes("Insufficient balance")) {
           router.push('/credit');
         }

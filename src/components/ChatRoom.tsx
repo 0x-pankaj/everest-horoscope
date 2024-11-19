@@ -187,7 +187,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
       const balanceCheck = await checkAndDeductBalance(MESSAGE_COST);
       
       if (!balanceCheck.success) {
-        // toast.error(balanceCheck.error);
+        if(balanceCheck.error){
+          toast.error(balanceCheck.error);
+        }
         if (balanceCheck.error?.includes("Insufficient balance")) {
           router.push('/credit');
         }
