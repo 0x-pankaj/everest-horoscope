@@ -8,20 +8,40 @@ import { Card } from "@/components/ui/card";
 
 export default function CreditsPage() {
   const [customAmount, setCustomAmount] = useState<string>("");
+  const [isProcessing, setIsProcessing] = useState(false);
   const user = useAuthStore((state) => state.user);
+  const updateBalance = useAuthStore((state) => state.updateBalance);
   const currentBalance = user?.prefs?.balance ?? 0;
 
-  const handleSuccess = () => {
-    toast.success("Payment completed successfully!");
+  const handleSuccess = async (paidAmount: number) => {
+    try {
+      setIsProcessing(true);
+      const result = await updateBalance(paidAmount, 'ADD');
+      
+      if (result.success) {
+        toast.success(`Successfully added $${paidAmount} to your balance!`);
+        setCustomAmount(""); // Reset custom amount if it was used
+      } else {
+        toast.error(result.error || "Failed to update balance");
+        // You might want to log this error or handle it differently
+        console.error("Balance update failed:", result.error);
+      }
+    } catch (error) {
+      toast.error("Failed to update balance. Please contact support.");
+      console.error("Balance update error:", error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleError = (error: string) => {
     toast.error(error);
+    setIsProcessing(false);
   };
 
   const validateCustomAmount = (value: string) => {
     const numValue = parseFloat(value);
-    return !isNaN(numValue) && numValue > 0 && numValue <= 1000; // Add maximum limit if needed
+    return !isNaN(numValue) && numValue > 0 && numValue <= 1000;
   };
 
   return (
@@ -32,7 +52,7 @@ export default function CreditsPage() {
           <div>
             <h2 className="text-lg font-medium text-gray-700">Current Balance</h2>
             <p className="text-3xl font-bold text-primary mt-2">
-              ${currentBalance.toFixed(2)}
+              ${Number(currentBalance).toFixed(2)}
             </p>
           </div>
           <div className="text-sm text-gray-500">
@@ -52,8 +72,9 @@ export default function CreditsPage() {
             
             <PayPalButton
               amount={amount}
-              onSuccess={handleSuccess}
+              onSuccess={() => handleSuccess(amount)}
               onError={handleError}
+              // disabled={isProcessing}
             />
           </div>
         ))}
@@ -70,11 +91,12 @@ export default function CreditsPage() {
                 type="number"
                 value={customAmount}
                 onChange={(e) => setCustomAmount(e.target.value)}
-                className="block w-full rounded-md border-0 py-2 pl-7 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 py-2 pl-7 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="Enter amount"
                 min="1"
                 max="1000"
                 step="0.01"
+                disabled={isProcessing}
               />
             </div>
           </div>
@@ -88,8 +110,9 @@ export default function CreditsPage() {
           {validateCustomAmount(customAmount) && (
             <PayPalButton
               amount={parseFloat(customAmount)}
-              onSuccess={handleSuccess}
+              onSuccess={() => handleSuccess(parseFloat(customAmount))}
               onError={handleError}
+              // disabled={isProcessing}
             />
           )}
         </div>

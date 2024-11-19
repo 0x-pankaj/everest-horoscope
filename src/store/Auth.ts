@@ -10,18 +10,31 @@ import { account } from "@/appwrite/clientConfig";
 
 type BalanceOperation = 'ADD' | 'SUBTRACT';
 
+// Constants for costs
+export const MESSAGE_COST = 1; // Cost per message
+export const INITIAL_QUESTION_COST = 2; // Cost for starting a new chat
+
 interface IAuthStore {
     session: Models.Session | null;
     user: Models.User<Models.Preferences> | null;
     roles: string[];
     hydrated: boolean;
+
+    checkAndDeductBalance: (amount: number) => Promise<{
+        success: boolean;
+        error?: string;
+      }>;
+      trackQuestion: () => Promise<{
+        success: boolean;
+        error?: string;
+      }>;
     
     
     setHydrated(): void;
     updateUser: (updatedUser: Models.User<Models.Preferences>) => void;
     verifySession(): Promise<void>;
     login(
-        email: string,
+        email: string,  
         password: string
     ): Promise<{
         success: boolean;
@@ -107,8 +120,8 @@ export const useAuthStore = create<IAuthStore>()(
                     // const link = await account.createVerification("http://localhost:3000/verify-account");
 
                     await account.updatePrefs({
-                        balance: 0
-                    });
+                        balance: 0  // This will be stored as a number
+                    })
 
                     return { success: true }
                 } catch (error) {
@@ -162,15 +175,22 @@ export const useAuthStore = create<IAuthStore>()(
                         };
                     }
 
-                    // Get current balance, defaulting to 0 if undefined
-                    const currentBalance = (currentUser.prefs.balance as number) || 0;
+                    // Get current balance, converting from string to number if needed
+                    const currentBalance = Number(currentUser.prefs.balance || 0);
                     
+                    if (isNaN(currentBalance)) {
+                        return {
+                            success: false,
+                            newBalance: null,
+                            error: "Invalid current balance"
+                        };
+                    }
+
                     // Calculate new balance based on operation
                     let newBalance: number;
                     if (operation === 'ADD') {
                         newBalance = currentBalance + amount;
                     } else {
-                        // Check if there's enough balance for subtraction
                         if (currentBalance < amount) {
                             return {
                                 success: false,
@@ -181,19 +201,20 @@ export const useAuthStore = create<IAuthStore>()(
                         newBalance = currentBalance - amount;
                     }
 
-                    // Update preferences in Appwrite
-                    await account.updatePrefs({
-                        balance: newBalance
-                    });
+                    // Preserve existing preferences and update balance
+                    const updatedPrefs = {
+                        ...currentUser.prefs,  // Keep all existing preferences
+                        balance: newBalance    // Update only the balance
+                    };
 
-                    // Update local state
+                    // Update preferences in Appwrite
+                    await account.updatePrefs(updatedPrefs);
+
+                    // Update local state while preserving other preferences
                     set((state) => ({
                         user: state.user ? {
                             ...state.user,
-                            prefs: {
-                                ...state.user.prefs,
-                                balance: newBalance
-                            }
+                            prefs: updatedPrefs
                         } : null
                     }));
 
@@ -211,6 +232,85 @@ export const useAuthStore = create<IAuthStore>()(
                     };
                 }
             },
+            checkAndDeductBalance: async (amount: number) => {
+                try {
+                  const user = await account.get();
+                  if (!user?.prefs) {
+                    return {
+                      success: false,
+                      error: "User not logged in"
+                    };
+                  }
+        
+                  const currentBalance = Number(user.prefs.balance || 0);
+                  
+                  if (currentBalance < amount) {
+                    return {
+                      success: false,
+                      error: `Insufficient balance. Required: $${amount}, Available: $${currentBalance}`
+                    };
+                  }
+        
+                  // Update balance
+                  const newBalance = currentBalance - amount;
+                  const updatedPrefs = {
+                    ...user.prefs,
+                    balance: newBalance
+                  };
+        
+                  await account.updatePrefs(updatedPrefs);
+        
+                  set((state) => ({
+                    user: state.user ? {
+                      ...state.user,
+                      prefs: updatedPrefs
+                    } : null
+                  }));
+        
+                  return { success: true };
+                } catch (error) {
+                  console.error("Error in checkAndDeductBalance:", error);
+                  return {
+                    success: false,
+                    error: "Failed to process payment"
+                  };
+                }
+              },
+        
+              trackQuestion: async () => {
+                try {
+                  const user = await account.get();
+                  if (!user?.prefs) {
+                    return {
+                      success: false,
+                      error: "User not logged in"
+                    }; 
+                  }
+        
+                  const currentQuestions = Number(user.prefs.questionsAsked || 0);
+                  const updatedPrefs = {
+                    ...user.prefs,
+                    questionsAsked: currentQuestions + 1
+                  };
+        
+                  await account.updatePrefs(updatedPrefs);
+        
+                  set((state) => ({
+                    user: state.user ? {
+                      ...state.user,
+                      prefs: updatedPrefs
+                    } : null
+                  }));
+        
+                  return { success: true };
+                } catch (error) {
+                  console.error("Error in trackQuestion:", error);
+                  return {
+                    success: false,
+                    error: "Failed to track question"
+                  };
+                }
+              }
         })),
 
         {

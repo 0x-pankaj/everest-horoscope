@@ -45,7 +45,7 @@ export async function POST(
           paypalOrderId: orderId,
           amount: parseFloat(amount),
           status: 'completed',
-          timestamp: new Date().toISOString()
+          // timestamp: new Date().toISOString()
         }
       );
     }

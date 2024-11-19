@@ -6,6 +6,10 @@ import Image from "next/legacy/image";
 import Link from 'next/link';
 import { FaSpinner } from 'react-icons/fa';
 import { useChatStore } from '@/store/chatStore';
+import { INITIAL_QUESTION_COST } from '@/store/Auth';
+import { useAuthStore } from '@/store/Auth';
+import toast from 'react-hot-toast';
+
 
 interface Section {
   $id: string;
@@ -23,6 +27,7 @@ const QuestionsComponent: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
   const router = useRouter();
   const addQuestion = useChatStore((state) => state.addQuestion);
+  const {user , checkAndDeductBalance, trackQuestion} = useAuthStore();
 
   useEffect(() => {
     fetchSections();
@@ -31,7 +36,7 @@ const QuestionsComponent: React.FC = () => {
   const fetchSections = async () => {
     try {
       const response = await fetch('/api/sections');
-      const data = await response.json();
+      const data = await response.json();  
       if (Array.isArray(data)) {
         setSections(data);
       } else {
@@ -45,9 +50,50 @@ const QuestionsComponent: React.FC = () => {
     }
   };
 
-  const handleQuestionClick = (question: string) => {
-    addQuestion(question);
-    router.push('/chat');
+  // const handleQuestionClick = (question: string) => {
+  //   addQuestion(question);
+  //   router.push('/chat');
+  // };
+
+  const handleQuestionClick = async (question: string) => {
+    if (!user) {
+      toast.error("Please login to ask questions");
+      router.push('/login');
+      return;
+    }
+  
+    // Show confirmation dialog
+    if (!confirm(`This question will cost $${INITIAL_QUESTION_COST}. Do you want to continue?`)) {
+      return;
+    }
+  
+    try {
+      // Check and deduct balance
+      const balanceCheck = await checkAndDeductBalance(INITIAL_QUESTION_COST);
+      
+      if (!balanceCheck.success) {
+        // toast.error(balanceCheck.error);
+        if (balanceCheck.error?.includes("Insufficient balance")) {
+          router.push('/credits');
+        }
+        return;
+      }
+  
+      // Track question count
+      const trackResult = await trackQuestion();
+      if (!trackResult.success) {
+        toast.error("Failed to process question");
+        return;
+      }
+  
+      // Add question to chat and navigate
+      addQuestion(question);
+      router.push('/chat');
+      
+    } catch (error) {
+      console.error("Error processing question:", error);
+      toast.error("Failed to process question");
+    }
   };
 
   const handleSectionClick = (section: Section) => {

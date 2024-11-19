@@ -4,8 +4,10 @@ import { useChatStore } from '@/store/chatStore';
 import { Models } from 'appwrite';
 import React, { useEffect, useRef, useState } from 'react';
 import { FaPaperPlane, FaChevronUp, FaChevronDown, FaLanguage } from 'react-icons/fa';
-import {useAuthStore} from '@/store/Auth'
+import {MESSAGE_COST, useAuthStore} from '@/store/Auth'
 import toast from 'react-hot-toast';
+import {useRouter} from 'next/navigation';
+
 
 interface ChatRoomProps {
   senderId: string;
@@ -22,6 +24,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isFetched = useRef(false);
+  const router = useRouter();
+
+  const {trackQuestion, checkAndDeductBalance} = useAuthStore();
 
   const [showTranslationModal, setShowTranslationModal] = useState(false);
   const [sourceLanguage, setSourceLanguage] = useState("");
@@ -155,19 +160,59 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
     return null;
   }
 
+  // const handleSendMessage = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+   
+  //   if (inputMessage.trim()) {
+  //     if(sourceLanguage && targetLanguage) {
+  //       await sendMessage(senderId, receiverId, inputMessage.trim(), user?.name, sourceLanguage, targetLanguage, true)
+  //       setInputMessage("")
+  //     }else {
+  //       await sendMessage(senderId, receiverId, inputMessage.trim(), user?.name,sourceLanguage, targetLanguage, false );
+  //       setInputMessage('');
+
+  //     }
+      
+  //   }
+  // };
+
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-   
-    if (inputMessage.trim()) {
-      if(sourceLanguage && targetLanguage) {
-        await sendMessage(senderId, receiverId, inputMessage.trim(), user?.name, sourceLanguage, targetLanguage, true)
-        setInputMessage("")
-      }else {
-        await sendMessage(senderId, receiverId, inputMessage.trim(), user?.name,sourceLanguage, targetLanguage, false );
-        setInputMessage('');
-
+    
+    if (!inputMessage.trim()) return;
+  
+    try {
+      // Check and deduct balance for message
+      const balanceCheck = await checkAndDeductBalance(MESSAGE_COST);
+      
+      if (!balanceCheck.success) {
+        // toast.error(balanceCheck.error);
+        if (balanceCheck.error?.includes("Insufficient balance")) {
+          router.push('/credit');
+        }
+        return;
+      }
+  
+      // Track question count
+      const trackResult = await trackQuestion();
+      if (!trackResult.success) {
+        toast.error("Failed to process message");
+        return;
+      }
+  
+      // Send message with translation if enabled
+      if (sourceLanguage && targetLanguage) {
+        await sendMessage(senderId, receiverId, inputMessage.trim(), user?.name, sourceLanguage, targetLanguage, true);
+      } else {
+        await sendMessage(senderId, receiverId, inputMessage.trim(), user?.name, sourceLanguage, targetLanguage, false);
       }
       
+      setInputMessage('');
+      
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message");
     }
   };
 

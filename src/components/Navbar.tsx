@@ -218,6 +218,12 @@ function ProfileModal({ onLogout }: ProfileModalProps) {
             className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
                 Get All Messages
             </button>
+            <button onClick={()=> {
+                router.push(`/credit`)
+            }} 
+            className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
+                Your Credits
+            </button>
             <button
             onClick={()=> router.push("/dashboard")}
             className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
@@ -325,6 +331,13 @@ function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
                       <button onClick={() => handleNavigation("/manage-profile")} className="text-neutral-400 transition-all hover:text-black/90">
                           Manage Profile
                       </button>
+                      <button
+                        onClick={()=> {
+                          router.push(`/credit`)
+                        }}
+                      >
+                        YOur Credits
+                        </button>
                       <button onClick={() => handleNavigation("/dashboard")} className="text-neutral-400 transition-all hover:text-black/90">
                           Dashboard
                       </button>
