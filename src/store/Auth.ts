@@ -9,6 +9,7 @@ import { AppwriteException, ID, Models } from "appwrite";
 import { account } from "@/appwrite/clientConfig";
 
 type BalanceOperation = 'ADD' | 'SUBTRACT';
+export type UserRole = 'admin' | 'astrologer' | 'translator' | 'simpleuser';
 
 // Constants for costs
 export const MESSAGE_COST = 1; // Cost per message

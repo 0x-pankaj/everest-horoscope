@@ -16,6 +16,8 @@ import conf from "@/conf/conf";
 import { Query } from "appwrite";
 import ClearStorageButton from "./ClearStorageButton";
 
+import { useRoleAccess } from "@/hooks/useRoleAccess";
+
 interface NavChild {
   label: string;
   link: string;
@@ -62,6 +64,7 @@ export default function Navbar() {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const profileModalRef = useRef<HTMLDivElement>(null);
   const { user, logout, verifySession } = useAuthStore();
+  const {isAdmin, isAstrologer, isTranslator} = useRoleAccess();
 
 
   const toggleSideMenu = () => setSideMenu(!isSideMenuOpen);
@@ -210,25 +213,28 @@ interface ProfileModalProps {
 function ProfileModal({ onLogout }: ProfileModalProps) {
     const router = useRouter();
     const {user} = useAuthStore();
+    const {isAdmin, isAstrologer, isTranslator} = useRoleAccess();
     return (
         <div className="absolute right-0 top-10 w-48 flex-col gap-1 rounded-lg bg-yellow-50 py-3 shadow-md">
+
+          {
+            (isAdmin() || isTranslator()) ?  <div>
+
             <button onClick={()=> {
                 router.push(`/chat/${user?.$id}`)
             }} 
             className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
                 Get All Messages
             </button>
-            <button onClick={()=> {
-                router.push(`/credit`)
-            }} 
-            className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
-                Your Credits
-            </button>
+
             <button
             onClick={()=> router.push("/dashboard")}
             className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
                 Dashboard
             </button>
+            </div> : null
+          }
+          
             <button 
                 onClick={() => router.push('/profile')}
                 className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
@@ -241,14 +247,26 @@ function ProfileModal({ onLogout }: ProfileModalProps) {
             >
                 Logout
             </button>
-            <button   
-                onClick={()=> {
-                    router.push(`/translator/${user?.$id}`)
-                }}
-                className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
-            >
-                Translator
+
+            {
+              (isAdmin() || isTranslator()) ? 
+              <button   
+                  onClick={()=> {
+                      router.push(`/translator/${user?.$id}`)
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
+              >
+                  Translator
+              </button> : null
+            }
+
+            <button onClick={()=> {
+                router.push(`/credit`)
+            }} 
+            className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
+                Your Credits
             </button>
+
             <button 
                 onClick={() => {
                     // Implement logout from all sessions

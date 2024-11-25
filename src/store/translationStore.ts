@@ -1,6 +1,6 @@
 // src/store/translationStore.ts
 import { create } from 'zustand';
-import { database, client } from '@/appwrite/clientConfig';
+import { database} from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import {  Models, Query  } from 'appwrite';
 import { persist } from 'zustand/middleware';

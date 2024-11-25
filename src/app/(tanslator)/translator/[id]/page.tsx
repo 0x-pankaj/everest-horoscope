@@ -8,6 +8,7 @@ import { client } from '@/appwrite/clientConfig';
 import conf from '@/conf/conf';
 import { Message } from '@/store/translationStore';
 import Navbar from '@/components/Navbar';
+import UnauthorizedPage from '@/components/Unauthorized';
 
 const TranslatorPage = () => {
   const params = useParams();
@@ -77,7 +78,7 @@ const TranslatorPage = () => {
 
 
   if (!translator) {
-    return <div> Unauthorized!</div>;
+    return <UnauthorizedPage />;
   }
   // if(error) {
   //   return <div>Error: {error}</div>
