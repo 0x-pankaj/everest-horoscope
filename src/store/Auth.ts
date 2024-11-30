@@ -101,10 +101,18 @@ export const useAuthStore = create<IAuthStore>()(
 
                     // Now attempt to create a new session
                     const session = await account.createEmailPasswordSession(email, password);
-                    const user = await account.get();
-                    const roles = user.labels || [];
+
+                    const usercreate = await account.get();
+                     if (!usercreate.emailVerification) {
+                        // await account.deleteSession();
+                        // await account.createVerification("http://localhost:3000/verify-account")
+                        await account.createVerification("https://everestastro.com/verify-account")
+                        alert("Please verify email check your email")
+                        return {success: false}
+                     }
+                    const roles = usercreate.labels || [];
                     console.log("New session created, user logged in");
-                    set({ user: user, session: session, roles: roles })
+                    set({ user: usercreate, session: session, roles: roles })
                     return { success: true }
                 } catch (error) {
                     console.log("Error while login: ", error);
@@ -116,10 +124,10 @@ export const useAuthStore = create<IAuthStore>()(
                 try {
                     console.log("create account hitted")
                     const x = await account.create(ID.unique(), email, password, name);
-                    // const session = await account.createEmailPasswordSession(email, password);
+                    const session = await account.createEmailPasswordSession(email, password);
 
-                    // const link = await account.createVerification("http://localhost:3000/verify-account");
-
+                    // const link = await account.createVerification(`http://localhost:3000/verify-account`)
+                    const link = await account.createVerification(`https://everstastro.com/verify-account`)
                     await account.updatePrefs({
                         balance: 0  // This will be stored as a number
                     })

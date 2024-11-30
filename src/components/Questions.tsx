@@ -9,6 +9,7 @@ import { useChatStore } from '@/store/chatStore';
 import { INITIAL_QUESTION_COST } from '@/store/Auth';
 import { useAuthStore } from '@/store/Auth';
 import toast from 'react-hot-toast';
+import VastoForm from './VastoForm';
 
 
 interface Section {
@@ -193,6 +194,8 @@ const QuestionsComponent: React.FC = () => {
           </div>
         )}
       </div>
+
+      <VastoForm />
     </div>
   );
 };

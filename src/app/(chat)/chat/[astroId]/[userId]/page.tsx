@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import ChatRoom from '@/components/ChatRoom';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useAuthStore } from '@/store/Auth';
+import VastoForm from '@/components/VastoForm';
+import DataFetchButton from '@/components/DataFetchButton';
 
 export default function ChatRoomPage({
   params,
@@ -39,6 +41,7 @@ export default function ChatRoomPage({
       <div className="flex-grow">
         <div className="max-w-7xl mx-auto h-full">
           <ChatRoom senderId={user.$id} receiverId={params.astroId} />
+          <DataFetchButton userId={params.userId} />
         </div>
       </div>
     </div>

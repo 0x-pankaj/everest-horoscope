@@ -218,7 +218,7 @@ function ProfileModal({ onLogout }: ProfileModalProps) {
         <div className="absolute right-0 top-10 w-48 flex-col gap-1 rounded-lg bg-yellow-50 py-3 shadow-md">
 
           {
-            (isAdmin() || isTranslator()) ?  <div>
+            (isAdmin() || isTranslator() || isAstrologer() ) ?  <div>
 
             <button onClick={()=> {
                 router.push(`/chat/${user?.$id}`)
@@ -321,6 +321,7 @@ function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
   const router = useRouter();
 
   const {user, logout} = useAuthStore();
+  const {isAdmin, isAstrologer, isTranslator} = useRoleAccess();
 
   const handleLogout = async() => {
       await logout();
@@ -342,13 +343,28 @@ function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
               {user ? (
                   <>
                       <div>{user.name}</div>
-                      <button onClick={()=> {
+
+                    {
+                      (isAdmin() || isAstrologer() ) ? (
+                        <>
+                         <button onClick={()=> {
                           router.push(`/chat/${user.$id}`)
                           closeSideMenu();
                       }} >Get All Messages</button>
+
+                      <button onClick={() => handleNavigation("/dashboard")} className="text-neutral-400 transition-all hover:text-black/90">
+                          Dashboard
+                      </button>
+                        </>
+                      ): null
+                    }
+
+                     
+
                       <button onClick={() => handleNavigation("/manage-profile")} className="text-neutral-400 transition-all hover:text-black/90">
                           Manage Profile
                       </button>
+
                       <button
                         onClick={()=> {
                           router.push(`/credit`)
@@ -356,9 +372,6 @@ function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
                       >
                         YOur Credits
                         </button>
-                      <button onClick={() => handleNavigation("/dashboard")} className="text-neutral-400 transition-all hover:text-black/90">
-                          Dashboard
-                      </button>
                       <button onClick={handleLogout} className="text-neutral-400 transition-all hover:text-black/90">
                           Logout
                       </button>

@@ -5,8 +5,10 @@ import { NextRequest, NextResponse } from 'next/server';;
 export async function GET(
   request: NextRequest,
   { params }: { params: { userId: string } }
+  
 ) {
   try {
+  console.log("paramsId: ", params.userId);
     const user = await users.get(params.userId);
     return NextResponse.json(user);
   } catch (error) {

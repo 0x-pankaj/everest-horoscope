@@ -17,10 +17,19 @@ export interface User {
     // prefs: Record<string, any>;
     prefs: {
       dob?: string;
+      balance?: number;
+      birthCity?: string;
+      birthCountry?: string;
+      birthDistrict?: string;
+      birthState?: string;
+      [key: string]: any; 
     }
+    
   }
 
   export interface UserFilters {
     user: User;
     labels?: string[];
   }
+
+  
