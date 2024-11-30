@@ -7,6 +7,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { useAuthStore } from '@/store/Auth';
 import VastoForm from '@/components/VastoForm';
 import DataFetchButton from '@/components/DataFetchButton';
+import { useRoleAccess } from '@/hooks/useRoleAccess';
 
 export default function ChatRoomPage({
   params,
@@ -15,6 +16,7 @@ export default function ChatRoomPage({
 }) {
   const router = useRouter();
   const { user } = useAuthStore();
+  const {isAdmin, isAstrologer} = useRoleAccess();
 
   if (!user) {
     // Handle unauthenticated user
@@ -41,7 +43,8 @@ export default function ChatRoomPage({
       <div className="flex-grow">
         <div className="max-w-7xl mx-auto h-full">
           <ChatRoom senderId={user.$id} receiverId={params.astroId} />
-          <DataFetchButton userId={params.userId} />
+          {(isAdmin() || isAstrologer()) ? <DataFetchButton userId={params.userId} /> : null}
+          
         </div>
       </div>
     </div>

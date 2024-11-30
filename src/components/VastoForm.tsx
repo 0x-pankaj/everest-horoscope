@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useStore } from 'zustand';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/router';
 
 
 export interface VastoFormData {
@@ -16,6 +18,7 @@ export interface VastoFormData {
   
 
 const VastoForm = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState<Omit<VastoFormData, 'houseMap'> & { houseMap: File | null }>({
     name: '',
     email: '',
@@ -120,7 +123,10 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
 
     // You might want to show a success message or redirect
-    console.log('Success:', response.data);
+    // console.log('Success:', response.data);
+    toast.success('Form submitted successfully!');
+    router.push('/chat');
+    
   } catch (error) {
     console.error('Error submitting form:', error);
     setError('Failed to submit form. Please try again.');
