@@ -8,7 +8,7 @@ export async function GET(
   
 ) {
   try {
-  console.log("paramsId: ", params.userId);
+    console.log("paramsId: ", params.userId);
     const user = await users.get(params.userId);
     return NextResponse.json(user);
   } catch (error) {

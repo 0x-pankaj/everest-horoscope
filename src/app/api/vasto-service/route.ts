@@ -4,6 +4,20 @@ import { storage, database} from '@/appwrite/clientConfig';
 import { ID } from 'appwrite';
 import conf from '@/conf/conf';
 
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+  try {
+    const response = await database.getDocument(
+      conf.appwriteHoroscopeDatabaseId,
+      conf.appwriteVastoServiceCollectionId,
+      params.id
+    );
+    console.log("response: ", response);
+    return NextResponse.json(response);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch services' }, { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();

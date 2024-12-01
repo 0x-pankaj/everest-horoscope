@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useStore } from 'zustand';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/Auth';
 
 
 export interface VastoFormData {
+    id: string;
     name: string;
     email: string;
     location: string;
@@ -19,7 +21,9 @@ export interface VastoFormData {
 
 const VastoForm = () => {
   const router = useRouter();
+  const user = useAuthStore(state => state.user);
   const [formData, setFormData] = useState<Omit<VastoFormData, 'houseMap'> & { houseMap: File | null }>({
+    id: '',
     name: '',
     email: '',
     location: '',
@@ -91,6 +95,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     const submitFormData = new FormData();
     
     // Handle each field separately with proper typing
+    submitFormData.append('id', user?.$id || '');
     submitFormData.append('name', formData.name);
     submitFormData.append('email', formData.email);
     submitFormData.append('location', formData.location);
@@ -113,6 +118,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     // Reset form on success
     setFormData({
+      id: '',
       name: '',
       email: '',
       location: '',
