@@ -56,6 +56,53 @@ const QuestionsComponent: React.FC = () => {
   //   router.push('/chat');
   // };
 
+  // const handleQuestionClick = async (question: string) => {
+  //   if (!user) {
+  //     toast.error("Please login to ask questions");
+  //     router.push('/login');
+  //     return;
+  //   }
+  
+  //   // Show confirmation dialog
+  //   if (!confirm(`This question will cost $${INITIAL_QUESTION_COST}. Do you want to continue?`)) {
+  //     return;
+  //   }
+  
+  //   try {
+  //     // checking question count and showing user that they have only 3, 2, 1 free questions left on basic of question count
+  //     const questionCount = user.prefs.questionsAsked || 0;
+  //     switch (questionCount) {
+  //     }
+  //     // Check and deduct balance
+  //     const balanceCheck = await checkAndDeductBalance(INITIAL_QUESTION_COST);
+      
+  //     if (!balanceCheck.success) {
+  //       if(balanceCheck.error){
+  //         toast.error(balanceCheck.error);
+  //       }
+  //       if (balanceCheck.error?.includes("Insufficient balance")) {
+  //         router.push('/credit');
+  //       }
+  //       return;
+  //     }
+  
+  //     // Track question count
+  //     const trackResult = await trackQuestion();
+  //     if (!trackResult.success) {
+  //       toast.error("Failed to process question");
+  //       return;
+  //     }
+  
+  //     // Add question to chat and navigate
+  //     addQuestion(question);
+  //     router.push('/chat');
+      
+  //   } catch (error) {
+  //     console.error("Error processing question:", error);
+  //     toast.error("Failed to process question");
+  //   }
+  // };
+
   const handleQuestionClick = async (question: string) => {
     if (!user) {
       toast.error("Please login to ask questions");
@@ -63,8 +110,63 @@ const QuestionsComponent: React.FC = () => {
       return;
     }
   
-    // Show confirmation dialog
-    if (!confirm(`This question will cost $${INITIAL_QUESTION_COST}. Do you want to continue?`)) {
+    const questionCount = Number(user.prefs.questionsAsked || 0);
+    const questionsRemaining = 3 - questionCount;
+    
+    let confirmMessage = "";
+    
+    if (questionCount < 3) {
+      // Show number of free questions remaining
+      if (questionsRemaining === 1) {
+        confirmMessage = `This is your last free question! You have ${questionsRemaining} free question remaining. Would you like to continue?`;
+      } else {
+        confirmMessage = `You have ${questionsRemaining} free questions remaining. Would you like to continue?`;
+      }
+    } else {
+      // Show cost for paid questions
+      confirmMessage = `This question will cost $${INITIAL_QUESTION_COST}. Do you want to continue?`;
+    }
+  
+    // Show custom toast notification instead of basic confirm
+    const shouldProceed = await new Promise<boolean>((resolve) => {
+      toast.custom((t) => (
+        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col justify-center it`}>
+          <div className="p-4">
+            <div className="flex items-start">
+              <div className="ml-3 flex-1">
+                <p className="text-sm font-medium text-gray-900">
+                  {confirmMessage}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex border-t border-gray-200">
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                resolve(true);
+              }}
+              className="flex-1 px-4 py-3 text-sm font-medium text-indigo-600 border-r border-gray-200 hover:text-indigo-500 focus:outline-none"
+            >
+              Continue
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                resolve(false);
+              }}
+              className="flex-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-500 focus:outline-none"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ), {
+        duration: 15000,
+      });
+    });
+
+    if (!shouldProceed) {
       return;
     }
   
@@ -73,7 +175,7 @@ const QuestionsComponent: React.FC = () => {
       const balanceCheck = await checkAndDeductBalance(INITIAL_QUESTION_COST);
       
       if (!balanceCheck.success) {
-        if(balanceCheck.error){
+        if (balanceCheck.error) {
           toast.error(balanceCheck.error);
         }
         if (balanceCheck.error?.includes("Insufficient balance")) {
@@ -87,6 +189,15 @@ const QuestionsComponent: React.FC = () => {
       if (!trackResult.success) {
         toast.error("Failed to process question");
         return;
+      }
+  
+      // If successful, show a success message with remaining free questions
+      if (questionCount < 2) { // Show remaining free questions only if there are any left after this question
+        toast.success(`Question submitted! You have ${questionsRemaining - 1} free questions remaining.`);
+      } else if (questionCount === 2) {
+        toast.success("Question submitted! This was your last free question.");
+      } else {
+        toast.success("Question submitted successfully!");
       }
   
       // Add question to chat and navigate
@@ -184,12 +295,24 @@ const QuestionsComponent: React.FC = () => {
                   </li>
                 ))}
               </ul>
+              <div 
+                className="flex justify-between"
+              >
               <button 
                 className="mt-4 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors duration-300 text-sm md:text-base"
                 onClick={() => setModalOpen(false)}
               >
                 Close
               </button>
+              <button
+                className="mt-4 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors duration-300 text-sm md:text-base"
+                onClick={()=> router.push("/chat")}
+              >
+                Ask Question
+                </button>
+
+                </div>
+              
             </div>
           </div>
         )}

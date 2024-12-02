@@ -11,9 +11,11 @@ import { account } from "@/appwrite/clientConfig";
 type BalanceOperation = 'ADD' | 'SUBTRACT';
 export type UserRole = 'admin' | 'astrologer' | 'translator' | 'simpleuser';
 
+
 // Constants for costs
 export const MESSAGE_COST = 1; // Cost per message
 export const INITIAL_QUESTION_COST = 2; // Cost for starting a new chat
+export const FREE_QUESTIONS_LIMIT = 3; // Number of free questions allowed
 
 interface IAuthStore {
     session: Models.Session | null;
@@ -250,7 +252,14 @@ export const useAuthStore = create<IAuthStore>()(
                       error: "User not logged in"
                     };
                   }
-        
+
+
+                  const questionsAsked  = Number(user.prefs.questionsAsked || 0);
+                  if (questionsAsked <= FREE_QUESTIONS_LIMIT) {
+                    return {
+                      success: true
+                    };
+                  }
                   const currentBalance = Number(user.prefs.balance || 0);
                   
                   if (currentBalance < amount) {
@@ -260,7 +269,7 @@ export const useAuthStore = create<IAuthStore>()(
                     };
                   }
         
-                  // Update balance
+                  // Update balance only if it's greater than or equal to the free questions limit
                   const newBalance = currentBalance - amount;
                   const updatedPrefs = {
                     ...user.prefs,
