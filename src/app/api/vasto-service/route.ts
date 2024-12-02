@@ -1,18 +1,31 @@
 // src/app/api/vasto-service/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { storage, database} from '@/appwrite/clientConfig';
 import { ID } from 'appwrite';
 import conf from '@/conf/conf';
+import { Query } from 'appwrite';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest) {
   try {
-    const response = await database.getDocument(
+    const params = request.nextUrl.searchParams;
+    console.log("service fetching api user id: ", params.get("userId"));
+    const userId = params.get("userId");
+
+    if (!userId) {
+      return NextResponse.json({ error: 'UserId is required' }, { status: 400 });
+    }
+
+    console.log("service fetching api user id: ", userId);
+    
+    const response = await database.listDocuments(
       conf.appwriteHoroscopeDatabaseId,
       conf.appwriteVastoServiceCollectionId,
-      params.id
+      [
+        Query.equal('id', userId),
+      ]
     );
-    console.log("response: ", response);
-    return NextResponse.json(response);
+    
+    return NextResponse.json(response.documents);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch services' }, { status: 500 });
   }

@@ -18,6 +18,7 @@ export type FeatureType = 'userInfo' | 'vastoService' | null;
 // }
 
 export interface VastoServiceData {
+  id: string;
   name: string;
   email: string;
   location: string;
@@ -56,9 +57,12 @@ const DataFetchButton = ({userId}: {userId: string}) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/vasto-service?userId=${userId}`);
-      if (!response.ok) throw new Error('Failed to fetch vasto services');
-      const data = await response.json();
+
+      const response = await axios.get(`/api/vasto-service?userId=${userId}`);
+      console.log("response: ",response);
+      // if (!response.ok) throw new Error('Failed to fetch vasto services');
+      const data = await response.data;
+      console.log("data: ", data);
       setVastoData(data);
       handleFeatureSelect('vastoService');
     } catch (error) {

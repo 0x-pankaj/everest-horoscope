@@ -120,8 +120,11 @@ export default function Navbar() {
           {user ? (
             <div className="relative">
               <div className="flex items-center cursor-pointer" onClick={toggleProfileModal}>
+                <div>
                 <p className="font-bold py-2 px-4">{user.name}</p>
-                <FaUserCircle className="text-3xl text-yellow-300 hover:text-yellow-400 transition-all" />
+                <p>{user.email}</p>
+                </div>
+                <FaUserCircle className="text-5xl text-yellow-300 hover:text-yellow-400 transition-all" />
               </div>
               {isProfileModalOpen && (
                 <ProfileModal
@@ -343,6 +346,7 @@ function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
               {user ? (
                   <>
                       <div>{user.name}</div>
+                      <div>{user.email}</div>
 
                     {
                       (isAdmin() || isAstrologer() ) ? (
