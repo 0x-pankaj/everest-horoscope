@@ -146,7 +146,7 @@ return (
     <div className="w-full max-w-5xl bg-gradient-to-br from-purple-500 via-purple-400 to-yellow-300 p-1 rounded-lg shadow-xl">
       <div className="bg-white rounded-lg p-8">
         <h2 className="text-2xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-yellow-500">
-          Submit Vasto Service
+          Submit Vastu Service
         </h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">

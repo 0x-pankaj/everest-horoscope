@@ -192,7 +192,7 @@ function DesktopNavItem({ item }: DesktopNavItemProps) {
         )}
       </p>
       {item.children && (
-        <div className="absolute right-0 top-10 hidden flex-col gap-1 rounded-lg bg-yellow-50 py-3 shadow-lg transition-all group-hover:block">
+        <div className=" absolute right-0 top-10 hidden flex-col gap-1 rounded-lg bg-yellow-50 py-3 shadow-lg transition-all group-hover:block">
           {item.children.map((child, index) => (
             <Link
               key={index}

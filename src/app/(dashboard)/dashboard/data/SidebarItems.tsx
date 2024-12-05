@@ -1,31 +1,66 @@
+// src/app/(dashboard)/data/SidebarItems.ts
+
 import { FiHome, FiUsers, FiStar } from 'react-icons/fi'
-import { ImBlog } from "react-icons/im";
-import { FaPhotoVideo, FaQuestion, FaStreetView, FaStroopwafel } from "react-icons/fa";
-import { TbZodiacVirgo } from "react-icons/tb";
-import { RiCustomerServiceLine } from "react-icons/ri";
-
-
-import Home from "../components/Home";
-import AstroManagement from "../components/AstroManagement";
-import BlogManagement from "../components/BlogManagement";
-import AdminPanchangForm from '../components/AdminPanchangForm';
-import SubmitHoroscope from '../components/Zodiac';
-import UserManagementPage from '../components/UserManagementPage';
-import ServicesManagement from '../components/ServiceManagmet';
-import AdminQuestionsComponent from '../components/QuestionManagement';
-import AdminCarouselPage from '../components/AdminCrouselPage';
-import AdminTestimonials from '../components/AdminTestimonials';
-
+import { ImBlog } from "react-icons/im"
+import { FaPhotoVideo, FaQuestion, FaStreetView, FaStroopwafel } from "react-icons/fa"
+import { TbZodiacVirgo } from "react-icons/tb"
+import { RiCustomerServiceLine } from "react-icons/ri"
+import { MdGTranslate } from 'react-icons/md'
 
 export const sidebarItems = [
-  { name: 'Home', icon: FiHome, component: Home },
-  { name: 'User Management', icon: FiUsers, component: UserManagementPage },
-  { name: 'Astro Management', icon: FiStar, component: AstroManagement },
-  { name: 'Blog Managemet', icon: ImBlog, component: BlogManagement },
-  { name:  "Panchang Form", icon: FaStroopwafel , component: AdminPanchangForm},
-  { name: "Zodiac Addition", icon: TbZodiacVirgo, component: SubmitHoroscope },
-  { name: "Service Management", icon: RiCustomerServiceLine, component: ServicesManagement},
-  { name: "Question Management", icon: FaQuestion, component: AdminQuestionsComponent},
-  { name: "Crousel Management", icon: FaPhotoVideo , component: AdminCarouselPage},
-  { name: "Testimonial Management", icon: FaStreetView, component: AdminTestimonials}
+  { 
+    name: 'Home',
+    icon: FiHome,
+    path: '' // Empty string for root dashboard path
+  },
+  {
+    name: 'User Management',
+    icon: FiUsers,
+    path: 'user-management'
+  },
+  {
+    name: 'Astro Management',
+    icon: FiStar,
+    path: 'astro-management'
+  },
+  {
+    name: 'Blog Management',
+    icon: ImBlog,
+    path: 'blog-management'
+  },
+  {
+    name: 'Panchang Form',
+    icon: FaStroopwafel,
+    path: 'panchang-form'
+  },
+  {
+    name: 'Zodiac Addition',
+    icon: TbZodiacVirgo,
+    path: 'zodiac-addition'
+  },  
+  {
+    name: 'Service Management',
+    icon: RiCustomerServiceLine,
+    path: 'service-management'
+  },
+  {
+    name: 'Question Management',
+    icon: FaQuestion,
+    path: 'question-management'
+  },
+  {
+    name: 'Carousel Management',
+    icon: FaPhotoVideo,
+    path: 'carousel-management'
+  },
+  {
+    name: 'Testimonial Management',
+    icon: FaStreetView,
+    path: 'testimonial-management'
+  },
+  {
+    name: 'Translator Management',
+    icon: MdGTranslate,
+    path: 'translator-management'
+  }
 ]
