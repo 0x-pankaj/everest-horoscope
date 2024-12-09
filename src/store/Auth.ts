@@ -200,7 +200,9 @@ export const useAuthStore = create<IAuthStore>()(
                     // Calculate new balance based on operation
                     let newBalance: number;
                     if (operation === 'ADD') {
+                        console.log("current balance before adding balance : ", currentBalance)
                         newBalance = currentBalance + amount;
+                        console.log("after adding balace newBalance : ", newBalance);
                     } else {
                         if (currentBalance < amount) {
                             return {

@@ -104,7 +104,7 @@ const PayPalButtonWrapper = ({
 };
 
 // Main PayPal component
-export default function PayPalButton({
+export default function  PayPalButton({
   amount,
   onSuccess,
   onError,

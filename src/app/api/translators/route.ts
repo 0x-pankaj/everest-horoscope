@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { database } from '@/appwrite/clientConfig';
+import { database } from '@/appwrite/serverConfig';
 import conf from '@/conf/conf';
 import { ID, Query } from 'appwrite';
 
@@ -8,12 +8,13 @@ import { ID, Query } from 'appwrite';
 
       console.log("database: ", conf.appwriteHoroscopeDatabaseId)
       console.log("collectionId: ", conf.appwriteTranslatorCollectionId)
+      console.log("database: ", conf.appwriteHoroscopeDatabaseId)
+      console.log("collectionId: ", conf.appwriteTranslatorCollectionId)
       const response = await database.listDocuments(
         conf.appwriteHoroscopeDatabaseId,
         conf.appwriteTranslatorCollectionId,
-        [Query.orderDesc('$createdAt')]
       );
-      console.log("response: ", response)
+      console.log("Translator: ", response.documents[0]);
       return NextResponse.json(response.documents);
     } catch (error) {
       return NextResponse.json({ error: 'Failed to fetch astrologers' }, { status: 500 });
@@ -42,13 +43,19 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { $id, ...translatorData } = body;
+    // console.log("body: ", body);
+    const { $id,name, user_id, languages } = body;
+    // console.log("data: ", $id);
     
     const response = await database.updateDocument(
       conf.appwriteHoroscopeDatabaseId,
       conf.appwriteTranslatorCollectionId,
       $id,
-      translatorData
+      {
+        name,
+        user_id,
+        languages
+      }
     );
     return NextResponse.json(response);
   } catch (error: any) {

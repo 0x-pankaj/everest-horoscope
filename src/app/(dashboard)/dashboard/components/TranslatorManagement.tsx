@@ -5,14 +5,14 @@ import { FaUser, FaTrash, FaPlus, FaEdit } from 'react-icons/fa';
 interface Translator {
   $id: string;
   name: string;
-  userId: string;
-  language: string[];
+  user_id: string;
+  languages: string[];
 }
 
 const initialTranslatorState: Omit<Translator, '$id'> = {
   name: '',
-  userId: '',
-  language: []
+  user_id: '',
+  languages: []
 };
 
 export default function TranslatorManagement() {
@@ -124,10 +124,10 @@ export default function TranslatorManagement() {
               <FaUser className="w-8 h-8 text-blue-500 mr-4" />
               <div>
                 <h2 className="text-xl font-semibold">{translator.name}</h2>
-                <p className="text-gray-600">ID: {translator.userId}</p>
+                <p className="text-gray-600">ID: {translator.user_id}</p>
               </div>
             </div>
-            <p className="text-gray-700 mb-4">Languages: {translator.language.join(', ')}</p>
+            <p className="text-gray-700 mb-4">Languages: {translator.languages.join(', ')}</p>
             <div className="flex justify-between">
               <button
                 onClick={() => editTranslator(translator)}
@@ -168,10 +168,10 @@ export default function TranslatorManagement() {
               <div>
                 <label htmlFor="userId" className="block text-sm font-medium text-gray-700">User ID</label>
                 <input
-                  id="userId"
-                  name="userId"
+                  id="user_id"
+                  name="user_id"
                   type="text"
-                  value={currentTranslator.userId}
+                  value={currentTranslator.user_id}
                   onChange={handleInputChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                   required
@@ -180,10 +180,10 @@ export default function TranslatorManagement() {
               <div>
                 <label htmlFor="language" className="block text-sm font-medium text-gray-700">Languages (comma separated)</label>
                 <input
-                  id="language"
-                  name="language"
+                  id="languages"
+                  name="languages"
                   type="text"
-                  value={currentTranslator.language.join(', ')}
+                  value={currentTranslator.languages.join(', ')}
                   onChange={handleLanguageChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                   required
