@@ -100,9 +100,11 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     const submitFormData = new FormData();
-    
+    if (!user) {
+      throw new Error('User not found');
+    }
     // Handle each field separately with proper typing
-    submitFormData.append('id', user?.$id || '');
+    submitFormData.append('id', user?.$id);
     submitFormData.append('name', formData.name);
     submitFormData.append('email', formData.email);
     submitFormData.append('location', formData.location);
