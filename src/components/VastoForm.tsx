@@ -1,7 +1,6 @@
 // src/components/VastoForm.tsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useStore } from 'zustand';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/Auth';
@@ -16,7 +15,7 @@ export interface VastoFormData {
     houseMap: string; // This will store the Appwrite file ID
     selectedServices: string[];
     message: string;
-    startDate: string;      
+    startDate: string;   
     endDate: string;        
     auspiciousPurpose: string; 
   }
@@ -25,6 +24,7 @@ export interface VastoFormData {
 const VastoForm = () => {
   const router = useRouter();
   const user = useAuthStore(state => state.user);
+  console.log("user from form: ", user);
   const [formData, setFormData] = useState<Omit<VastoFormData, 'houseMap'> & { houseMap: File | null }>({
     id: '',
     name: '',
@@ -108,6 +108,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     submitFormData.append('location', formData.location);
     submitFormData.append('direction', formData.direction);
     submitFormData.append('message', formData.message);
+    submitFormData.append('startDate', formData.startDate);
+    submitFormData.append('endDate', formData.endDate);
+    submitFormData.append('auspiciousPurpose', formData.auspiciousPurpose);
     
     // Handle the file
     if (formData.houseMap) {
@@ -303,17 +306,6 @@ return (
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
             />
           </div>
-
-<div>
-  <label className="block text-sm font-medium text-gray-700">Your Message</label>
-  <textarea
-    name="message"
-    value={formData.message}
-    onChange={handleInputChange}
-    rows={4}
-    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
-  />
-</div>
 
 {/* New Date Fields */}
 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
