@@ -9,7 +9,7 @@ const ImagePreview = ({ fileId }: { fileId: string }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadImage = async () => {
+    const loadImage = async () => {  
       try {
         const url = storage.getFilePreview(
           conf.appwriteHoroscopeBucket,
@@ -107,6 +107,28 @@ const VastoServiceDisplay = ({ data, onClose }: { data: VastoServiceData[], onCl
             <label className="block text-sm font-medium text-gray-700">Message</label>
             <div className="mt-1 p-2 bg-gray-50 rounded-md">{service.message}</div>
           </div>
+
+          
+<div>
+  <label className="block text-sm font-medium text-gray-700">Start Date</label>
+  <div className="mt-1 p-2 bg-gray-50 rounded-md">
+    {new Date(service.startDate).toLocaleDateString()}
+  </div>
+</div>
+
+<div>
+  <label className="block text-sm font-medium text-gray-700">End Date</label>
+  <div className="mt-1 p-2 bg-gray-50 rounded-md">
+    {new Date(service.endDate).toLocaleDateString()}
+  </div>
+</div>
+
+<div>
+  <label className="block text-sm font-medium text-gray-700">Auspicious Purpose</label>
+  <div className="mt-1 p-2 bg-gray-50 rounded-md">{service.auspiciousPurpose}</div>
+</div>
+
+
         </div>
       ))}
 

@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const userId = params.get("userId");
 
     if (!userId) {
-      return NextResponse.json({ error: 'UserId is required' }, { status: 400 });
+      return NextResponse.json({ error: 'UserId is required' }, { status: 400 });  
     }
 
     console.log("service fetching api user id: ", userId);
@@ -67,6 +67,9 @@ export async function POST(request: Request) {
       houseMap: fileId,
       selectedServices: JSON.parse(formData.get('selectedServices') as string),
       message: formData.get('message'),
+      startDate: formData.get('startDate'),
+      endDate: formData.get('endDate'),
+      auspiciousPurpose: formData.get('auspiciousPurpose'),
       // createdAt: new Date().toISOString(),
     };
 

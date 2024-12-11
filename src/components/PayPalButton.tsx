@@ -22,7 +22,7 @@ const PayPalButtonWrapper = ({
   onError?: (error: string) => void;
 }) => {
   const [{ isPending }] = usePayPalScriptReducer();
-  const { user, updateBalance } = useAuthStore();
+  const { user, updateBalance } = useAuthStore();   
   const [loading, setLoading] = useState(false);
 
   const handleError = (errorMessage: string) => {

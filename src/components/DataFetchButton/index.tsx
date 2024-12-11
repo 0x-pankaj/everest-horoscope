@@ -8,7 +8,7 @@ import axios from 'axios';
 import { User } from '@/types/user';
 
 export type FeatureType = 'userInfo' | 'vastoService' | null;
-
+  
 // export interface UserData {
 //   $id: string;
 //   name: string;
@@ -26,6 +26,10 @@ export interface VastoServiceData {
   houseMap: string;
   selectedServices: string[];
   message: string;
+  startDate: string;      
+    endDate: string;        
+    auspiciousPurpose: string;
+  
 }
 
 const DataFetchButton = ({userId}: {userId: string}) => {

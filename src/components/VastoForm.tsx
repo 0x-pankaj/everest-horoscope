@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/Auth';
 
 
-export interface VastoFormData {
+export interface VastoFormData {   
     id: string;
     name: string;
     email: string;
@@ -16,6 +16,9 @@ export interface VastoFormData {
     houseMap: string; // This will store the Appwrite file ID
     selectedServices: string[];
     message: string;
+    startDate: string;      
+    endDate: string;        
+    auspiciousPurpose: string; 
   }
   
 
@@ -31,6 +34,10 @@ const VastoForm = () => {
     houseMap: null,
     selectedServices: [],
     message: '',
+    startDate: '',
+    endDate: '',
+    auspiciousPurpose: ''
+    
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -126,6 +133,9 @@ const handleSubmit = async (e: React.FormEvent) => {
       houseMap: null,
       selectedServices: [],
       message: '',
+      startDate: '',
+      endDate: '',
+      auspiciousPurpose: ''
     });
 
     // You might want to show a success message or redirect
@@ -293,6 +303,56 @@ return (
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
             />
           </div>
+
+<div>
+  <label className="block text-sm font-medium text-gray-700">Your Message</label>
+  <textarea
+    name="message"
+    value={formData.message}
+    onChange={handleInputChange}
+    rows={4}
+    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+  />
+</div>
+
+{/* New Date Fields */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div>
+    <label className="block text-sm font-medium text-gray-700">Start Date</label>
+    <input
+      type="date"
+      name="startDate"
+      value={formData.startDate}
+      onChange={handleInputChange}
+      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+      required
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700">End Date</label>
+    <input
+      type="date"
+      name="endDate"
+      value={formData.endDate}
+      onChange={handleInputChange}
+      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+      required
+    />
+  </div>
+</div>
+
+{/* Auspicious Purpose Field */}
+<div>
+  <label className="block text-sm font-medium text-gray-700">Auspicious Purpose</label>
+  <input
+    type="text"
+    name="auspiciousPurpose"
+    value={formData.auspiciousPurpose}
+    onChange={handleInputChange}
+    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+    required
+  />
+</div>
 
           <button
             type="submit"
