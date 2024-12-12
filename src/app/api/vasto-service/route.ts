@@ -60,6 +60,7 @@ export async function POST(request: Request) {
 
     // Prepare data for database
     const serviceData = {
+      id: formData.get('id'),
       name: formData.get('name'),
       email: formData.get('email'),
       location: formData.get('location'),

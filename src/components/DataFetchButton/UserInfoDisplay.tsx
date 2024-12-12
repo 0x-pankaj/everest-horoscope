@@ -17,13 +17,13 @@ const UserInfoDisplay = ({ data, onClose }: UserInfoDisplayProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-h-[80vh]  overflow-y-scroll flex-1">
       <h2 className="text-2xl font-bold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-yellow-500">
         User Information
       </h2>
 
       {/* Basic Information */}
-      <div className="bg-purple-50 rounded-lg p-4">
+      <div className="bg-purple-50 rounded-lg p-4 ">
         <h3 className="text-lg font-semibold text-purple-700 mb-3">Basic Information</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
