@@ -1,27 +1,24 @@
-import { NextResponse } from 'next/server';
-import { database } from '@/appwrite/serverConfig';
-import conf from '@/conf/conf';
-import { ID, Query } from 'appwrite';
+import { NextResponse } from "next/server";
+import { database } from "@/appwrite/serverConfig";
+import conf from "@/conf/conf";
+import { ID } from "appwrite";
 
-  export async function GET() {
-    try {
-
-      console.log("database: ", conf.appwriteHoroscopeDatabaseId)
-      console.log("collectionId: ", conf.appwriteTranslatorCollectionId)
-      console.log("database: ", conf.appwriteHoroscopeDatabaseId)
-      console.log("collectionId: ", conf.appwriteTranslatorCollectionId)
-      const response = await database.listDocuments(
-        conf.appwriteHoroscopeDatabaseId,
-        conf.appwriteTranslatorCollectionId,
-      );
-      console.log("Translator: ", response.documents[0]);
-      return NextResponse.json(response.documents);
-    } catch (error) {
-      return NextResponse.json({ error: 'Failed to fetch astrologers' }, { status: 500 });
-    }
+export async function GET() {
+  try {
+    const response = await database.listDocuments(
+      conf.appwriteHoroscopeDatabaseId,
+      conf.appwriteTranslatorCollectionId,
+    );
+    return NextResponse.json(response.documents);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to fetch astrologers" },
+      { status: 500 },
+    );
   }
+}
 
-export async function POST(request: Request) {   
+export async function POST(request: Request) {
   try {
     const body = await request.json();
     const response = await database.createDocument(
@@ -31,12 +28,15 @@ export async function POST(request: Request) {
       {
         name: body.name,
         userId: body.userId,
-        language: body.language
-      }
+        language: body.language,
+      },
     );
     return NextResponse.json(response);
   } catch (error: any) {
-    return NextResponse.json({ error: `Failed to create translator: ${error.message}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to create translator: ${error.message}` },
+      { status: 500 },
+    );
   }
 }
 
@@ -44,9 +44,9 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json();
     // console.log("body: ", body);
-    const { $id,name, user_id, languages } = body;
+    const { $id, name, user_id, languages } = body;
     // console.log("data: ", $id);
-    
+
     const response = await database.updateDocument(
       conf.appwriteHoroscopeDatabaseId,
       conf.appwriteTranslatorCollectionId,
@@ -54,12 +54,15 @@ export async function PUT(request: Request) {
       {
         name,
         user_id,
-        languages
-      }
+        languages,
+      },
     );
     return NextResponse.json(response);
   } catch (error: any) {
-    return NextResponse.json({ error: `Failed to update translator: ${error.message}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to update translator: ${error.message}` },
+      { status: 500 },
+    );
   }
 }
 
@@ -69,10 +72,13 @@ export async function DELETE(request: Request) {
     await database.deleteDocument(
       conf.appwriteHoroscopeDatabaseId,
       conf.appwriteTranslatorCollectionId,
-      id
+      id,
     );
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to delete translator' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete translator" },
+      { status: 500 },
+    );
   }
 }

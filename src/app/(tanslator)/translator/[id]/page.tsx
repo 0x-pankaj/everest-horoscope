@@ -18,7 +18,7 @@ const TranslatorPage = () => {
     updateTranslatedMessage,
     addNewMessage,
     removeMessage,
-    translator, 
+    translator,   
     messages, 
     error 
   } = useTranslationStore();
@@ -27,7 +27,6 @@ const TranslatorPage = () => {
 
   useEffect(() => {
     if (params.id) {
-      console.log("id: ", params)
       fetchTranslator(params.id as string);
     }
   }, [params.id, fetchTranslator]);
@@ -80,9 +79,7 @@ const TranslatorPage = () => {
   if (!translator) {
     return <UnauthorizedPage />;
   }
-  // if(error) {
-  //   return <div>Error: {error}</div>
-  // }
+
 
   return (
     <div>

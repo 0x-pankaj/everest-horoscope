@@ -1,66 +1,77 @@
 // src/app/(dashboard)/data/SidebarItems.ts
 
-import { FiHome, FiUsers, FiStar } from 'react-icons/fi'
-import { ImBlog } from "react-icons/im"
-import { FaPhotoVideo, FaQuestion, FaStreetView, FaStroopwafel } from "react-icons/fa"
-import { TbZodiacVirgo } from "react-icons/tb"
-import { RiCustomerServiceLine } from "react-icons/ri"
-import { MdGTranslate } from 'react-icons/md'
+import { FiHome, FiUsers, FiStar } from "react-icons/fi";
+import { ImBlog } from "react-icons/im";
+import {
+  FaPhotoVideo,
+  FaQuestion,
+  FaStreetView,
+  FaStroopwafel,
+} from "react-icons/fa";
+import { TbZodiacVirgo } from "react-icons/tb";
+import { RiCustomerServiceLine } from "react-icons/ri";
+import { Md5G, MdGTranslate } from "react-icons/md";
+import { FaMessage } from "react-icons/fa6";
 
 export const sidebarItems = [
-  { 
-    name: 'Home',
+  {
+    name: "Home",
     icon: FiHome,
-    path: '' // Empty string for root dashboard path
+    path: "", // Empty string for root dashboard path
   },
   {
-    name: 'User Management',
+    name: "User Management",
     icon: FiUsers,
-    path: 'user-management'
+    path: "user-management",
   },
   {
-    name: 'Astro Management',
+    name: "Astro Management",
     icon: FiStar,
-    path: 'astro-management'
+    path: "astro-management",
   },
   {
-    name: 'Blog Management',
+    name: "Blog Management",
     icon: ImBlog,
-    path: 'blog-management'
+    path: "blog-management",
   },
   {
-    name: 'Panchang Form',
+    name: "Panchang Form",
     icon: FaStroopwafel,
-    path: 'panchang-form'
+    path: "panchang-form",
   },
   {
-    name: 'Zodiac Addition',
+    name: "Zodiac Addition",
     icon: TbZodiacVirgo,
-    path: 'zodiac-addition'
-  },  
+    path: "zodiac-addition",
+  },
   {
-    name: 'Service Management',
+    name: "Service Management",
     icon: RiCustomerServiceLine,
-    path: 'service-management'
+    path: "service-management",
   },
   {
-    name: 'Question Management',
+    name: "Question Management",
     icon: FaQuestion,
-    path: 'question-management'
+    path: "question-management",
   },
   {
-    name: 'Carousel Management',
+    name: "Carousel Management",
     icon: FaPhotoVideo,
-    path: 'carousel-management'
+    path: "carousel-management",
   },
   {
-    name: 'Testimonial Management',
+    name: "Testimonial Management",
     icon: FaStreetView,
-    path: 'testimonial-management'
+    path: "testimonial-management",
   },
   {
-    name: 'Translator Management',
+    name: "Translator Management",
     icon: MdGTranslate,
-    path: 'translator-management'
-  }
-]
+    path: "translator-management",
+  },
+  {
+    name: "Astro Chat Management",
+    icon: FaMessage,
+    path: "astro-chat-management",
+  },
+];
