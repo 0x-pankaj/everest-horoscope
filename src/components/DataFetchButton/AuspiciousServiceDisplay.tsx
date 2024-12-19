@@ -9,6 +9,7 @@ interface AuspiciousFormData {
   category: string; // Note: This might be a typo, should it be "category"?
   auspiciousPurpose: string;
   startDate: string;
+  direction: string;
   endDate: string;
 }
 
@@ -108,6 +109,7 @@ const AuspiciousServiceDisplay: React.FC<AuspiciousServiceDisplayProps> = ({
                           {formatDate(submission.startDate)}
                         </p>
                       </div>
+
                       <div>
                         <h3 className="text-lg font-semibold text-purple-600 mb-2">
                           End Date
@@ -115,6 +117,12 @@ const AuspiciousServiceDisplay: React.FC<AuspiciousServiceDisplayProps> = ({
                         <p className="text-gray-700">
                           {formatDate(submission.endDate)}
                         </p>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-purple-600 mb-2">
+                          Direction
+                        </h3>
+                        <p className="text-gray-700">{submission.direction}</p>
                       </div>
                     </div>
                     <div className="mt-4 text-sm text-gray-500">

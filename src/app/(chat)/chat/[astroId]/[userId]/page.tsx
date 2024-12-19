@@ -1,13 +1,14 @@
-'use client';
+"use client";
 //path /[astroId]/[userId]
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import ChatRoom from '@/components/ChatRoom';
-import { FaArrowLeft } from 'react-icons/fa';
-import { useAuthStore } from '@/store/Auth';
-import VastoForm from '@/components/VastoForm';
-import DataFetchButton from '@/components/DataFetchButton';
-import { useRoleAccess } from '@/hooks/useRoleAccess';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import ChatRoom from "@/components/ChatRoom";
+import { FaArrowLeft } from "react-icons/fa";
+import { useAuthStore } from "@/store/Auth";
+import VastoForm from "@/components/VastoForm";
+import DataFetchButton from "@/components/DataFetchButton";
+import FreeCreditManager from "@/components/FreeCreditManager";
+import { useRoleAccess } from "@/hooks/useRoleAccess";
 
 export default function ChatRoomPage({
   params,
@@ -16,7 +17,7 @@ export default function ChatRoomPage({
 }) {
   const router = useRouter();
   const { user } = useAuthStore();
-  const {isAdmin, isAstrologer} = useRoleAccess();
+  const { isAdmin, isAstrologer } = useRoleAccess();
 
   if (!user) {
     // Handle unauthenticated user
@@ -34,17 +35,41 @@ export default function ChatRoomPage({
             >
               <FaArrowLeft className="h-6 w-6" />
             </button>
-            <h1 className="text-xl font-semibold text-gray-900">Chat with astrologers </h1>
-            <div className="w-6"> {user.name} </div> {/* Placeholder for alignment */}
+            <button
+              onClick={() => router.push("/")}
+              className="text-xl text-gray-600 hover:text-gray-900"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => router.push("/chat")}
+              className="text-xl text-gray-600 hover:text-gray-900"
+            >
+              Chat
+            </button>
+            <h1 className="text-xl font-semibold text-gray-900">
+              Chat with astrologers{" "}
+            </h1>
+            <div className="w-6"> {user.name} </div>{" "}
+            {/* Placeholder for alignment */}
           </div>
-        </div>   
+        </div>
       </div>
 
       <div className="flex-grow">
         <div className="max-w-7xl mx-auto h-full">
           <ChatRoom senderId={user.$id} receiverId={params.astroId} />
-          {(isAdmin() || isAstrologer()) ? <DataFetchButton userId={params.userId} /> : null}
-          
+          {isAdmin() || isAstrologer() ? (
+            <>
+              <DataFetchButton userId={params.userId} />
+              {console.log("user: ", user.name)}
+              <FreeCreditManager
+                userId={params.userId}
+                userName={user.name}
+                initialPosition={{ x: 200, y: 20 }}
+              />
+            </>
+          ) : null}
         </div>
       </div>
     </div>

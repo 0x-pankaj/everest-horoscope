@@ -410,6 +410,7 @@ export interface AuspiciousFormData {
   category: string;
   startDate: string;
   endDate: string;
+  direction: string;
   auspiciousPurpose: string;
 }
 
@@ -431,6 +432,7 @@ export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
     category: "",
     startDate: "",
     endDate: "",
+    direction: "",
     auspiciousPurpose: "",
   });
 
@@ -464,6 +466,7 @@ export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
         category: "",
         startDate: "",
         endDate: "",
+        direction: "",
         auspiciousPurpose: "",
       });
 
@@ -513,6 +516,29 @@ export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
                     required
                   />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Choose Direction
+                </label>
+                <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {["East", "West", "North", "South"].map((direction) => (
+                    <label
+                      key={direction}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
+                        type="radio"
+                        name="direction"
+                        value={formData.direction}
+                        onChange={handleInputChange}
+                        className="text-purple-600 focus:ring-purple-500"
+                      />
+                      <span className="text-sm text-gray-700">{direction}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
 

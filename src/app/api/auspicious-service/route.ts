@@ -44,6 +44,7 @@ export async function POST(request: Request) {
       category: data.category,
       startDate: data.startDate,
       endDate: data.endDate,
+      direction: data.direction,
       auspiciousPurpose: data.auspiciousPurpose,
     };
 
