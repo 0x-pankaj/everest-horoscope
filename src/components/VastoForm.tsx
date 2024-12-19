@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/Auth";
+import { Divide } from "lucide-react";
 
 export interface VastoFormData {
   id: string;
@@ -403,3 +404,157 @@ const VastoForm = () => {
 };
 
 export default VastoForm;
+
+export interface AuspiciousFormData {
+  id: string;
+  category: string;
+  startDate: string;
+  endDate: string;
+  auspiciousPurpose: string;
+}
+
+interface AuspiciousDataFormProps {
+  category: string;
+  onClose?: () => void;
+}
+
+export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
+  category,
+  onClose,
+}) => {
+  const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState<AuspiciousFormData>({
+    id: "",
+    category: "",
+    startDate: "",
+    endDate: "",
+    auspiciousPurpose: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      console.log("category: ", category);
+
+      const submitData = {
+        ...formData,
+        id: user.$id,
+        category: category,
+      };
+
+      const response = await axios.post("/api/auspicious-service", submitData);
+
+      setFormData({
+        id: "",
+        category: "",
+        startDate: "",
+        endDate: "",
+        auspiciousPurpose: "",
+      });
+
+      toast.success("Auspicious service request submitted successfully!");
+      router.push("/chat");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setError("Failed to submit form. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full">
+        <div className="bg-white rounded-lg p-8">
+          <h2 className="text-2xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-yellow-500">
+            Auspicious Services
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="p-6 bg-purple-50 rounded-lg border border-purple-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Auspicious Purpose
+                </label>
+                <input
+                  type="text"
+                  name="auspiciousPurpose"
+                  value={formData.auspiciousPurpose}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-purple-600 to-yellow-500 text-white py-2 px-4 rounded-md hover:from-purple-700 hover:to-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
+            >
+              {isLoading ? "Submitting..." : "Submit"}
+            </button>
+          </form>
+        </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="mt-4 bg-indigo-500 text-white px-4 py-2 rounded"
+          >
+            Close Form
+          </button>
+        )}
+      </div>
+    </div>
+
+    // <div className="min-h-screen flex items-center justify-center p-6">
+    //   <div className="w-full max-w-5xl bg-gradient-to-br from-purple-500 via-purple-400 to-yellow-300 p-1 rounded-lg shadow-xl">
+
+    //   </div>
+    // </div>
+  );
+};

@@ -1,14 +1,20 @@
 // src/components/DataFetchButton/index.tsx
-import React, { useState } from 'react';
-import { Dialog } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import UserInfoDisplay from './UserInfoDisplay';
-import VastoServiceDisplay from './VastoServiceDisplay';
-import axios from 'axios';
-import { User } from '@/types/user';
+import React, { useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import UserInfoDisplay from "./UserInfoDisplay";
+import VastoServiceDisplay from "./VastoServiceDisplay";
+import axios from "axios";
+import { User } from "@/types/user";
+import { AuspiciousFormData } from "../VastoForm";
+import AuspiciousServiceDisplay from "./AuspiciousServiceDisplay";
 
-export type FeatureType = 'userInfo' | 'vastoService' | null;
-  
+export type FeatureType =
+  | "userInfo"
+  | "vastoService"
+  | "auspiciousService"
+  | null;
+
 // export interface UserData {
 //   $id: string;
 //   name: string;
@@ -26,32 +32,50 @@ export interface VastoServiceData {
   houseMap: string;
   selectedServices: string[];
   message: string;
-  startDate: string;      
-    endDate: string;        
-    auspiciousPurpose: string;
-  
 }
 
-const DataFetchButton = ({userId}: {userId: string}) => {
+const DataFetchButton = ({ userId }: { userId: string }) => {
   const [isMainModalOpen, setIsMainModalOpen] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<FeatureType>(null);
-  const [userData, setUserData] = useState<User| null>(null);
+  const [userData, setUserData] = useState<User | null>(null);
   const [vastoData, setVastoData] = useState<VastoServiceData[]>([]);
+  const [auspiciousData, setAuspiciousData] = useState<AuspiciousFormData[]>(
+    [],
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
 
   const fetchUserInfo = async (userId: string) => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await axios.get<User>(`/api/users/${userId}`);
-      console.log("response: ",response.data);
+      console.log("response: ", response.data);
       setUserData(response.data);
-      handleFeatureSelect('userInfo');
+      handleFeatureSelect("userInfo");
     } catch (error) {
-      setError('Failed to fetch user information');
-      console.error('Error fetching user info:', error);
+      setError("Failed to fetch user information");
+      console.error("Error fetching user info:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchAuspiciousData = async (userId: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        `/api/auspicious-service?userId=${userId}`,
+      );
+      // if (!response.ok) throw new Error('Failed to fetch auspicious data');
+      const data = await response.data;
+      console.log("data: ", data);
+      setAuspiciousData(data);
+      handleFeatureSelect("auspiciousService");
+    } catch (error) {
+      setError("Failed to fetch auspicious data");
+      console.error("Error fetching auspicious data:", error);
     } finally {
       setIsLoading(false);
     }
@@ -61,17 +85,15 @@ const DataFetchButton = ({userId}: {userId: string}) => {
     setIsLoading(true);
     setError(null);
     try {
-
       const response = await axios.get(`/api/vasto-service?userId=${userId}`);
-      console.log("response: ",response);
       // if (!response.ok) throw new Error('Failed to fetch vasto services');
       const data = await response.data;
       console.log("data: ", data);
       setVastoData(data);
-      handleFeatureSelect('vastoService');
+      handleFeatureSelect("vastoService");
     } catch (error) {
-      setError('Failed to fetch vasto service data');
-      console.error('Error fetching vasto services:', error);
+      setError("Failed to fetch vasto service data");
+      console.error("Error fetching vasto services:", error);
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +107,7 @@ const DataFetchButton = ({userId}: {userId: string}) => {
   return (
     <>
       {/* Main Button */}
-      <Button 
+      <Button
         onClick={() => setIsMainModalOpen(true)}
         className="fixed bottom-4 right-4 bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg"
       >
@@ -95,7 +117,10 @@ const DataFetchButton = ({userId}: {userId: string}) => {
       {/* Feature Selection Modal */}
       {isMainModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setIsMainModalOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setIsMainModalOpen(false)}
+          />
           <div className="relative bg-white rounded-lg w-full max-w-md mx-4 overflow-hidden">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6 text-center">
@@ -109,8 +134,12 @@ const DataFetchButton = ({userId}: {userId: string}) => {
                   onClick={() => fetchUserInfo(userId)}
                   className="w-full p-4 text-left rounded-lg border border-gray-200 hover:bg-purple-50 transition-colors"
                 >
-                  <h3 className="font-medium text-gray-800">User Information</h3>
-                  <p className="text-sm text-gray-500 mt-1">View user profile details</p>
+                  <h3 className="font-medium text-gray-800">
+                    User Information
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    View user profile details
+                  </p>
                 </button>
 
                 <button
@@ -118,7 +147,21 @@ const DataFetchButton = ({userId}: {userId: string}) => {
                   className="w-full p-4 text-left rounded-lg border border-gray-200 hover:bg-purple-50 transition-colors"
                 >
                   <h3 className="font-medium text-gray-800">Vasto Service</h3>
-                  <p className="text-sm text-gray-500 mt-1">View vasto service submissions</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    View vasto service submissions
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => fetchAuspiciousData(userId)}
+                  className="w-full p-4 text-left rounded-lg border border-gray-200 hover:bg-purple-50 transition-colors"
+                >
+                  <h3 className="font-medium text-gray-800">
+                    Auspicious Service
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    View auspicious service submissions
+                  </p>
                 </button>
               </div>
 
@@ -140,9 +183,12 @@ const DataFetchButton = ({userId}: {userId: string}) => {
       )}
 
       {/* Vasto Service Display Modal */}
-      {selectedFeature === 'vastoService' && vastoData && (
+      {selectedFeature === "vastoService" && vastoData && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setSelectedFeature(null)} />
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setSelectedFeature(null)}
+          />
           <div className="relative bg-white rounded-lg w-full max-w-4xl mx-4 overflow-hidden">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6 text-center">
@@ -150,7 +196,10 @@ const DataFetchButton = ({userId}: {userId: string}) => {
                   Vasto Service Submissions
                 </span>
               </h2>
-              <VastoServiceDisplay data={vastoData} onClose={() => setSelectedFeature(null)} />
+              <VastoServiceDisplay
+                data={vastoData}
+                onClose={() => setSelectedFeature(null)}
+              />
             </div>
             <button
               onClick={() => setSelectedFeature(null)}
@@ -163,12 +212,47 @@ const DataFetchButton = ({userId}: {userId: string}) => {
       )}
 
       {/* User Info Display Modal */}
-      {selectedFeature === 'userInfo' && userData && (
+      {selectedFeature === "userInfo" && userData && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-black/50 " onClick={() => setSelectedFeature(null)} />
+          <div
+            className="absolute inset-0 bg-black/50 "
+            onClick={() => setSelectedFeature(null)}
+          />
           <div className="relative bg-white rounded-lg w-full max-w-2xl mx-4 overflow-hidden">
             <div className="p-6">
-              <UserInfoDisplay data={userData} onClose={() => setSelectedFeature(null)} />
+              <UserInfoDisplay
+                data={userData}
+                onClose={() => setSelectedFeature(null)}
+              />
+            </div>
+            <button
+              onClick={() => setSelectedFeature(null)}
+              className="w-full p-3 text-center text-white font-medium bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Auspicious Service Display Modal */}
+      {selectedFeature === "auspiciousService" && auspiciousData && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setSelectedFeature(null)}
+          />
+          <div className="relative bg-white rounded-lg w-full max-w-4xl mx-4 overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-2xl font-bold mb-6 text-center">
+                <span className="bg-gradient-to-r from-purple-600 to-yellow-500 bg-clip-text text-transparent">
+                  Auspicious Service Submissions
+                </span>
+              </h2>
+              <AuspiciousServiceDisplay
+                data={auspiciousData}
+                onClose={() => setSelectedFeature(null)}
+              />
             </div>
             <button
               onClick={() => setSelectedFeature(null)}

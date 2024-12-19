@@ -9,7 +9,7 @@ const ImagePreview = ({ fileId }: { fileId: string }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadImage = async () => {  
+    const loadImage = async () => {
       try {
         const url = storage.getFilePreview(
           conf.appwriteHoroscopeBucket,
@@ -45,16 +45,22 @@ const ImagePreview = ({ fileId }: { fileId: string }) => {
   }
 
   return (
-    <img 
-      src={imageUrl} 
-      alt="House Map" 
+    <img
+      src={imageUrl}
+      alt="House Map"
       className="w-full h-48 object-cover rounded-md"
       onError={() => setError("Failed to load image")}
     />
   );
 };
 
-const VastoServiceDisplay = ({ data, onClose }: { data: VastoServiceData[], onClose: () => void }) => {
+const VastoServiceDisplay = ({
+  data,
+  onClose,
+}: {
+  data: VastoServiceData[];
+  onClose: () => void;
+}) => {
   return (
     <div className="max-h-[80vh] flex flex-col">
       <h2 className="text-2xl font-bold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-yellow-500 sticky top-0 bg-white py-2">
@@ -66,38 +72,61 @@ const VastoServiceDisplay = ({ data, onClose }: { data: VastoServiceData[], onCl
           <div key={index} className="border rounded-lg p-4 space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
-                <div className="mt-1 p-2 bg-gray-50 rounded-md">{service.name}</div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
+                <div className="mt-1 p-2 bg-gray-50 rounded-md">
+                  {service.name}
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">House Map</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  House Map
+                </label>
                 <div className="mt-1">
                   <ImagePreview fileId={service.houseMap} />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <div className="mt-1 p-2 bg-gray-50 rounded-md">{service.email}</div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <div className="mt-1 p-2 bg-gray-50 rounded-md">
+                  {service.email}
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Location</label>
-                <div className="mt-1 p-2 bg-gray-50 rounded-md">{service.location}</div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Location
+                </label>
+                <div className="mt-1 p-2 bg-gray-50 rounded-md">
+                  {service.location}
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Direction</label>
-                <div className="mt-1 p-2 bg-gray-50 rounded-md">{service.direction}</div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Direction
+                </label>
+                <div className="mt-1 p-2 bg-gray-50 rounded-md">
+                  {service.direction}
+                </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Selected Services</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Selected Services
+              </label>
               <div className="mt-1 flex flex-wrap gap-2">
                 {service.selectedServices.map((item, i) => (
-                  <span key={i} className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
+                  <span
+                    key={i}
+                    className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-sm"
+                  >
                     {item}
                   </span>
                 ))}
@@ -105,29 +134,12 @@ const VastoServiceDisplay = ({ data, onClose }: { data: VastoServiceData[], onCl
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Message</label>
-              <div className="mt-1 p-2 bg-gray-50 rounded-md">{service.message}</div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Start Date</label>
-                <div className="mt-1 p-2 bg-gray-50 rounded-md">
-                  {new Date(service.startDate).toLocaleDateString()}
-                </div>
+              <label className="block text-sm font-medium text-gray-700">
+                Message
+              </label>
+              <div className="mt-1 p-2 bg-gray-50 rounded-md">
+                {service.message}
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">End Date</label>
-                <div className="mt-1 p-2 bg-gray-50 rounded-md">
-                  {new Date(service.endDate).toLocaleDateString()}
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Auspicious Purpose</label>
-              <div className="mt-1 p-2 bg-gray-50 rounded-md">{service.auspiciousPurpose}</div>
             </div>
           </div>
         ))}
