@@ -410,6 +410,9 @@ export interface AuspiciousFormData {
   category: string;
   startDate: string;
   endDate: string;
+
+  startTime: string;
+  endTime: string;
   direction: string;
   auspiciousPurpose: string;
 }
@@ -432,6 +435,8 @@ export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
     category: "",
     startDate: "",
     endDate: "",
+    startTime: "",
+    endTime: "",
     direction: "",
     auspiciousPurpose: "",
   });
@@ -458,6 +463,7 @@ export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
         id: user.$id,
         category: category,
       };
+      console.log("submitting data: ", submitData);
 
       const response = await axios.post("/api/auspicious-service", submitData);
 
@@ -466,6 +472,8 @@ export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
         category: "",
         startDate: "",
         endDate: "",
+        startTime: "",
+        endTime: "",
         direction: "",
         auspiciousPurpose: "",
       });
@@ -519,6 +527,35 @@ export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Start Time
+                  </label>
+                  <input
+                    type="time"
+                    name="startTime"
+                    value={formData.startTime}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    End Time
+                  </label>
+                  <input
+                    type="time"
+                    name="endTime"
+                    value={formData.endTime}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+                    required
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Choose Direction
@@ -532,7 +569,7 @@ export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
                       <input
                         type="radio"
                         name="direction"
-                        value={formData.direction}
+                        value={direction}
                         onChange={handleInputChange}
                         className="text-purple-600 focus:ring-purple-500"
                       />

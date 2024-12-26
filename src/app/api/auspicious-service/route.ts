@@ -38,12 +38,23 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
 
+    console.log(
+      "startTime: ",
+      data.startTime,
+      "endTime: ",
+      data.endTime,
+      "direction: ",
+      data.direction,
+    );
+
     // Prepare data for database
     const serviceData = {
       id: data.id,
       category: data.category,
       startDate: data.startDate,
       endDate: data.endDate,
+      startTime: data.startTime,
+      endTime: data.endTime,
       direction: data.direction,
       auspiciousPurpose: data.auspiciousPurpose,
     };
