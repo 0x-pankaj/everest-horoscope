@@ -561,7 +561,16 @@ export const AuspiciousDataForm: React.FC<AuspiciousDataFormProps> = ({
                   Choose Direction
                 </label>
                 <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {["East", "West", "North", "South"].map((direction) => (
+                  {[
+                    "East",
+                    "West",
+                    "North",
+                    "South",
+                    "North-East",
+                    "South-East",
+                    "North-West",
+                    "South-West",
+                  ].map((direction) => (
                     <label
                       key={direction}
                       className="flex items-center space-x-2"
