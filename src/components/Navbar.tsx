@@ -17,6 +17,7 @@ import { Query } from "appwrite";
 import ClearStorageButton from "./ClearStorageButton";
 
 import { useRoleAccess } from "@/hooks/useRoleAccess";
+import NotificationComponent from "./Notification/NotificationComponent";
 
 interface NavChild {
   label: string;
@@ -64,21 +65,20 @@ export default function Navbar() {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const profileModalRef = useRef<HTMLDivElement>(null);
   const { user, logout, verifySession } = useAuthStore();
-  const {isAdmin, isAstrologer, isTranslator} = useRoleAccess();
-
+  const { isAdmin, isAstrologer, isTranslator } = useRoleAccess();
 
   const toggleSideMenu = () => setSideMenu(!isSideMenuOpen);
   const toggleProfileModal = () => setProfileModalOpen(!isProfileModalOpen);
 
-    useEffect(() => {
-        const checkAndUpdateUserState = async () => {
-            if (user) {
-                await verifySession();
-            }
-        };
+  useEffect(() => {
+    const checkAndUpdateUserState = async () => {
+      if (user) {
+        await verifySession();
+      }
+    };
 
-        checkAndUpdateUserState();
-    }, []);
+    checkAndUpdateUserState();
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -106,7 +106,7 @@ export default function Navbar() {
           priority={true}
           className="cursor-pointer hover:opacity-90 transition-opacity"
         />
-          {/* {user && <ClearStorageButton />} */}
+        {/* {user && <ClearStorageButton />} */}
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
@@ -115,14 +115,19 @@ export default function Navbar() {
           ))}
         </div>
 
+        {user && <NotificationComponent />}
+
         {/* Profile Button / Auth Buttons */}
         <section className="hidden md:flex items-center gap-8">
           {user ? (
             <div className="relative">
-              <div className="flex items-center cursor-pointer" onClick={toggleProfileModal}>
+              <div
+                className="flex items-center cursor-pointer"
+                onClick={toggleProfileModal}
+              >
                 <div>
-                <p className="font-bold py-2 px-4">{user.name}</p>
-                <p>{user.email}</p>
+                  <p className="font-bold py-2 px-4">{user.name}</p>
+                  <p>{user.email}</p>
                 </div>
                 <FaUserCircle className="text-5xl text-yellow-300 hover:text-yellow-400 transition-all" />
               </div>
@@ -176,8 +181,6 @@ export default function Navbar() {
   );
 }
 
-
-
 interface DesktopNavItemProps {
   item: NavItem;
 }
@@ -209,78 +212,80 @@ function DesktopNavItem({ item }: DesktopNavItemProps) {
 }
 
 interface ProfileModalProps {
-    onClose: () => void;
-    onLogout: () => void;
+  onClose: () => void;
+  onLogout: () => void;
 }
 
 function ProfileModal({ onLogout }: ProfileModalProps) {
-    const router = useRouter();
-    const {user} = useAuthStore();
-    const {isAdmin, isAstrologer, isTranslator} = useRoleAccess();
-    return (
-        <div className="absolute right-0 top-10 w-48 flex-col gap-1 rounded-lg bg-yellow-50 py-3 shadow-md">
+  const router = useRouter();
+  const { user } = useAuthStore();
+  const { isAdmin, isAstrologer, isTranslator } = useRoleAccess();
+  return (
+    <div className="absolute right-0 top-10 w-48 flex-col gap-1 rounded-lg bg-yellow-50 py-3 shadow-md">
+      {isAdmin() || isTranslator() || isAstrologer() ? (
+        <div>
+          <button
+            onClick={() => {
+              router.push(`/chat/${user?.$id}`);
+            }}
+            className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
+          >
+            Get All Messages
+          </button>
 
-          {
-            (isAdmin() || isTranslator() || isAstrologer() ) ?  <div>
-
-            <button onClick={()=> {
-                router.push(`/chat/${user?.$id}`)
-            }} 
-            className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
-                Get All Messages
-            </button>
-
-            <button
-            onClick={()=> router.push("/dashboard")}
-            className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
-                Dashboard
-            </button>
-            </div> : null
-          }
-          
-            <button 
-                onClick={() => router.push('/profile')}
-                className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
-            >
-                Manage Profile
-            </button>
-            <button 
-                onClick={onLogout}
-                className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
-            >
-                Logout
-            </button>
-
-            {
-              (isAdmin() || isTranslator()) ? 
-              <button   
-                  onClick={()=> {
-                      router.push(`/translator/${user?.$id}`)
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
-              >
-                  Translator
-              </button> : null
-            }
-
-            <button onClick={()=> {
-                router.push(`/credit`)
-            }} 
-            className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800">
-                Your Credits
-            </button>
-
-            <button 
-                onClick={() => {
-                    // Implement logout from all sessions
-                    console.log("logout from all devices");
-                }}
-                className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
-            >
-                Logout from all sessions
-            </button>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
+          >
+            Dashboard
+          </button>
         </div>
-    );
+      ) : null}
+
+      <button
+        onClick={() => router.push("/profile")}
+        className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
+      >
+        Manage Profile
+      </button>
+      <button
+        onClick={onLogout}
+        className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
+      >
+        Logout
+      </button>
+
+      {isAdmin() || isTranslator() ? (
+        <button
+          onClick={() => {
+            router.push(`/translator/${user?.$id}`);
+          }}
+          className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
+        >
+          Translator
+        </button>
+      ) : null}
+
+      <button
+        onClick={() => {
+          router.push(`/credit`);
+        }}
+        className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
+      >
+        Your Credits
+      </button>
+
+      <button
+        onClick={() => {
+          // Implement logout from all sessions
+          console.log("logout from all devices");
+        }}
+        className="w-full text-left px-4 py-2 hover:bg-yellow-100 text-yellow-800"
+      >
+        Logout from all sessions
+      </button>
+    </div>
+  );
 }
 /*
 interface LanguageModalProps {
@@ -323,82 +328,107 @@ interface MobileNavProps {
 function MobileNav({ closeSideMenu, handleNavigation }: MobileNavProps) {
   const router = useRouter();
 
-  const {user, logout} = useAuthStore();
-  const {isAdmin, isAstrologer, isTranslator} = useRoleAccess();
+  const { user, logout } = useAuthStore();
+  const { isAdmin, isAstrologer, isTranslator } = useRoleAccess();
 
-  const handleLogout = async() => {
-      await logout();
-      closeSideMenu();
-      handleNavigation("/");
-  }
+  const handleLogout = async () => {
+    await logout();
+    closeSideMenu();
+    handleNavigation("/");
+  };
 
   return (
-      <div className="p-4">
-          <section className="flex justify-end mb-4">
-              <MdClose onClick={closeSideMenu} className="cursor-pointer my-3 text-5xl" />
-          </section>
-          <div className="flex flex-col items-start text-base gap-2 transition-all">
-              {navItems.map((item, index) => (
-                  <MobileNavItem key={index} item={item} handleNavigation={handleNavigation} />
-              ))}
-          </div>
-          <section className="flex flex-col items-start gap-4 mt-8">
-              {user ? (
-                  <>
-                      <div>{user.name}</div>
-                      <div>{user.email}</div>
-
-                    {
-                      (isAdmin() || isAstrologer() ) ? (
-                        <>
-                         <button onClick={()=> {
-                          router.push(`/chat/${user.$id}`)
-                          closeSideMenu();
-                      }} >Get All Messages</button>
-
-                      <button onClick={() => handleNavigation("/dashboard")} className="text-neutral-400 transition-all hover:text-black/90">
-                          Dashboard
-                      </button>
-                        </>
-                      ): null
-                    }
-
-                     
-
-                      <button onClick={() => handleNavigation("/manage-profile")} className="text-neutral-400 transition-all hover:text-black/90">
-                          Manage Profile
-                      </button>
-
-                      <button
-                        onClick={()=> {
-                          router.push(`/credit`)
-                        }}
-                      >
-                        YOur Credits
-                        </button>
-                      <button onClick={handleLogout} className="text-neutral-400 transition-all hover:text-black/90">
-                          Logout
-                      </button>
-                      <button onClick={() => {
-                          // Implement logout from all sessions
-                          handleLogout();
-                      }} className="text-neutral-400 transition-all hover:text-black/90">
-                          Logout from all sessions
-                      </button>
-                  </>
-              ) : (
-                  <>
-                      <button onClick={() => handleNavigation("/login")} className="text-neutral-400 transition-all hover:text-black/90">
-                          Login
-                      </button>
-                      <button onClick={() => handleNavigation("/signup")} className="rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90">
-                          Register
-                      </button>
-                  </>
-              )}
-          </section>
+    <div className="p-4">
+      <section className="flex justify-end mb-4">
+        <MdClose
+          onClick={closeSideMenu}
+          className="cursor-pointer my-3 text-5xl"
+        />
+      </section>
+      <div className="flex flex-col items-start text-base gap-2 transition-all">
+        {navItems.map((item, index) => (
+          <MobileNavItem
+            key={index}
+            item={item}
+            handleNavigation={handleNavigation}
+          />
+        ))}
       </div>
-  )
+      <section className="flex flex-col items-start gap-4 mt-8">
+        {user ? (
+          <>
+            <div>{user.name}</div>
+            <div>{user.email}</div>
+
+            {isAdmin() || isAstrologer() ? (
+              <>
+                <button
+                  onClick={() => {
+                    router.push(`/chat/${user.$id}`);
+                    closeSideMenu();
+                  }}
+                >
+                  Get All Messages
+                </button>
+
+                <button
+                  onClick={() => handleNavigation("/dashboard")}
+                  className="text-neutral-400 transition-all hover:text-black/90"
+                >
+                  Dashboard
+                </button>
+              </>
+            ) : null}
+
+            <button
+              onClick={() => handleNavigation("/manage-profile")}
+              className="text-neutral-400 transition-all hover:text-black/90"
+            >
+              Manage Profile
+            </button>
+
+            <button
+              onClick={() => {
+                router.push(`/credit`);
+              }}
+            >
+              YOur Credits
+            </button>
+            <button
+              onClick={handleLogout}
+              className="text-neutral-400 transition-all hover:text-black/90"
+            >
+              Logout
+            </button>
+            <button
+              onClick={() => {
+                // Implement logout from all sessions
+                handleLogout();
+              }}
+              className="text-neutral-400 transition-all hover:text-black/90"
+            >
+              Logout from all sessions
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => handleNavigation("/login")}
+              className="text-neutral-400 transition-all hover:text-black/90"
+            >
+              Login
+            </button>
+            <button
+              onClick={() => handleNavigation("/signup")}
+              className="rounded-xl border-2 border-neutral-400 px-4 py-2 text-neutral-400 transition-all hover:border-black hover:text-black/90"
+            >
+              Register
+            </button>
+          </>
+        )}
+      </section>
+    </div>
+  );
 }
 
 interface MobileNavItemProps {
@@ -407,35 +437,37 @@ interface MobileNavItemProps {
 }
 
 function MobileNavItem({ item, handleNavigation }: MobileNavItemProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [animateParent] = useAutoAnimate<HTMLDivElement>()
+  const [isOpen, setIsOpen] = useState(false);
+  const [animateParent] = useAutoAnimate<HTMLDivElement>();
 
-  const toggleItem = () => setIsOpen(!isOpen)
+  const toggleItem = () => setIsOpen(!isOpen);
 
   return (
-      <div ref={animateParent} className="w-full">
-          <div
-              onClick={item.children ? toggleItem : () => handleNavigation(item.link)}
-              className="flex justify-between items-center cursor-pointer py-2 text-neutral-400 hover:text-black"
-          >
-              <span>{item.label}</span>
-              {item.children && (
-                  <RiArrowDropDownLine className={`text-2xl transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-              )}
-          </div>
-          {isOpen && item.children && (
-              <div className="pl-4">
-                  {item.children.map((child, index) => (
-                      <div
-                          key={index}
-                          onClick={() => handleNavigation(child.link)}
-                          className="py-2 cursor-pointer text-neutral-400 hover:text-black"
-                      >
-                          {child.label}
-                      </div>
-                  ))}
-              </div>
-          )}
+    <div ref={animateParent} className="w-full">
+      <div
+        onClick={item.children ? toggleItem : () => handleNavigation(item.link)}
+        className="flex justify-between items-center cursor-pointer py-2 text-neutral-400 hover:text-black"
+      >
+        <span>{item.label}</span>
+        {item.children && (
+          <RiArrowDropDownLine
+            className={`text-2xl transition-transform ${isOpen ? "rotate-180" : ""}`}
+          />
+        )}
       </div>
-  )
+      {isOpen && item.children && (
+        <div className="pl-4">
+          {item.children.map((child, index) => (
+            <div
+              key={index}
+              onClick={() => handleNavigation(child.link)}
+              className="py-2 cursor-pointer text-neutral-400 hover:text-black"
+            >
+              {child.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

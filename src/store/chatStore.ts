@@ -166,6 +166,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
         ],
       );
 
+      console.log("message count: ", response.total);
+      // response.total
+
       set((state) => {
         const newMessages = response.documents
           .filter(

@@ -157,7 +157,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
         },
       );
 
-      console.log("unsubscribe: ", unsubscribe);
+      // console.log("unsubscribe: ", unsubscribe);
       return () => {
         unsubscribe();
       };
