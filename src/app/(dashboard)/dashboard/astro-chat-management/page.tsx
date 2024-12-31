@@ -1,81 +1,142 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FaUser, FaLanguage, FaChevronLeft, FaClock } from "react-icons/fa";
+import { FaUser, FaStar, FaChevronLeft, FaClock } from "react-icons/fa";
 import axios from "axios";
+import { database } from "@/appwrite/clientConfig";
+import conf from "@/conf/conf";
+import { Query, Models } from "appwrite";
 
-interface Translator {
+interface Astrologer {
   $id: string;
   name: string;
   user_id: string;
-  languages: string[];
+  specialties: string[];
+  rating?: number;
 }
 
-interface Message {
+interface AstroMessage {
   $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+  $permissions: string[];
+  $collectionId: string;
+  $databaseId: string;
   sender_id: string;
   receiver_id: string;
   body: string;
-  original_body: string;
-  name: string;
-  sourceLanguage: string;
-  targetLanguage: string;
-  translated_by: string;
-  $createdAt: string;
 }
 
-export default function TranslatorChatManagement() {
-  const [translators, setTranslators] = useState<Translator[]>([]);
-  const [selectedTranslator, setSelectedTranslator] =
-    useState<Translator | null>(null);
-  const [translatedChats, setTranslatedChats] = useState<Message[]>([]);
+export default function AstrologerChatManagement() {
+  const [astrologers, setAstrologers] = useState<Astrologer[]>([]);
+  const [selectedAstrologer, setSelectedAstrologer] =
+    useState<Astrologer | null>(null);
+  const [astroMessages, setAstroMessages] = useState<AstroMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState<number>(0);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(0);
+  const [limit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
+  // Date filter state
+  const [dateFilter, setDateFilter] = useState<string>("");
 
   useEffect(() => {
-    fetchTranslators();
+    fetchAstrologers();
   }, []);
 
-  const fetchTranslators = async () => {
+  useEffect(() => {
+    if (selectedAstrologer) {
+      fetchAstrologerMessages(selectedAstrologer.user_id, currentPage);
+    }
+  }, [currentPage, dateFilter]); // Refetch when page or date filter changes
+
+  const fetchAstrologers = async () => {
     try {
-      const response = await axios.get("/api/translators");
-      setTranslators(response.data);
+      const response = await axios.get("/api/astrologers");
+      setAstrologers(response.data);
     } catch (error) {
-      console.error("Error fetching translators:", error);
+      console.error("Error fetching astrologers:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchTranslatorChats = async (translatorId: string) => {
+  const fetchAstrologerMessages = async (
+    astrologerId: string,
+    page: number,
+  ) => {
     setLoading(true);
     try {
-      const response = await fetch("/api/translator-chats", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          translated_by: translatorId,
-        }),
-      });
+      const queries: any[] = [
+        Query.equal("sender_id", [astrologerId]),
+        Query.equal("is_temp", false),
+        Query.orderDesc("$createdAt"),
+        Query.limit(limit),
+        Query.offset(page * limit),
+      ];
 
-      const data = await response.json();
-      if (data.documents) {
-        setTranslatedChats(data.documents);
+      // Add date filter if selected
+      if (dateFilter) {
+        queries.push(Query.lessThanEqual("$createdAt", dateFilter));
       }
+
+      const response = await database.listDocuments<AstroMessage>(
+        conf.appwriteHoroscopeDatabaseId,
+        conf.appwriteMessageCollectionId,
+        queries,
+      );
+
+      setTotal(response.total);
+      setTotalPages(Math.ceil(response.total / limit));
+      setAstroMessages(response.documents);
     } catch (error) {
-      console.error("Error fetching translator chats:", error);
+      console.error("Error fetching astrologer messages:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleTranslatorSelect = async (translator: Translator) => {
-    setSelectedTranslator(translator);
-    await fetchTranslatorChats(translator.$id);
+  const handleAstrologerSelect = async (astrologer: Astrologer) => {
+    setSelectedAstrologer(astrologer);
+    setCurrentPage(0); // Reset to first page
+    await fetchAstrologerMessages(astrologer.user_id, 0);
+  };
+
+  const handleDateFilterChange = (date: string) => {
+    setDateFilter(date);
+    setCurrentPage(0); // Reset to first page when filter changes
   };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();
+  };
+
+  const renderPagination = () => {
+    return (
+      <div className="flex justify-center items-center gap-4 mt-6">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
+          disabled={currentPage === 0}
+          className="px-4 py-2 bg-purple-100 text-purple-800 rounded-lg disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-gray-600">
+          Page {currentPage + 1} of {totalPages}
+        </span>
+        <button
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
+          }
+          disabled={currentPage === totalPages - 1}
+          className="px-4 py-2 bg-purple-100 text-purple-800 rounded-lg disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+    );
   };
 
   if (loading) {
@@ -88,52 +149,64 @@ export default function TranslatorChatManagement() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 flex items-center">
-        {selectedTranslator ? (
-          <button
-            onClick={() => {
-              setSelectedTranslator(null);
-              setTranslatedChats([]);
-            }}
-            className="flex items-center text-blue-600 hover:text-blue-800"
-          >
-            <FaChevronLeft className="mr-2" />
-            Back to Translators
-          </button>
+      <div className="mb-8 flex items-center justify-between">
+        {selectedAstrologer ? (
+          <>
+            <button
+              onClick={() => {
+                setSelectedAstrologer(null);
+                setAstroMessages([]);
+                setDateFilter("");
+              }}
+              className="flex items-center text-blue-600 hover:text-blue-800"
+            >
+              <FaChevronLeft className="mr-2" />
+              Back to Astrologers
+            </button>
+            <div className="flex items-center gap-4">
+              <label className="text-gray-600">Filter by date:</label>
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => handleDateFilterChange(e.target.value)}
+                className="border rounded-lg px-3 py-2"
+              />
+            </div>
+          </>
         ) : (
-          <h1 className="text-3xl font-bold">Translator Management</h1>
+          <h1 className="text-3xl font-bold">Astrologer Management</h1>
         )}
       </div>
 
-      {!selectedTranslator ? (
+      {!selectedAstrologer ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {translators.map((translator) => (
+          {astrologers.map((astrologer) => (
             <div
-              key={translator.$id}
+              key={astrologer.$id}
               className="bg-white rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
-              onClick={() => handleTranslatorSelect(translator)}
+              onClick={() => handleAstrologerSelect(astrologer)}
             >
               <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-3 rounded-full">
-                  <FaUser className="text-blue-500 text-xl" />
+                <div className="bg-purple-100 p-3 rounded-full">
+                  <FaUser className="text-purple-500 text-xl" />
                 </div>
                 <div className="ml-4">
-                  <h2 className="text-xl font-semibold">{translator.name}</h2>
-                  <p className="text-gray-600">ID: {translator.user_id}</p>
+                  <h2 className="text-xl font-semibold">{astrologer.name}</h2>
+                  <p className="text-gray-600">ID: {astrologer.user_id}</p>
                 </div>
               </div>
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-gray-500">
-                  Languages:
+                  Specialities:
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {translator.languages.map((lang, index) => (
+                  {astrologer.specialties.map((specialty, index) => (
                     <span
                       key={index}
-                      className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full flex items-center"
+                      className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full flex items-center"
                     >
-                      <FaLanguage className="mr-1" />
-                      {lang}
+                      <FaStar className="mr-1" />
+                      {specialty}
                     </span>
                   ))}
                 </div>
@@ -145,67 +218,48 @@ export default function TranslatorChatManagement() {
         <div className="space-y-6">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-bold mb-4">
-              {selectedTranslator.name}
+              {selectedAstrologer.name}
             </h2>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {selectedTranslator.languages.map((lang, index) => (
-                <span
-                  key={index}
-                  className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full flex items-center"
-                >
-                  <FaLanguage className="mr-1" />
-                  {lang}
-                </span>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <p className="text-gray-600">Total Messages: {total}</p>
+              {dateFilter && (
+                <p className="text-gray-600">
+                  Filtered up to: {new Date(dateFilter).toLocaleDateString()}
+                </p>
+              )}
             </div>
-            <p className="text-gray-600">
-              Total Translations: {translatedChats.length}
-            </p>
           </div>
 
-          {translatedChats.map((chat) => (
-            <div key={chat.$id} className="bg-white rounded-lg shadow-lg p-6">
+          {astroMessages.map((message) => (
+            <div
+              key={message.$createdAt}
+              className="bg-white rounded-lg shadow-lg p-6"
+            >
               <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center">
-                  <FaLanguage className="text-blue-500 mr-2" />
-                  <span className="font-medium">
-                    {chat.sourceLanguage} → {chat.targetLanguage}
-                  </span>
-                </div>
                 <div className="flex items-center text-gray-500 text-sm">
                   <FaClock className="mr-1" />
-                  {formatDate(chat.$createdAt)}
+                  {formatDate(message.$createdAt)}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-4 rounded">
-                  <div className="text-sm font-medium text-gray-500 mb-2">
-                    Original ({chat.sourceLanguage})
-                  </div>
-                  <div className="text-gray-800">{chat.original_body}</div>
-                  <div className="mt-2 text-sm text-gray-500">
-                    Sender: {chat.sender_id}
-                  </div>
-                </div>
-                <div className="bg-blue-50 p-4 rounded">
-                  <div className="text-sm font-medium text-gray-500 mb-2">
-                    Translated ({chat.targetLanguage})
-                  </div>
-                  <div className="text-gray-800">{chat.body}</div>
-                  <div className="mt-2 text-sm text-gray-500">
-                    Receiver: {chat.receiver_id}
-                  </div>
-                </div>
+              <div className="bg-gray-50 p-4 rounded mb-4">
+                <div className="text-gray-800">{message.body}</div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500">
+                <div>Sender: {message.sender_id}</div>
+                <div>Receiver: {message.receiver_id}</div>
               </div>
             </div>
           ))}
 
-          {translatedChats.length === 0 && (
+          {astroMessages.length === 0 && (
             <div className="bg-white rounded-lg shadow-lg p-6 text-center text-gray-500">
-              No translated chats found for this translator
+              No messages found for this astrologer
             </div>
           )}
+
+          {astroMessages.length > 0 && renderPagination()}
         </div>
       )}
     </div>

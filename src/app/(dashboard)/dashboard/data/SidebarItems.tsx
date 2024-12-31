@@ -70,6 +70,11 @@ export const sidebarItems = [
     path: "translator-management",
   },
   {
+    name: "Translator Chat Management",
+    icon: FaMessage,
+    path: "translator-chat-management",
+  },
+  {
     name: "Astro Chat Management",
     icon: FaMessage,
     path: "astro-chat-management",
