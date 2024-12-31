@@ -315,13 +315,13 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
       <div className="bg-white border-t border-gray-200 px-4 py-3 sticky bottom-0 left-0 right-0">
         <div className="relative">
           <form onSubmit={handleSendMessage} className="flex items-center">
-            <button
+            {/* <button
               type="button"
               onClick={() => setShowQuestionModal(true)}
               className="bg-gray-200 text-gray-600 px-4 py-2 rounded-r-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <FaChevronUp className="h-5 w-5" />
-            </button>
+            </button> */}
             <input
               ref={inputRef}
               type="text"
@@ -347,7 +347,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
         </div>
       </div>
 
-      {showQuestionModal && (
+      {/* {showQuestionModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen px-4 text-center">
             <div
@@ -393,7 +393,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {showTranslationModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">

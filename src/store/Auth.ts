@@ -373,6 +373,7 @@ export const useAuthStore = create<IAuthStore>()(
           console.log("hitted 5");
           //checking regular free credit limit
           const questionsAsked = Number(user.prefs.questionsAsked || 0);
+          console.log("questionAsked: ", questionsAsked);
           if (questionsAsked <= FREE_QUESTIONS_LIMIT) {
             return {
               success: true,
