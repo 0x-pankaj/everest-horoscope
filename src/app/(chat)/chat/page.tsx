@@ -8,6 +8,7 @@ import { database } from "@/appwrite/clientConfig";
 import conf from "@/conf/conf";
 import { useAuthStore } from "@/store/Auth";
 import Navbar from "@/components/Navbar";
+import Loadder from "@/components/Loadder";
 
 interface Astrologer {
   $id: string;
@@ -105,7 +106,7 @@ const ChatPage: React.FC = () => {
     astrologer.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  if (isLoading) return <div className="text-center py-8">Loading...</div>;
+  if (isLoading) return <Loadder />;
   if (error)
     return <div className="text-center py-8 text-red-600">{error}</div>;
   if (!astrologers.length)

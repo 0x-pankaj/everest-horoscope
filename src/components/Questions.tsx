@@ -259,7 +259,7 @@ const QuestionsComponent: React.FC = () => {
     <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-2 overflow-y-scroll md:p-6">
       <div className="max-w-6xl mx-auto bg-gradient-to-r from-purple-300 to-yellow-200 rounded-lg shadow-md p-3 md:p-6">
         <h2 className="text-xl md:text-3xl font-bold mb-3 md:mb-6 text-center text-indigo-700">
-          Common Questions
+          Frequently Asked Question
         </h2>
         {sections.length === 0 ? (
           <p className="text-center text-gray-600">No sections available.</p>
@@ -342,7 +342,7 @@ const QuestionsComponent: React.FC = () => {
                       className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors duration-300 text-sm md:text-base"
                       onClick={handleShowAuspiciousForm}
                     >
-                      Auspicious Day
+                      Find Auspicious Day
                     </button>
                   )}
                   <button
@@ -358,7 +358,7 @@ const QuestionsComponent: React.FC = () => {
         )}
       </div>
 
-      <VastoForm />
+      {/* <VastoForm /> */}
       {showAuspiciousForm && (
         <AuspiciousDataForm
           category={selectedSection?.category || "business"}

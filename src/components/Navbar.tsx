@@ -43,6 +43,14 @@ const navItems: NavItem[] = [
   //   ],
   // },
   {
+    label: "SERVICES",
+    link: "/services",
+  },
+  {
+    label: "ASTROLOGY",
+    link: "/astrology",
+  },
+  {
     label: "ASTROLOGERS",
     link: "/astrologers",
   },

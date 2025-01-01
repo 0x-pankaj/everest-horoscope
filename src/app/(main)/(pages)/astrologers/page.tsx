@@ -6,6 +6,8 @@ import conf from "@/conf/conf";
 import { AstrologerCard } from "@/components/AstrologerCard";
 import Navbar from "@/components/Navbar";
 import { Astrologer } from "@/types/user";
+import { FaSpinner } from "react-icons/fa";
+import Loadder from "@/components/Loadder";
 
 const AstrologerListPage: React.FC = () => {
   const [astrologers, setAstrologers] = useState<Astrologer[]>([]);
@@ -38,7 +40,7 @@ const AstrologerListPage: React.FC = () => {
       ),
   );
 
-  if (isLoading) return <div className="text-center py-8">Loading...</div>;
+  if (isLoading) return <Loadder />;
 
   return (
     <div>

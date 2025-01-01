@@ -34,7 +34,7 @@ export default function Home() {
         </div>
         <ZodiacHoroscope />
 
-        <OurServices />
+        {/* <OurServices /> */}
         <InterActionCard />
         <Testimonials />
         <BlogPreview />
