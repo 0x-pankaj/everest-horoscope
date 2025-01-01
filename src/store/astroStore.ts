@@ -32,7 +32,7 @@ interface AstroState {
 export const useAstroStore = create<AstroState>()(
   persist(
     immer((set) => ({
-      hydrated: false,  
+      hydrated: false,
       astrologers: [],
       loading: false,
       error: null,
@@ -48,34 +48,52 @@ export const useAstroStore = create<AstroState>()(
           try {
             const response = await database.listDocuments(
               conf.appwriteHoroscopeDatabaseId,
-              conf.appwriteAstroCollectionId
+              conf.appwriteAstroCollectionId,
             );
             console.log("Fetched astrologers:", response);
-            set({ astrologers: response.documents as unknown as Astrologer[], loading: false, error: null });
+            set({
+              astrologers: response.documents as unknown as Astrologer[],
+              loading: false,
+              error: null,
+            });
             return;
           } catch (error) {
-            console.error("Error fetching astrologers (attempt " + (4 - retries) + "):", error);
+            console.error(
+              "Error fetching astrologers (attempt " + (4 - retries) + "):",
+              error,
+            );
             if (error instanceof AppwriteException) {
-              console.error("Appwrite error details:", error.code, error.type, error.message);
+              console.error(
+                "Appwrite error details:",
+                error.code,
+                error.type,
+                error.message,
+              );
             }
             retries--;
             if (retries === 0) {
-              set({ error: error instanceof AppwriteException ? error : new AppwriteException("Unknown error occurred"), loading: false });
+              set({
+                error:
+                  error instanceof AppwriteException
+                    ? error
+                    : new AppwriteException("Unknown error occurred"),
+                loading: false,
+              });
             } else {
               // Wait for a short time before retrying
-              await new Promise(resolve => setTimeout(resolve, 1000));
+              await new Promise((resolve) => setTimeout(resolve, 1000));
             }
           }
         }
       },
     })),
     {
-      name: 'astro',
+      name: "astro",
       onRehydrateStorage() {
         return (state, error) => {
           if (!error) state?.setHydrated();
         };
       },
-    }
-  )
+    },
+  ),
 );
