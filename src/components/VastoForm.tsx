@@ -15,9 +15,6 @@ export interface VastoFormData {
   houseMap?: string; // This will store the Appwrite file ID
   selectedServices?: string[];
   message: string;
-  startDate: string;
-  endDate: string;
-  auspiciousPurpose: string;
 }
 
 const VastoForm = () => {
@@ -35,9 +32,6 @@ const VastoForm = () => {
     houseMap: null,
     selectedServices: [],
     message: "",
-    startDate: "",
-    endDate: "",
-    auspiciousPurpose: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -114,9 +108,6 @@ const VastoForm = () => {
       submitFormData.append("location", formData.location);
       submitFormData.append("direction", formData.direction);
       submitFormData.append("message", formData.message);
-      submitFormData.append("startDate", formData.startDate);
-      submitFormData.append("endDate", formData.endDate);
-      submitFormData.append("auspiciousPurpose", formData.auspiciousPurpose);
 
       // Handle the file // Only append houseMap if it exists
       if (formData.houseMap) {
@@ -145,9 +136,6 @@ const VastoForm = () => {
         houseMap: null,
         selectedServices: [],
         message: "",
-        startDate: "",
-        endDate: "",
-        auspiciousPurpose: "",
       });
 
       // You might want to show a success message or redirect
@@ -337,56 +325,6 @@ const VastoForm = () => {
                 rows={4}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
               />
-            </div>
-
-            {/* Auspicious Services Section - Separated with different styling */}
-            <div className="mt-8 p-6 bg-purple-50 rounded-lg border border-purple-100">
-              <h3 className="text-lg font-semibold text-purple-900 mb-4">
-                Auspicious Services
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Start Date
-                  </label>
-                  <input
-                    type="date"
-                    name="startDate"
-                    value={formData.startDate}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    End Date
-                  </label>
-                  <input
-                    type="date"
-                    name="endDate"
-                    value={formData.endDate}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Auspicious Purpose
-                </label>
-                <input
-                  type="text"
-                  name="auspiciousPurpose"
-                  value={formData.auspiciousPurpose}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
-                  required
-                />
-              </div>
             </div>
 
             <button

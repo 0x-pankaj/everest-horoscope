@@ -41,7 +41,7 @@ const AstrologerDetailPage: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="container mx-auto px-4 py-8">
         <AstrologerDetailCard astrologer={astrologer} />
       </div>

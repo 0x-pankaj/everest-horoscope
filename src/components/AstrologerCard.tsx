@@ -42,7 +42,7 @@ export const AstrologerCard: React.FC<AstrologerCardProps> = ({
   };
 
   const handleCardClick = () => {
-    router.push(`/astrologer/${astrologer.$id}`);
+    router.push(`/astrologers/${astrologer.$id}`);
   };
 
   return (

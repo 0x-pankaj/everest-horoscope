@@ -31,27 +31,20 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  // {
+  //   label: "HOROSCOPES",
+  //   link: "#",
+  //   children: [
+  //     { label: "DAILY", link: "#" },
+  //     { label: "WEEKLY", link: "#" },
+  //     { label: "MONTHLY", link: "#" },
+  //     { label: "2024 YEARLY", link: "#" },
+  //     { label: "MY SIGN", link: "#" },
+  //   ],
+  // },
   {
-    label: "HOROSCOPES",
-    link: "#",
-    children: [
-      { label: "DAILY", link: "#" },
-      { label: "WEEKLY", link: "#" },
-      { label: "MONTHLY", link: "#" },
-      { label: "2024 YEARLY", link: "#" },
-      { label: "MY SIGN", link: "#" },
-    ],
-  },
-  {
-    label: "ASTROLOGY",
-    link: "#",
-    children: [
-      { label: "ASTROLOGY", link: "#" },
-      { label: "TAROT", link: "#" },
-      { label: "LOVE + COMPATIBILITY", link: "#" },
-      { label: "NUMEROLOGY", link: "#" },
-      { label: "PARENTING", link: "#" },
-    ],
+    label: "ASTROLOGERS",
+    link: "/astrologers",
   },
   { label: "BOOK A POOJA", link: "#" },
   { label: "CONTACT", link: "/contact" },

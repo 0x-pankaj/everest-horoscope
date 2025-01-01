@@ -69,9 +69,6 @@ export async function POST(request: Request) {
       houseMap: fileId,
       selectedServices: JSON.parse(formData.get("selectedServices") as string),
       message: formData.get("message"),
-      startDate: formData.get("startDate"),
-      endDate: formData.get("endDate"),
-      auspiciousPurpose: formData.get("auspiciousPurpose"),
       // createdAt: new Date().toISOString(),
     };
 
