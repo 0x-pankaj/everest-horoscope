@@ -54,7 +54,7 @@ const navItems: NavItem[] = [
     label: "ASTROLOGERS",
     link: "/astrologers",
   },
-  { label: "BOOK A POOJA", link: "#" },
+  // { label: "BOOK A POOJA", link: "#" },
   { label: "CONTACT", link: "/contact" },
   { label: "ABOUT", link: "/about" },
 ];

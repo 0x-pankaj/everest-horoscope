@@ -1,10 +1,11 @@
-"use client"
-import React, { useState, useEffect } from 'react';
-import { database } from '@/appwrite/clientConfig';
-import conf from '@/conf/conf';
-import { Query, Models } from 'appwrite';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import Image from "next/legacy/image"
+"use client";
+import React, { useState, useEffect } from "react";
+import { database } from "@/appwrite/clientConfig";
+import conf from "@/conf/conf";
+import { Query, Models } from "appwrite";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import Image from "next/legacy/image";
+import Loadder from "./Loadder";
 
 interface CarouselImage {
   mobile: boolean;
@@ -28,9 +29,9 @@ const ResponsiveCarousel = () => {
         const response = await database.listDocuments(
           conf.appwriteHoroscopeDatabaseId,
           conf.appwriteCrouselCollectionId,
-          [Query.orderAsc('order')]
+          [Query.orderAsc("order")],
         );
-        
+
         const mobileUrls: string[] = [];
         const desktopUrls: string[] = [];
 
@@ -47,8 +48,8 @@ const ResponsiveCarousel = () => {
         setMobileImages(mobileUrls);
         setDesktopImages(desktopUrls);
       } catch (err) {
-        console.error('Error fetching carousel images:', err);
-        setError('Failed to load carousel images');
+        console.error("Error fetching carousel images:", err);
+        setError("Failed to load carousel images");
       } finally {
         setLoading(false);
       }
@@ -63,13 +64,17 @@ const ResponsiveCarousel = () => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % (isDesktop ? desktopImages.length : mobileImages.length));
+      setCurrentIndex(
+        (prevIndex) =>
+          (prevIndex + 1) %
+          (isDesktop ? desktopImages.length : mobileImages.length),
+      );
     }, 5000);
     return () => clearInterval(interval);
   }, [isDesktop, desktopImages.length, mobileImages.length]);
@@ -81,24 +86,30 @@ const ResponsiveCarousel = () => {
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + images.length) % images.length,
+    );
   };
 
-  if (loading) return <div>Loading carousel...</div>;
+  if (loading) return <Loadder />;
   if (error) return <div>Error: {error}</div>;
   if (images.length === 0) return null;
 
   return (
     <section className="relative w-full overflow-hidden">
-      <div 
-        className={`relative ${isDesktop ? 'h-[460px]' : 'h-[386px]'}`}
-        style={{ width: isDesktop ? '1600px' : '864px', maxWidth: '100%', margin: '0 auto' }}
+      <div
+        className={`relative ${isDesktop ? "h-[460px]" : "h-[386px]"}`}
+        style={{
+          width: isDesktop ? "1600px" : "864px",
+          maxWidth: "100%",
+          margin: "0 auto",
+        }}
       >
         {images.map((image, index) => (
           <div
             key={index}
             className={`absolute inset-0 transition-opacity duration-500 ${
-              index === currentIndex ? 'opacity-100' : 'opacity-0'
+              index === currentIndex ? "opacity-100" : "opacity-0"
             }`}
           >
             <Image
