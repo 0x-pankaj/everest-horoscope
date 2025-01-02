@@ -166,6 +166,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
         ],
       );
 
+      console.log("message while fetching: ", response.documents);
+
       console.log("message count: ", response.total);
       // response.total
 

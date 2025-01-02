@@ -38,8 +38,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   const { trackQuestion, checkAndDeductBalance } = useAuthStore();
 
   const [showTranslationModal, setShowTranslationModal] = useState(false);
-  const [sourceLanguage, setSourceLanguage] = useState<string[]>([]);
-  const [targetLanguage, setTargetLanguage] = useState<string[]>([]);
+  const [sourceLanguage, setSourceLanguage] = useState("");
+  const [targetLanguage, setTargetLanguage] = useState("");
 
   console.log("senderId: ", senderId, "receiverId: ", receiverId);
 
@@ -65,6 +65,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   const languages = ["English", "Spanish", "French", "German", "Italian"];
 
   useEffect(() => {
+    if (!user) return;
+
+    // console.log("user from chat room: ", user);
+    setSourceLanguage(user.prefs.preferredLanguage); // default target language is english
+    setTargetLanguage("english");
     resetMessages();
 
     if (!isFetched.current) {

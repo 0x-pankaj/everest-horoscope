@@ -14,50 +14,65 @@ const DobComponent: React.FC = () => {
   const [state, setState] = useState("");
   const [district, setDistrict] = useState("");
   const [city, setCity] = useState("");
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [hidden, setHidden] = useState<boolean>(false);
 
   // Available languages list
   const availableLanguages = [
-    { code: "en", name: "English" },
-    { code: "hi", name: "Hindi" },
-    { code: "np", name: "Nepali" },
-    { code: "kr", name: "Korean" },
+    { code: "english", name: "English" },
+    { code: "hindi", name: "Hindi" },
+    { code: "nepali", name: "Nepali" },
+    { code: "korean", name: "Korean" },
   ];
 
   useEffect(() => {
     if (user) {
-      checkDOBAndBirthPlace();
-      // Initialize selected languages from user preferences if they exist
-      if (user.prefs?.preferredLanguages) {
-        setSelectedLanguages(user.prefs.preferredLanguages);
+      // Pre-fill the form with existing data
+      if (user.prefs?.dob) {
+        try {
+          const dobDate = new Date(user.prefs.dob);
+          setYear(dobDate.getFullYear().toString());
+          setMonth((dobDate.getMonth() + 1).toString().padStart(2, "0"));
+          setDay(dobDate.getDate().toString().padStart(2, "0"));
+          setTime(dobDate.toTimeString().slice(0, 5)); // Get HH:MM format
+        } catch (error) {
+          console.error("Error parsing date:", error);
+        }
       }
+
+      // Pre-fill location data
+      if (user.prefs?.birthCountry) setCountry(user.prefs.birthCountry);
+      if (user.prefs?.birthState) setState(user.prefs.birthState);
+      if (user.prefs?.birthDistrict) setDistrict(user.prefs.birthDistrict);
+      if (user.prefs?.birthCity) setCity(user.prefs.birthCity);
+
+      // Pre-fill language preference
+      if (user.prefs?.preferredLanguage) {
+        setSelectedLanguage(user.prefs.preferredLanguage);
+      }
+
+      // Check if any required field is missing
+      checkDOBAndBirthPlace();
     }
   }, [user]);
 
   const checkDOBAndBirthPlace = async () => {
     try {
+      // Show modal if any required field is missing
       if (
         !user?.prefs?.dob ||
         !user?.prefs?.birthCountry ||
-        !user?.prefs?.preferredLanguages
+        !user?.prefs?.preferredLanguage ||
+        !user?.prefs?.birthState ||
+        !user?.prefs?.birthDistrict ||
+        !user?.prefs?.birthCity
       ) {
         setShowModal(true);
       }
     } catch (error) {
       console.error("Error checking DOB and BirthPlace:", error);
     }
-  };
-
-  const handleLanguageChange = (language: string) => {
-    setSelectedLanguages((prev) => {
-      if (prev.includes(language)) {
-        return prev.filter((lang) => lang !== language);
-      } else {
-        return [...prev, language];
-      }
-    });
   };
 
   const validateFields = () => {
@@ -70,8 +85,7 @@ const DobComponent: React.FC = () => {
     if (!state) missingFields.push("State");
     if (!district) missingFields.push("District");
     if (!city) missingFields.push("City");
-    if (selectedLanguages.length === 0)
-      missingFields.push("Preferred Language");
+    if (!selectedLanguage) missingFields.push("Preferred Language");
     return missingFields;
   };
 
@@ -93,7 +107,7 @@ const DobComponent: React.FC = () => {
         birthState: state,
         birthDistrict: district,
         birthCity: city,
-        preferredLanguages: selectedLanguages,
+        preferredLanguage: selectedLanguage,
       });
       setShowModal(false);
 
@@ -114,7 +128,7 @@ const DobComponent: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-scroll">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-semibold py-4 my-6">
-              Set Your Date and Place of Birth
+              Update Your Information
             </h2>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -177,17 +191,19 @@ const DobComponent: React.FC = () => {
               {/* Language Selection */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Select Preferred Languages
+                  Select Preferred Language
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {availableLanguages.map((language) => (
                     <div key={language.code} className="flex items-center">
                       <input
-                        type="checkbox"
+                        type="radio"
                         id={language.code}
-                        checked={selectedLanguages.includes(language.code)}
-                        onChange={() => handleLanguageChange(language.code)}
-                        className="h-4 w-4 text-blue-600 rounded border-gray-300"
+                        name="language"
+                        value={language.code}
+                        checked={selectedLanguage === language.code}
+                        onChange={(e) => setSelectedLanguage(e.target.value)}
+                        className="h-4 w-4 text-blue-600 border-gray-300"
                       />
                       <label
                         htmlFor={language.code}
