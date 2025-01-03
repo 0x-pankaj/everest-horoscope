@@ -122,18 +122,40 @@ export default function Astrology() {
           </h1>
           <div className="max-w-3xl mx-auto">
             <p className="text-lg text-gray-600 mb-6">
-              Astrology is an ancient practice that studies the movements and
-              relative positions of celestial bodies, such as the sun, moon,
-              planets, and stars, believing that they influence human affairs
-              and terrestrial events.
+              Life can feel unfair sometimes. People raised in similar
+              environments, putting in equal effort, can end up in vastly
+              different places. Astrology offers a perspective on this very
+              question. It proposes that beyond the readily apparent factors
+              shaping our lives, there exists a hidden influence – the imprint
+              of the cosmos at the moment of our birth. This birth chart,
+              created by mapping the positions of celestial objects at that
+              specific time and location, is believed to hold valuable clues
+              about who we are. It can reveal our inherent personality traits,
+              natural strengths, and potential hurdles we might encounter on our
+              life's journey.
+            </p>
+            <p className="text-lg text-gray-600 mb-6">
+              Think of astrology as a guiding light. Just as a light illuminates
+              a dark room, revealing unseen obstacles and dangers, an
+              astrological analysis can shed light on the path ahead. By
+              examining your birth chart and the current movements of the
+              planets, an astrologer can identify potential challenges and
+              opportunities that lie on the horizon. This foreknowledge allows
+              you to make informed decisions, prepare for potential roadblocks,
+              and ultimately navigate life's uncertainties with greater
+              confidence and clarity.
             </p>
             <p className="text-lg text-gray-600">
-              This ancient art examines how the placement of celestial bodies at
-              the time of one's birth, along with their ongoing movements, can
-              influence personality traits, relationships, career paths, and
-              life events. Each planet is believed to govern different aspects
-              of life, from personal characteristics to family dynamics and
-              societal roles.
+              Eastern traditions have a long and rich history of studying the
+              cosmos and its influence on our lives. The very names of the days
+              in our week – Sunday (Sun), Monday (Moon), Tuesday (Mars) –
+              reflect this ancient connection. These cultures observed the
+              rhythmic movements of the planets and stars, recognizing their
+              subtle yet profound impact on everything from the tides in the
+              ocean to the patterns of human behavior. Astrology, as practiced
+              in the East, provides a framework for understanding this
+              interconnectedness and using that knowledge to live a more
+              harmonious and fulfilling life.
             </p>
           </div>
         </div>
