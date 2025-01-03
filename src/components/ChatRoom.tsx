@@ -37,7 +37,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
 
   const { trackQuestion, checkAndDeductBalance } = useAuthStore();
 
-  const [showTranslationModal, setShowTranslationModal] = useState(false);
+  // const [showTranslationModal, setShowTranslationModal] = useState(false);
   const [sourceLanguage, setSourceLanguage] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("");
 
@@ -51,15 +51,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
     } catch (error) {
       console.log("Error fetching more message: ", error);
     }
-  };
-
-  const handleTranslationClick = () => {
-    setShowTranslationModal(true);
-  };
-
-  const handleTranslationSubmit = () => {
-    console.log(`Translate from ${sourceLanguage} to ${targetLanguage}`);
-    setShowTranslationModal(false);
   };
 
   const languages = ["English", "Spanish", "French", "German", "Italian"];
@@ -260,13 +251,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
               placeholder="Type your message..."
             />
             <button
-              type="button"
-              onClick={handleTranslationClick}
-              className="bg-gray-200 text-gray-600 px-4 py-2 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 "
-            >
-              <FaLanguage className="h-5 w-5" />
-            </button>
-            <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -275,88 +259,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
           </form>
         </div>
       </div>
-
-      {showTranslationModal && (
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen px-4 text-center">
-            <div
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-              aria-hidden="true"
-              onClick={() => setShowTranslationModal(false)}
-            ></div>
-
-            <div className="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                      Translation Settings
-                    </h3>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="sourceLanguage"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        Translate from:
-                      </label>
-                      <select
-                        id="sourceLanguage"
-                        value={sourceLanguage}
-                        onChange={(e) => setSourceLanguage(e.target.value)}
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                      >
-                        <option value="">Select source language</option>
-                        {languages.map((lang) => (
-                          <option key={lang} value={lang}>
-                            {lang}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="targetLanguage"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        Translate to:
-                      </label>
-                      <select
-                        id="targetLanguage"
-                        value={targetLanguage}
-                        onChange={(e) => setTargetLanguage(e.target.value)}
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                      >
-                        <option value="">Select target language</option>
-                        {languages.map((lang) => (
-                          <option key={lang} value={lang}>
-                            {lang}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                      <button
-                        type="button"
-                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-                        onClick={handleTranslationSubmit}
-                      >
-                        Apply
-                      </button>
-                      <button
-                        type="button"
-                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
-                        onClick={() => setShowTranslationModal(false)}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

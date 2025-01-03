@@ -1,9 +1,9 @@
 "use client";
-//path /[astroId]/[userId]
-import React, { useState } from "react";
+
+import React from "react";
 import { useRouter } from "next/navigation";
 import ChatRoom from "@/components/ChatRoom";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaHome, FaComments } from "react-icons/fa";
 import { useAuthStore } from "@/store/Auth";
 import VastoForm from "@/components/VastoForm";
 import DataFetchButton from "@/components/DataFetchButton";
@@ -20,57 +20,86 @@ export default function ChatRoomPage({
   const { isAdmin, isAstrologer } = useRoleAccess();
 
   if (!user) {
-    // Handle unauthenticated user
-    return <div>Please log in to access the chat.</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+        <div className="w-full max-w-md text-center p-8 bg-white rounded-xl shadow-sm">
+          <h2 className="text-xl font-semibold text-gray-800 mb-3">
+            Login Required
+          </h2>
+          <p className="text-gray-600">
+            Please log in to access the chat feature.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+    <div className="flex flex-col min-h-screen">
+      {/* Header */}
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center px-4 py-3">
             <button
               onClick={() => router.back()}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-gray-600 hover:text-gray-900 transition-colors p-2 rounded-lg
+                hover:bg-gray-100 active:bg-gray-200"
             >
-              <FaArrowLeft className="h-6 w-6" />
+              <FaArrowLeft className="h-5 w-5" />
             </button>
-            <button
-              onClick={() => router.push("/")}
-              className="text-xl text-gray-600 hover:text-gray-900"
-            >
-              Home
-            </button>
-            <button
-              onClick={() => router.push("/chat")}
-              className="text-xl text-gray-600 hover:text-gray-900"
-            >
-              Chat
-            </button>
-            <h1 className="text-xl font-semibold text-gray-900">
-              Chat with astrologers{" "}
-            </h1>
-            <div className="w-6"> {user.name} </div>{" "}
-            {/* Placeholder for alignment */}
+
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => router.push("/")}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900
+                  transition-colors p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200"
+              >
+                <FaHome className="h-5 w-5" />
+                <span className="hidden sm:inline text-sm font-medium">
+                  Home
+                </span>
+              </button>
+
+              <button
+                onClick={() => router.push("/chat")}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900
+                  transition-colors p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200"
+              >
+                <FaComments className="h-5 w-5" />
+                <span className="hidden sm:inline text-sm font-medium">
+                  Chat
+                </span>
+              </button>
+            </div>
+
+            <div className="text-sm font-medium text-gray-700 truncate max-w-[120px] sm:max-w-none">
+              {user.name}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex-grow">
-        <div className="max-w-7xl mx-auto h-full">
+      {/* Main Content */}
+      <div className="flex-grow relative">
+        <div className="max-w-4xl mx-auto h-full">
           <ChatRoom senderId={user.$id} receiverId={params.astroId} />
-          {isAdmin() || isAstrologer() ? (
-            <>
-              <DataFetchButton userId={params.userId} />
-              {console.log("user: ", user.name)}
-              <FreeCreditManager
-                userId={params.userId}
-                userName={user.name}
-                initialPosition={{ x: 200, y: 20 }}
-              />
-            </>
-          ) : null}
         </div>
+
+        {/* Admin/Astrologer Controls */}
+        {(isAdmin() || isAstrologer()) && (
+          <div className="fixed bottom-20 right-4 space-y-2 z-10">
+            <DataFetchButton
+              userId={params.userId}
+              // className="shadow-lg hover:shadow-xl transition-shadow"
+            />
+            <FreeCreditManager
+              userId={params.userId}
+              userName={user.name}
+              initialPosition={{ x: 200, y: 20 }}
+              // className="shadow-lg hover:shadow-xl transition-shadow"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
