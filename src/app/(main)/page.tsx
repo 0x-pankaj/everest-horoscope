@@ -11,6 +11,8 @@ import QuestionsComponent from "@/components/Questions";
 import PanchangHome from "@/components/TodaysPanchang";
 import ResponsiveCarousel from "@/components/ResponsiveCarousel";
 import DobComponent from "@/components/DobComponent";
+import Features from "@/components/Features";
+import FAQ from "@/components/FAQ";
 
 export default function Home() {
   return (
@@ -20,6 +22,7 @@ export default function Home() {
         <ResponsiveCarousel />
         <HowItWorks />
         <DobComponent />
+        <FAQ />
         <QuestionsComponent />
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 items-start">
           {/* PanchangHome will take up two-thirds width on desktop and full width on mobile */}
@@ -29,7 +32,8 @@ export default function Home() {
 
           {/* WeatherComponent will take one-third width on desktop and full width on mobile */}
           <div className="lg:col-span-2 order-2">
-            <WeatherComponent />
+            {/* <WeatherComponent /> */}
+            <Features />
           </div>
         </div>
         {/* <ZodiacHoroscope /> */}
