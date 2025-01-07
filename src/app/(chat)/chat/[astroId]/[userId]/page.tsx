@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import ChatRoom from "@/components/ChatRoom";
 import { FaArrowLeft, FaHome, FaComments } from "react-icons/fa";
@@ -9,6 +9,7 @@ import VastoForm from "@/components/VastoForm";
 import DataFetchButton from "@/components/DataFetchButton";
 import FreeCreditManager from "@/components/FreeCreditManager";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
+import { FaCog } from "react-icons/fa";
 
 export default function ChatRoomPage({
   params,
@@ -18,6 +19,7 @@ export default function ChatRoomPage({
   const router = useRouter();
   const { user } = useAuthStore();
   const { isAdmin, isAstrologer } = useRoleAccess();
+  const [showAdminControls, setShowAdminControls] = useState(true);
 
   if (!user) {
     return (
@@ -87,18 +89,44 @@ export default function ChatRoomPage({
 
         {/* Admin/Astrologer Controls */}
         {(isAdmin() || isAstrologer()) && (
-          <div className="fixed bottom-20 right-4 space-y-2 z-10">
-            <DataFetchButton
-              userId={params.userId}
-              // className="shadow-lg hover:shadow-xl transition-shadow"
-            />
-            <FreeCreditManager
-              userId={params.userId}
-              userName={user.name}
-              initialPosition={{ x: 200, y: 20 }}
-              // className="shadow-lg hover:shadow-xl transition-shadow"
-            />
-          </div>
+          // <div className="fixed bottom-20 right-4 space-y-2 z-10">
+          //   <DataFetchButton
+          //     userId={params.userId}
+          //     // className="shadow-lg hover:shadow-xl transition-shadow"
+          //   />
+          //   <FreeCreditManager
+          //     userId={params.userId}
+          //     userName={user.name}
+          //     initialPosition={{ x: 200, y: 20 }}
+          //     // className="shadow-lg hover:shadow-xl transition-shadow"
+          //   />
+          // </div>
+
+          <>
+            {/* Settings Icon - Always visible */}
+            <button
+              onClick={() => setShowAdminControls(!showAdminControls)}
+              className="fixed bottom-20 left-4 bg-gradient-to-r from-purple-600 to-yellow-500
+                 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg
+                 z-20 md:hidden"
+            >
+              <FaCog className="h-5 w-5" />
+            </button>
+
+            {/* Admin Controls - Hidden on mobile when showAdminControls is false */}
+            <div
+              className={`fixed bottom-20 right-4 space-y-2 z-10
+               ${showAdminControls ? "block" : "hidden"}
+               md:block`} // md:block ensures it's always visible on desktop
+            >
+              <DataFetchButton userId={params.userId} />
+              <FreeCreditManager
+                userId={params.userId}
+                userName={user.name}
+                initialPosition={{ x: 200, y: 20 }}
+              />
+            </div>
+          </>
         )}
       </div>
     </div>

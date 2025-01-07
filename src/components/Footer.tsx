@@ -86,10 +86,10 @@ const Footer: React.FC = () => {
             </h3>
             <div className="text-center md:text-left space-y-2">
               <p className="text-gray-300">
-                123 Cosmic Lane, Astrology City, AST 456
+                Bhudhanilakantha, Kathmandu, Nepal
               </p>
-              <p className="text-gray-300">Email: info@everesthoroscope.com</p>
-              <p className="text-gray-300">Phone: +977 9800 000 000</p>
+              <p className="text-gray-300">Email: astroeverest@gmail.com</p>
+              <p className="text-gray-300">Phone: +977 9761662499</p>
             </div>
           </div>
         </div>

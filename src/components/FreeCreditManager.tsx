@@ -81,7 +81,7 @@ const FreeCreditManager: React.FC<FreeCreditManagerProps> = ({
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className=" fixed bottom-20 right-4 bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg"
+        className=" fixed bottom-20 right-40 bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg"
       >
         Manage Free Credits
       </button>

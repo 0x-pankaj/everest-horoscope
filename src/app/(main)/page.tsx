@@ -32,7 +32,7 @@ export default function Home() {
             <WeatherComponent />
           </div>
         </div>
-        <ZodiacHoroscope />
+        {/* <ZodiacHoroscope /> */}
 
         {/* <OurServices /> */}
         <InterActionCard />
