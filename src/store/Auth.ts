@@ -4,10 +4,9 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
 
-import { AppwriteException, ID, Models } from "appwrite";
+import { AppwriteException, ID, Models, OAuthProvider } from "appwrite";
 
 import { account } from "@/appwrite/clientConfig";
-import { OAuthProvider } from "appwrite";
 
 type BalanceOperation = "ADD" | "SUBTRACT";
 export type UserRole = "admin" | "astrologer" | "translator" | "simpleuser";
@@ -42,7 +41,6 @@ interface IAuthStore {
     email: string,
     password: string,
   ): Promise<{
-    createOAuth2Session;
     success: boolean;
     error?: AppwriteException | null;
   }>;
@@ -220,6 +218,50 @@ export const useAuthStore = create<IAuthStore>()(
           return { success: true };
         } catch (error) {
           console.log("Error in account verification: ", error);
+          return {
+            success: false,
+            error: error instanceof AppwriteException ? error : null,
+          };
+        }
+      },
+
+      async loginWithGoogle() {
+        try {
+          account.createOAuth2Session(
+            OAuthProvider.Google,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/auth-callback`, // Success URL
+            `${process.env.NEXT_PUBLIC_BASE_URL}/login`, // Failure URL
+            ["profile", "email"], // Requested scopes
+          );
+          return { success: true };
+        } catch (error) {
+          console.error("Error in Google login:", error);
+          return {
+            success: false,
+            error: error instanceof AppwriteException ? error : null,
+          };
+        }
+      },
+
+      async handleOAuthCallback() {
+        try {
+          const session = await account.getSession("current");
+          const user = await account.get();
+          const roles = user.labels || [];
+
+          // Initialize user preferences if they don't exist
+          if (!user.prefs || !user.prefs.balance) {
+            await account.updatePrefs({
+              balance: 0,
+              questionsAsked: 0,
+              freeMessageCredits: 0,
+            });
+          }
+
+          set({ session, user, roles });
+          return { success: true };
+        } catch (error) {
+          console.error("Error handling OAuth callback:", error);
           return {
             success: false,
             error: error instanceof AppwriteException ? error : null,
@@ -464,50 +506,6 @@ export const useAuthStore = create<IAuthStore>()(
           return {
             success: false,
             error: "Failed to track question",
-          };
-        }
-      },
-
-      loginWithGoogle: async () => {
-        try {
-          account.createOAuth2Session(
-            OAuthProvider.Google,
-            `${process.env.NEXT_PUBLIC_BASE_URL}/auth-callback`, // Success URL
-            `${process.env.NEXT_PUBLIC_BASE_URL}/login`, // Failure URL
-            ["profile", "email"], // Requested scopes
-          );
-          return { success: true };
-        } catch (error) {
-          console.error("Error in Google login:", error);
-          return {
-            success: false,
-            error: error instanceof AppwriteException ? error : null,
-          };
-        }
-      },
-
-      handleOAuthCallback: async () => {
-        try {
-          const session = await account.getSession("current");
-          const user = await account.get();
-          const roles = user.labels || [];
-
-          // Initialize user preferences if they don't exist
-          if (!user.prefs || !user.prefs.balance) {
-            await account.updatePrefs({
-              balance: 0,
-              questionsAsked: 0,
-              freeMessageCredits: 0,
-            });
-          }
-
-          set({ session, user, roles });
-          return { success: true };
-        } catch (error) {
-          console.error("Error handling OAuth callback:", error);
-          return {
-            success: false,
-            error: error instanceof AppwriteException ? error : null,
           };
         }
       },
