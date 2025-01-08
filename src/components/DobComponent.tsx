@@ -57,6 +57,18 @@ const DobComponent: React.FC = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (user) {
+      if (
+        user.labels.some((label) =>
+          ["admin", "astrologer", "translator"].includes(label),
+        )
+      ) {
+        setShowModal(false);
+      }
+    }
+  }, []);
+
   const checkDOBAndBirthPlace = async () => {
     try {
       // Show modal if any required field is missing
