@@ -109,7 +109,7 @@ const DataFetchButton = ({ userId }: { userId: string }) => {
       {/* Main Button */}
       <Button
         onClick={() => setIsMainModalOpen(true)}
-        className="fixed bottom-4 right-40 bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg"
+        className="fixed bottom-4 right-20 bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg"
       >
         <span className="text-lg">View Data</span>
       </Button>

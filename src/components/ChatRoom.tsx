@@ -178,7 +178,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
       }
 
       // Send message with translation if enabled
-      if (sourceLanguage && targetLanguage) {
+      if (
+        sourceLanguage &&
+        targetLanguage &&
+        sourceLanguage !== targetLanguage
+      ) {
         await sendMessage(
           senderId,
           receiverId,

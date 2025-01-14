@@ -115,7 +115,7 @@ export default function ChatRoomPage({
 
             {/* Admin Controls - Hidden on mobile when showAdminControls is false */}
             <div
-              className={`fixed bottom-20 right-4 space-y-2 z-10
+              className={`fixed bottom-20 right-2 space-y-2 z-10
                ${showAdminControls ? "block" : "hidden"}
                md:block`} // md:block ensures it's always visible on desktop
             >
