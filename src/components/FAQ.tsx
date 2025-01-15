@@ -11,14 +11,14 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
   {
-    question: "Is there any time limit to the call?",
+    question: "Is there any time limit to the chat?",
     answer:
       "No, there is no time limit. You can talk to our Jyotish as much as you want to consult for one single Kundali consultation.",
   },
   {
-    question: "Are the calls private and secure?",
+    question: "Are the chats private and secure?",
     answer:
-      "Yes. The calls are end to end encrypted between you and the Jyotish. So, it is private and secure.",
+      "Yes. The chats are end to end encrypted between you and the Jyotish. So, it is private and secure.",
   },
   {
     question: "Is ticket refundable?",
@@ -47,20 +47,14 @@ const faqs: FAQItem[] = [
               +977 9761662499
             </a>
           </p>
-          <p>
-            Phone (USA):{" "}
-            <a href="tel:+0000000000" className="text-blue-600 hover:underline">
-              +1 0000000000
-            </a>
-          </p>
         </div>
       </div>
     ),
   },
   {
-    question: "Can I just do a voice chat without video?",
+    question: "Can I just do a  chat without call?",
     answer:
-      "Yes, you will see an option to disable the video once the call begins.",
+      "Yes, you will see an option to disable the video once the chat begins.",
   },
 ];
 

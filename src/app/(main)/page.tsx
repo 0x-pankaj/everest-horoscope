@@ -22,9 +22,8 @@ export default function Home() {
         <ResponsiveCarousel />
         <HowItWorks />
         <DobComponent />
-        <FAQ />
         <QuestionsComponent />
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 items-start">
+        <div className="grid grid-cols-0 gap-1 lg:grid-cols-5 items-start">
           {/* PanchangHome will take up two-thirds width on desktop and full width on mobile */}
           <div className="lg:col-span-3 order-1">
             <PanchangHome />
@@ -39,6 +38,7 @@ export default function Home() {
         {/* <ZodiacHoroscope /> */}
 
         {/* <OurServices /> */}
+        <FAQ />
         <InterActionCard />
         <Testimonials />
         <BlogPreview />

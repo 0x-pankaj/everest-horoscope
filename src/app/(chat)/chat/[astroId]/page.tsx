@@ -7,6 +7,8 @@ import { useAuthStore } from "@/store/Auth";
 import Navbar from "@/components/Navbar";
 import ChatRoom from "@/components/ChatRoom";
 import { FaBars, FaTimes } from "react-icons/fa";
+import DataFetchButton from "@/components/DataFetchButton";
+import FreeCreditManager from "@/components/FreeCreditManager";
 
 const ChatPageForSidebar = ({ params }: { params: { astroId: string } }) => {
   const { user, hydrated } = useAuthStore();
@@ -56,6 +58,19 @@ const ChatPageForSidebar = ({ params }: { params: { astroId: string } }) => {
               </button> */}
           </div>
           {/* {selectedUserId} */}
+
+          <div>
+            <DataFetchButton
+              userId={selectedUserId || ""}
+              position={{ x: 15, y: 100 }}
+            />
+            <FreeCreditManager
+              userId={selectedUserId || ""}
+              userName={user.name}
+              initialPosition={{ x: 200, y: 20 }}
+              buttonPosition={{ x: 15, y: 200 }}
+            />
+          </div>
 
           {selectedUserId ? (
             <ChatRoom

@@ -27,7 +27,7 @@ const Features = () => {
   ];
 
   return (
-    <section className="py-16 px-4 bg-gradient-to-br from-purple-600 via-purple-500 to-purple-700">
+    <section className="py-16 px-2 bg-gradient-to-br from-purple-600 via-purple-500 to-purple-700">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-white">
           Features of Everest Astro

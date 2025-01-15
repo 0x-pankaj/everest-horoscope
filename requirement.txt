@@ -1,13 +1,12 @@
-chat source language tarnaslated language
+chat source language tarnaslated language  //done
 
 
-translatro
+translatro //done
 
 
-view data
+view data //done
+
+frequently asked question //processing
 
 
-frequently asked question
-
-
-feature of everest astro
+feature of everest astro //processing

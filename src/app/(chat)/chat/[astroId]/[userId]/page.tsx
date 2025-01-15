@@ -119,11 +119,15 @@ export default function ChatRoomPage({
                ${showAdminControls ? "block" : "hidden"}
                md:block`} // md:block ensures it's always visible on desktop
             >
-              <DataFetchButton userId={params.userId} />
+              <DataFetchButton
+                userId={params.userId}
+                position={{ x: 15, y: 40 }}
+              />
               <FreeCreditManager
                 userId={params.userId}
                 userName={user.name}
                 initialPosition={{ x: 200, y: 20 }}
+                buttonPosition={{ x: 15, y: 80 }}
               />
             </div>
           </>

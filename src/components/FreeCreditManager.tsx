@@ -3,7 +3,12 @@ import { useAuthStore } from "@/store/Auth";
 import toast from "react-hot-toast";
 import { X } from "lucide-react";
 
-interface Position {
+interface InitionPosition {
+  x: number;
+  y: number;
+}
+
+interface ButtonPosition {
   x: number;
   y: number;
 }
@@ -11,19 +16,21 @@ interface Position {
 interface FreeCreditManagerProps {
   userId: string;
   userName?: string;
-  initialPosition?: Position;
+  initialPosition?: InitionPosition;
+  buttonPosition: ButtonPosition;
 }
 
 const FreeCreditManager: React.FC<FreeCreditManagerProps> = ({
   userId,
   userName,
   initialPosition = { x: 20, y: 20 },
+  buttonPosition,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [credits, setCredits] = useState<number>(0);
-  const [position, setPosition] = useState<Position>(initialPosition);
+  const [position, setPosition] = useState<InitionPosition>(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState<Position>({ x: 0, y: 0 });
+  const [dragOffset, setDragOffset] = useState<InitionPosition>({ x: 0, y: 0 });
 
   const { updateFreeMessageCredits } = useAuthStore();
 
@@ -76,12 +83,19 @@ const FreeCreditManager: React.FC<FreeCreditManagerProps> = ({
     setIsDragging(false);
   };
 
+  const buttonStyle: React.CSSProperties = {
+    position: "fixed",
+    right: `${buttonPosition.x}px`,
+    bottom: `${buttonPosition.y}px`,
+  };
+
   return (
     <>
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className=" fixed bottom-20 right-16 bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg"
+        style={buttonStyle}
+        className="bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg"
       >
         Manage Free Credits
       </button>

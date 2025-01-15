@@ -1,4 +1,3 @@
-// src/components/DataFetchButton/index.tsx
 import React, { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,20 +7,13 @@ import axios from "axios";
 import { User } from "@/types/user";
 import { AuspiciousFormData } from "../VastoForm";
 import AuspiciousServiceDisplay from "./AuspiciousServiceDisplay";
+import { useParams } from "next/navigation";
 
 export type FeatureType =
   | "userInfo"
   | "vastoService"
   | "auspiciousService"
   | null;
-
-// export interface UserData {
-//   $id: string;
-//   name: string;
-//   email: string;
-//   phone?: string;
-//   // Add other user fields you need
-// }
 
 export interface VastoServiceData {
   id: string;
@@ -34,7 +26,20 @@ export interface VastoServiceData {
   message: string;
 }
 
-const DataFetchButton = ({ userId }: { userId: string }) => {
+interface Position {
+  x: number;
+  y: number;
+}
+
+interface DataFetchButtonProps {
+  userId: string;
+  position: Position;
+}
+
+const DataFetchButton: React.FC<DataFetchButtonProps> = ({
+  userId,
+  position,
+}) => {
   const [isMainModalOpen, setIsMainModalOpen] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<FeatureType>(null);
   const [userData, setUserData] = useState<User | null>(null);
@@ -50,7 +55,6 @@ const DataFetchButton = ({ userId }: { userId: string }) => {
     setError(null);
     try {
       const response = await axios.get<User>(`/api/users/${userId}`);
-      console.log("response: ", response.data);
       setUserData(response.data);
       handleFeatureSelect("userInfo");
     } catch (error) {
@@ -68,9 +72,7 @@ const DataFetchButton = ({ userId }: { userId: string }) => {
       const response = await axios.get(
         `/api/auspicious-service?userId=${userId}`,
       );
-      // if (!response.ok) throw new Error('Failed to fetch auspicious data');
       const data = await response.data;
-      console.log("data: ", data);
       setAuspiciousData(data);
       handleFeatureSelect("auspiciousService");
     } catch (error) {
@@ -86,9 +88,7 @@ const DataFetchButton = ({ userId }: { userId: string }) => {
     setError(null);
     try {
       const response = await axios.get(`/api/vasto-service?userId=${userId}`);
-      // if (!response.ok) throw new Error('Failed to fetch vasto services');
       const data = await response.data;
-      console.log("data: ", data);
       setVastoData(data);
       handleFeatureSelect("vastoService");
     } catch (error) {
@@ -104,12 +104,18 @@ const DataFetchButton = ({ userId }: { userId: string }) => {
     setIsMainModalOpen(false);
   };
 
+  const buttonStyle: React.CSSProperties = {
+    position: "fixed",
+    right: `${position.x}px`,
+    bottom: `${position.y}px`,
+  };
+
   return (
     <>
-      {/* Main Button */}
       <Button
         onClick={() => setIsMainModalOpen(true)}
-        className="fixed bottom-4 right-20 bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg"
+        style={buttonStyle}
+        className="bg-gradient-to-r from-purple-600 to-yellow-500 hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg"
       >
         <span className="text-lg">View Data</span>
       </Button>
@@ -215,7 +221,7 @@ const DataFetchButton = ({ userId }: { userId: string }) => {
       {selectedFeature === "userInfo" && userData && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div
-            className="absolute inset-0 bg-black/50 "
+            className="absolute inset-0 bg-black/50"
             onClick={() => setSelectedFeature(null)}
           />
           <div className="relative bg-white rounded-lg w-full max-w-2xl mx-4 overflow-hidden">
