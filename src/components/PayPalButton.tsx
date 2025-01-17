@@ -2,10 +2,10 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  PayPalScriptProvider, 
+import {
+  PayPalScriptProvider,
   PayPalButtons,
-  usePayPalScriptReducer
+  usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
 import { useAuthStore } from "@/store/Auth";
 import { FaPaypal } from "react-icons/fa";
@@ -22,7 +22,7 @@ const PayPalButtonWrapper = ({
   onError?: (error: string) => void;
 }) => {
   const [{ isPending }] = usePayPalScriptReducer();
-  const { user, updateBalance } = useAuthStore();   
+  const { user, updateBalance } = useAuthStore();
   const [loading, setLoading] = useState(false);
 
   const handleError = (errorMessage: string) => {
@@ -44,13 +44,13 @@ const PayPalButtonWrapper = ({
         layout: "vertical",
         color: "blue",
         shape: "rect",
-        label: "pay"
+        label: "pay",
       }}
       forceReRender={[amount]}
       createOrder={async () => {
         try {
           const response = await axios.post("/api/payment/create", {
-            amount: amount
+            amount: amount,
           });
           return response.data.id;
         } catch (err) {
@@ -61,31 +61,34 @@ const PayPalButtonWrapper = ({
       onApprove={async (data) => {
         try {
           setLoading(true);
-          
+
           const response = await axios.post(
             `/api/payment/capture/${data.orderID}`,
             {},
             {
               headers: {
-                'user-id': user?.$id
-              }
-            }
+                "user-id": user?.$id,
+              },
+            },
           );
 
-          if (response.data.status === "COMPLETED" || response.data.status === "completed") {
-
+          if (
+            response.data.status === "COMPLETED" ||
+            response.data.status === "completed"
+          ) {
             // Adding balance
-          try {
-              const result = await updateBalance(amount, 'ADD');
+            try {
+              const result = await updateBalance(amount, "ADD");
               if (result.success) {
-              console.log(`Successfully added balance. New balance: ${result.newBalance}`);
-          } else {
-              console.error(`Failed to add balance: ${result.error}`);
-          }
-          } catch (error) {
-            console.error("Error occurred:", error);
-          }
-
+                console.log(
+                  `Successfully added balance. New balance: ${result.newBalance}`,
+                );
+              } else {
+                console.error(`Failed to add balance: ${result.error}`);
+              }
+            } catch (error) {
+              console.error("Error occurred:", error);
+            }
 
             onSuccess?.();
           }
@@ -104,11 +107,11 @@ const PayPalButtonWrapper = ({
 };
 
 // Main PayPal component
-export default function  PayPalButton({
+export default function PayPalButton({
   amount,
   onSuccess,
   onError,
-  className = ""
+  className = "",
 }: {
   amount: number;
   onSuccess?: () => void;
@@ -118,13 +121,13 @@ export default function  PayPalButton({
   const [error, setError] = useState<string | null>(null);
 
   const paypalInitialOptions = {
-    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+    clientId: process.env.NEXT_PUBLIC_PAYPAL_LIVE_CLIENT_ID!,
     currency: "USD",
     intent: "capture",
-    dataClientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+    dataClientId: process.env.NEXT_PUBLIC_PAYPAL_LIVE_CLIENT_ID!,
   };
 
-  if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
+  if (!process.env.NEXT_PUBLIC_PAYPAL_LIVE_CLIENT_ID) {
     console.error("PayPal client ID not configured");
     return null;
   }

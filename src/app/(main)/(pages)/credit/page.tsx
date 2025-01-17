@@ -16,8 +16,8 @@ export default function CreditsPage() {
   const handleSuccess = async (paidAmount: number) => {
     try {
       setIsProcessing(true);
-      const result = await updateBalance(paidAmount, 'ADD');
-      
+      const result = await updateBalance(paidAmount, "ADD");
+
       if (result.success) {
         toast.success(`Successfully added $${paidAmount} to your balance!`);
         setCustomAmount(""); // Reset custom amount if it was used
@@ -50,7 +50,9 @@ export default function CreditsPage() {
       <Card className="bg-white p-6 mb-8 shadow-md">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-medium text-gray-700">Current Balance</h2>
+            <h2 className="text-lg font-medium text-gray-700">
+              Current Balance
+            </h2>
             <p className="text-3xl font-bold text-primary mt-2">
               ${Number(currentBalance).toFixed(2)}
             </p>
@@ -69,7 +71,7 @@ export default function CreditsPage() {
           <div key={amount} className="bg-white rounded-lg shadow p-6">
             <h3 className="text-xl font-bold mb-2">${amount} Credits</h3>
             <p className="text-gray-600 mb-4">Add ${amount} to your account</p>
-            
+
             <PayPalButton
               amount={amount}
               onSuccess={() => handleSuccess(amount)}
@@ -100,13 +102,13 @@ export default function CreditsPage() {
               />
             </div>
           </div>
-          
+
           {customAmount && !validateCustomAmount(customAmount) && (
             <p className="text-red-500 text-sm mb-2">
               Please enter a valid amount between $1 and $1000
             </p>
           )}
-          
+
           {validateCustomAmount(customAmount) && (
             <PayPalButton
               amount={parseFloat(customAmount)}
@@ -121,8 +123,8 @@ export default function CreditsPage() {
       {/* Terms and conditions or additional information */}
       <div className="mt-8 text-sm text-gray-500">
         <p>
-          * Credits will be added to your account immediately after successful payment.
-          For any issues with payments, please contact support.
+          * Credits will be added to your account immediately after successful
+          payment. For any issues with payments, please contact support.
         </p>
       </div>
     </div>
