@@ -28,17 +28,17 @@ const AstrologerCard: React.FC<{
 }> = ({ astrologer, onChatClick }) => (
   <div className="bg-white rounded-lg shadow-md p-4 w-full max-w-sm hover:shadow-lg transition-shadow">
     <div className="flex items-center space-x-4">
-      <Image
+      {/* <Image
         height={80}
         width={80}
         src={astrologer.photoUrl || "/default-avatar.png"}
         alt={astrologer.name}
-      />
-      {/* <img
-        src={astrologer.photoUrl || '/default-avatar.png'}
+      /> */}
+      <img
+        src={astrologer.photoUrl || "/default-avatar.png"}
         alt={astrologer.name}
         className="w-16 h-16 rounded-full object-cover"
-      /> */}
+      />
       <div className="flex-1">
         <h3 className="font-semibold text-lg">{astrologer.name}</h3>
         <div className="text-sm text-gray-600">
@@ -79,6 +79,7 @@ const ChatPage: React.FC = () => {
           conf.appwriteAstroCollectionId,
           [Query.equal("isOnline", true)],
         );
+        console.log("astrologer: ", response.documents);
         setAstrologers(response.documents as unknown as Astrologer[]);
       } catch (err) {
         setError(
