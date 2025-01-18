@@ -79,7 +79,6 @@ const ChatPage: React.FC = () => {
           conf.appwriteAstroCollectionId,
           [Query.equal("isOnline", true)],
         );
-        console.log("astrologer: ", response.documents);
         setAstrologers(response.documents as unknown as Astrologer[]);
       } catch (err) {
         setError(
@@ -91,6 +90,8 @@ const ChatPage: React.FC = () => {
         setIsLoading(false);
       }
     };
+
+    //chekcing
 
     fetchAstrologers();
   }, []);
