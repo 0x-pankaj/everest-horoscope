@@ -11,8 +11,8 @@ export async function POST(
   try {
     const { orderId } = params;
 
+    // Change to live PayPal API URL
     const response = await fetch(
-      // `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderId}/capture`,
       `https://api-m.paypal.com/v2/checkout/orders/${orderId}/capture`,
       {
         method: "POST",
@@ -27,35 +27,36 @@ export async function POST(
 
     const data = await response.json();
 
-    if (data.error) {
-      throw new Error(data.error.message);
+    if (!response.ok) {
+      throw new Error(data.error?.message || "Failed to capture payment");
     }
 
     // Record the transaction
     const amount = data.purchase_units[0].payments.captures[0].amount.value;
     const userId = request.headers.get("user-id");
-    console.log("userid after payment done: ", userId);
 
-    if (userId) {
-      await database.createDocument(
-        conf.appwriteHoroscopeDatabaseId,
-        conf.appwriteTransactionHistoryCollectionId,
-        ID.unique(),
-        {
-          userId,
-          paypalOrderId: orderId,
-          amount: parseFloat(amount),
-          status: "completed",
-          // timestamp: new Date().toISOString()
-        },
-      );
+    if (!userId) {
+      throw new Error("User ID is required");
     }
 
+    await database.createDocument(
+      conf.appwriteHoroscopeDatabaseId,
+      conf.appwriteTransactionHistoryCollectionId,
+      ID.unique(),
+      {
+        userId,
+        paypalOrderId: orderId,
+        amount: parseFloat(amount),
+        status: "completed",
+        timestamp: new Date().toISOString(),
+      },
+    );
+
     return NextResponse.json(data);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Capture payment error:", error);
     return NextResponse.json(
-      { error: "Failed to capture payment" },
+      { error: error.message || "Failed to capture payment" },
       { status: 500 },
     );
   }
