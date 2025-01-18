@@ -42,10 +42,7 @@ const navItems: NavItem[] = [
   //     { label: "MY SIGN", link: "#" },
   //   ],
   // },
-  {
-    label: "SERVICES",
-    link: "/services",
-  },
+
   {
     label: "ASTROLOGY",
     link: "/astrology",
@@ -53,6 +50,10 @@ const navItems: NavItem[] = [
   {
     label: "ASTROLOGERS",
     link: "/astrologers",
+  },
+  {
+    label: "SERVICES",
+    link: "/services",
   },
   // { label: "BOOK A POOJA", link: "#" },
   { label: "CONTACT", link: "/contact" },
@@ -188,7 +189,7 @@ interface DesktopNavItemProps {
 
 function DesktopNavItem({ item }: DesktopNavItemProps) {
   return (
-    <div className="relative group px-2 py-3 transition-all">
+    <div className="relative group px-2 py-3 transition-all font-bold">
       <p className="flex items-center gap-2 text-yellow-300 group-hover:text-yellow-400 cursor-pointer">
         <Link href={item.link ?? "#"}>{item.label}</Link>
         {item.children && (

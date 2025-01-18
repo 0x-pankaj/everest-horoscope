@@ -11,6 +11,7 @@ import { useAuthStore } from "@/store/Auth";
 import { FaPaypal } from "react-icons/fa";
 import axios from "axios";
 
+// PayPal Button wrapper component
 const PayPalButtonWrapper = ({
   amount,
   onSuccess,
@@ -51,14 +52,9 @@ const PayPalButtonWrapper = ({
           const response = await axios.post("/api/payment/create", {
             amount: amount,
           });
-
-          if (!response.data.id) {
-            throw new Error("Failed to create order");
-          }
-
           return response.data.id;
-        } catch (err: any) {
-          handleError(err.response?.data?.error || "Failed to create order");
+        } catch (err) {
+          handleError("Failed to create order");
           throw err;
         }
       }}
@@ -66,16 +62,12 @@ const PayPalButtonWrapper = ({
         try {
           setLoading(true);
 
-          if (!user?.$id) {
-            throw new Error("User not authenticated");
-          }
-
           const response = await axios.post(
             `/api/payment/capture/${data.orderID}`,
             {},
             {
               headers: {
-                "user-id": user.$id,
+                "user-id": user?.$id,
               },
             },
           );
@@ -84,24 +76,24 @@ const PayPalButtonWrapper = ({
             response.data.status === "COMPLETED" ||
             response.data.status === "completed"
           ) {
+            // Adding balance
             try {
               const result = await updateBalance(amount, "ADD");
               if (result.success) {
                 console.log(
                   `Successfully added balance. New balance: ${result.newBalance}`,
                 );
-                onSuccess?.();
               } else {
-                throw new Error(result.error || "Failed to update balance");
+                console.error(`Failed to add balance: ${result.error}`);
               }
-            } catch (error: any) {
-              handleError(error.message || "Failed to update balance");
+            } catch (error) {
+              console.error("Error occurred:", error);
             }
-          } else {
-            throw new Error("Payment not completed");
+
+            onSuccess?.();
           }
-        } catch (err: any) {
-          handleError(err.message || "Payment capture failed");
+        } catch (err) {
+          handleError("Payment capture failed");
         } finally {
           setLoading(false);
         }
@@ -110,13 +102,11 @@ const PayPalButtonWrapper = ({
         console.error("PayPal Error:", err);
         handleError("PayPal encountered an error");
       }}
-      onCancel={() => {
-        handleError("Payment cancelled");
-      }}
     />
   );
 };
 
+// Main PayPal component
 export default function PayPalButton({
   amount,
   onSuccess,
@@ -130,7 +120,6 @@ export default function PayPalButton({
 }) {
   const [error, setError] = useState<string | null>(null);
 
-  // Use live client ID
   const paypalInitialOptions = {
     clientId: process.env.NEXT_PUBLIC_PAYPAL_LIVE_CLIENT_ID!,
     currency: "USD",

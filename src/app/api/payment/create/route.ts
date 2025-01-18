@@ -1,14 +1,15 @@
 // src/app/api/payment/create/route.ts
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 
 export async function POST(request: Request) {
   try {
     const { amount } = await request.json();
+
     if (!amount || isNaN(Number(amount))) {
       return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
     }
 
-    // Change to live PayPal API URL
     const response = await fetch(
       "https://api-m.paypal.com/v2/checkout/orders",
       {
@@ -35,15 +36,15 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error?.message || "Failed to create payment");
+    if (data.error) {
+      throw new Error(data.error.message);
     }
 
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Create payment error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to create payment" },
+      { error: "Failed to create payment" },
       { status: 500 },
     );
   }

@@ -19,7 +19,7 @@ export default function ChatRoomPage({
   const router = useRouter();
   const { user } = useAuthStore();
   const { isAdmin, isAstrologer } = useRoleAccess();
-  const [showAdminControls, setShowAdminControls] = useState(true);
+  const [showAdminControls, setShowAdminControls] = useState(false);
 
   if (!user) {
     return (
@@ -104,14 +104,24 @@ export default function ChatRoomPage({
 
           <>
             {/* Settings Icon - Always visible */}
-            <button
+            {(isAdmin() || isAstrologer()) && (
+              <button
+                onClick={() => setShowAdminControls(!showAdminControls)}
+                className="fixed bottom-20 left-4 bg-gradient-to-r from-purple-600 to-yellow-500
+                    hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg
+                    z-20 md:hidden"
+              >
+                <FaCog className="h-5 w-5" />
+              </button>
+            )}
+            {/* <button
               onClick={() => setShowAdminControls(!showAdminControls)}
               className="fixed bottom-20 left-4 bg-gradient-to-r from-purple-600 to-yellow-500
                  hover:from-purple-700 hover:to-yellow-600 text-white rounded-full p-4 shadow-lg
                  z-20 md:hidden"
             >
               <FaCog className="h-5 w-5" />
-            </button>
+            </button> */}
 
             {/* Admin Controls - Hidden on mobile when showAdminControls is false */}
             <div

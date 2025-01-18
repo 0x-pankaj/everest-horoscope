@@ -1,4 +1,4 @@
-import { client } from "@/appwrite/clientConfig";
+import { account, client } from "@/appwrite/clientConfig";
 import conf from "@/conf/conf";
 import { useChatStore } from "@/store/chatStore";
 import { Models } from "appwrite";
@@ -40,6 +40,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   // const [showTranslationModal, setShowTranslationModal] = useState(false);
   const [sourceLanguage, setSourceLanguage] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("");
+  const [receiver, setReceiver] = useState<Models.User<Models.Preferences>>();
 
   console.log("senderId: ", senderId, "receiverId: ", receiverId);
 
@@ -53,14 +54,39 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
     }
   };
 
-  const languages = ["English", "Spanish", "French", "German", "Italian"];
+  // const languages = ["English", "Spanish", "French", "German", "Italian"];
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+
+    fetch(`/api/getUser/${receiverId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch user");
+        }
+        return response.json();
+      })
+      .then((data: Models.User<Models.Preferences>) => {
+        console.log("receiverDAta: ", data);
+        setReceiver(data);
+        if (data.prefs.preferredLanguage) {
+          console.log("TargetLanguage: ", data.prefs.preferredLanguage);
+          setTargetLanguage(data.prefs.preferredLanguage);
+        } else {
+          setTargetLanguage("english");
+        }
+      })
+      .catch((error) => console.log("error fetching receiver", error));
+  }, [receiverId]);
 
   useEffect(() => {
     if (!user) return;
 
     // console.log("user from chat room: ", user);
     setSourceLanguage(user.prefs.preferredLanguage); // default target language is english
-    setTargetLanguage("english");
+    // setTargetLanguage("english");
     resetMessages();
 
     if (!isFetched.current) {

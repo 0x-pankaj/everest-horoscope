@@ -174,7 +174,7 @@ const QuestionsComponent: React.FC = () => {
           </div>
         ),
         {
-          duration: 15000,
+          duration: 5000,
         },
       );
     });
