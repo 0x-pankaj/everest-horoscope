@@ -12,12 +12,14 @@ export async function POST(request: Request) {
 
     const response = await fetch(
       "https://api-m.paypal.com/v2/checkout/orders",
+      // "https://api-m.sandbox.paypal.com/v2/checkout/orders",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Basic ${Buffer.from(
             `${process.env.PAYPAL_LIVE_CLIENT_ID}:${process.env.PAYPAL_LIVE_CLIENT_SECRET}`,
+            // `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`,
           ).toString("base64")}`,
         },
         body: JSON.stringify({

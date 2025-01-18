@@ -52,6 +52,8 @@ const PayPalButtonWrapper = ({
           const response = await axios.post("/api/payment/create", {
             amount: amount,
           });
+
+          console.log("while creating order data: ", response.data);
           return response.data.id;
         } catch (err) {
           handleError("Failed to create order");
@@ -78,6 +80,7 @@ const PayPalButtonWrapper = ({
           ) {
             // Adding balance
             try {
+              console.log("balance after success and  before adding ", amount);
               const result = await updateBalance(amount, "ADD");
               if (result.success) {
                 console.log(
@@ -90,7 +93,7 @@ const PayPalButtonWrapper = ({
               console.error("Error occurred:", error);
             }
 
-            onSuccess?.();
+            // onSuccess?.();
           }
         } catch (err) {
           handleError("Payment capture failed");
@@ -122,12 +125,15 @@ export default function PayPalButton({
 
   const paypalInitialOptions = {
     clientId: process.env.NEXT_PUBLIC_PAYPAL_LIVE_CLIENT_ID!,
+    // clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
     currency: "USD",
     intent: "capture",
     dataClientId: process.env.NEXT_PUBLIC_PAYPAL_LIVE_CLIENT_ID!,
+    // dataClientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
   };
 
   if (!process.env.NEXT_PUBLIC_PAYPAL_LIVE_CLIENT_ID) {
+    // if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
     console.error("PayPal client ID not configured");
     return null;
   }

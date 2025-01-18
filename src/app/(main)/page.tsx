@@ -1,5 +1,4 @@
 import React from "react";
-// import HomeCarousel from '@/components/HomeCarousel';
 import InterActionCard from "@/components/InterActionCard";
 import BlogPreview from "@/components/BlogPreview";
 import Testimonials from "@/components/Testimonials";

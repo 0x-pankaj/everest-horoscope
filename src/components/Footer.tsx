@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  FaFacebookF,
-  FaTwitter,
-  FaInstagram,
-  FaLinkedinIn,
-} from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 import Image from "next/legacy/image";
 import Link from "next/link";
 
@@ -98,28 +93,28 @@ const Footer: React.FC = () => {
         <div className="flex justify-center md:justify-between items-center space-x-6 md:space-x-0 mb-8">
           <div className="flex space-x-4">
             <Link
-              href="https://facebook.com"
+              href="https://www.facebook.com/profile.php?id=61557838157592"
               className="text-yellow-300 hover:text-yellow-500 transition-colors duration-300"
             >
               <FaFacebookF className="h-6 w-6" />
             </Link>
             <Link
-              href="https://twitter.com"
+              href="https://x.com/AstroEverest"
               className="text-yellow-300 hover:text-yellow-500 transition-colors duration-300"
             >
               <FaTwitter className="h-6 w-6" />
             </Link>
             <Link
-              href="https://instagram.com"
+              href="https://instagram.com/everestastro"
               className="text-yellow-300 hover:text-yellow-500 transition-colors duration-300"
             >
               <FaInstagram className="h-6 w-6" />
             </Link>
             <Link
-              href="https://linkedin.com"
+              href="https://www.youtube.com/@EverestAstro"
               className="text-yellow-300 hover:text-yellow-500 transition-colors duration-300"
             >
-              <FaLinkedinIn className="h-6 w-6" />
+              <FaYoutube className="h-6 w-6" />
             </Link>
           </div>
         </div>
