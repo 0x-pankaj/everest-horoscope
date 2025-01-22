@@ -6,6 +6,7 @@ import { Query, Models } from "appwrite";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Image from "next/legacy/image";
 import Loadder from "./Loadder";
+import { useRouter } from "next/navigation";
 
 interface CarouselImage {
   mobile: boolean;
@@ -22,6 +23,7 @@ const ResponsiveCarousel = () => {
   const [isDesktop, setIsDesktop] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -108,7 +110,7 @@ const ResponsiveCarousel = () => {
         {images.map((image, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-500 ${
+            className={`absolute inset-0 transition-opacity duration-500 hover:cursor-pointer ${
               index === currentIndex ? "opacity-100" : "opacity-0"
             }`}
           >
@@ -118,6 +120,7 @@ const ResponsiveCarousel = () => {
               layout="fill"
               objectFit="cover"
               priority={index === currentIndex}
+              onClick={() => router.push("/chat")}
             />
           </div>
         ))}
