@@ -173,31 +173,33 @@ export default function Astrology() {
           </p>
         </div>
 
-        <div className="mt-8 overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
+        <div className="mt-8 overflow-hidden shadow-lg shadow-purple-500/20 ring-1 ring-purple-200 rounded-lg">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-purple-200">
+              <thead className="bg-gradient-to-r from-indigo-600 to-purple-600">
                 <tr>
                   {Object.keys(astrologyData[0]).map((header) => (
                     <th
                       key={header}
-                      className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-3 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
                     >
                       {header}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-gradient-to-br from-purple-50 to-indigo-50 divide-y divide-purple-200">
                 {astrologyData.map((item, index) => (
                   <tr
                     key={index}
-                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    className={`hover:bg-purple-100 transition-colors duration-200 ${
+                      index % 2 === 0 ? "bg-purple-50/50" : "bg-indigo-50/50"
+                    }`}
                   >
                     {Object.values(item).map((value, valueIndex) => (
                       <td
                         key={valueIndex}
-                        className="px-3 py-4 whitespace-nowrap text-sm text-gray-500"
+                        className="px-3 py-4 whitespace-nowrap text-sm text-purple-900/90"
                       >
                         {value}
                       </td>
