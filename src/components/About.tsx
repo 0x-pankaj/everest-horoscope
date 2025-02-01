@@ -1,7 +1,54 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
+import { database } from "@/appwrite/clientConfig";
+import conf from "@/conf/conf";
+import { Query, AppwriteException } from "appwrite";
 import { Star, Users, Award, Heart, Coffee, BookOpen } from "lucide-react";
 
+interface Astrologer {
+  $id: string;
+  user_id: string;
+  name: string;
+  photoUrl: string;
+  rating: number;
+  experience: number;
+  hourlyRate: number;
+  language: string[];
+  isOnline: boolean;
+}
+
 const AboutPage = () => {
+  const [astrologers, setAstrologers] = React.useState<Astrologer[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAstrologers = async () => {
+      try {
+        const response = await database.listDocuments(
+          conf.appwriteHoroscopeDatabaseId,
+          conf.appwriteAstroCollectionId,
+          [Query.equal("isOnline", true)],
+        );
+        setAstrologers(response.documents as unknown as Astrologer[]);
+      } catch (err) {
+        setError(
+          err instanceof AppwriteException
+            ? `${err.message} (Code: ${err.code})`
+            : "Failed to fetch astrologers",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    //chekcing
+
+    fetchAstrologers();
+  }, []);
+
+  // console.log("astrologers: ", astrologers);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
       {/* Hero Section */}
@@ -130,55 +177,35 @@ const AboutPage = () => {
 
           <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {/* Team Member 1 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-              <div className="p-6">
-                <div className="text-center">
-                  <div className="h-32 w-32 rounded-full bg-indigo-200 mx-auto mb-4"></div>
-                  <h3 className="text-lg font-medium text-gray-900">
-                    Dr. Rajesh Sharma
-                  </h3>
-                  <p className="text-indigo-600">Senior Astrologer</p>
-                  <p className="mt-4 text-gray-500">
-                    20+ years of experience in Vedic astrology and horoscope
-                    analysis.
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            {/* Team Member 2 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-              <div className="p-6">
-                <div className="text-center">
-                  <div className="h-32 w-32 rounded-full bg-indigo-200 mx-auto mb-4"></div>
-                  <h3 className="text-lg font-medium text-gray-900">
-                    Maya Joshi
-                  </h3>
-                  <p className="text-indigo-600">Relationship Specialist</p>
-                  <p className="mt-4 text-gray-500">
-                    Expert in relationship astrology and marriage compatibility.
-                  </p>
+            {astrologers.map((astrologer, index) => {
+              return (
+                <div
+                  key={astrologer.$id}
+                  className="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300"
+                >
+                  <div className="p-6">
+                    <div className="text-center">
+                      <div>
+                        <img
+                          src={astrologer.photoUrl || "/default-avatar.png"}
+                          alt={astrologer.name}
+                          className="w-16 h-16 rounded-full object-cover mx-auto"
+                        />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900">
+                        {astrologer.name}
+                      </h3>
+                      <p className="text-indigo-600">Senior Astrologer</p>
+                      <p className="mt-4 text-gray-500">
+                        {astrologer.experience}+ years of experience in Vedic
+                        astrology and horoscope analysis.
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Team Member 3 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-              <div className="p-6">
-                <div className="text-center">
-                  <div className="h-32 w-32 rounded-full bg-indigo-200 mx-auto mb-4"></div>
-                  <h3 className="text-lg font-medium text-gray-900">
-                    Arun Pandey
-                  </h3>
-                  <p className="text-indigo-600">
-                    Career & Business Specialist
-                  </p>
-                  <p className="mt-4 text-gray-500">
-                    Specialized in career guidance and business astrology.
-                  </p>
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </div>
