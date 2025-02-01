@@ -7,7 +7,7 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { sidebarItems } from '../data/SidebarItems'
 
 export default function Sidebar() {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(true)
   const pathname = usePathname()
   const router = useRouter()
 
