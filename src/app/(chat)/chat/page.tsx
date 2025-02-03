@@ -34,10 +34,16 @@ const AstrologerCard: React.FC<{
         src={astrologer.photoUrl || "/default-avatar.png"}
         alt={astrologer.name}
       /> */}
-      <img
+      {/* <img
         src={astrologer.photoUrl || "/default-avatar.png"}
         alt={astrologer.name}
         className="w-16 h-16 rounded-full object-cover"
+      /> */}
+      <Image
+        height={80}
+        width={80}
+        src={astrologer.photoUrl || "/default-avatar.png"}
+        alt={astrologer.name}
       />
       <div className="flex-1">
         <h3 className="font-semibold text-lg">{astrologer.name}</h3>
@@ -101,6 +107,7 @@ const ChatPage: React.FC = () => {
       router.push("/login");
       return;
     }
+    if (!astrologerId) return;
     router.push(`/chat/${astrologerId}/${user.$id}`);
   };
 

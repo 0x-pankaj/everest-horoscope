@@ -137,12 +137,12 @@ const FreeCreditManager: React.FC<FreeCreditManagerProps> = ({
             <div className="p-4">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label
+                  {/* <label
                     htmlFor="credits"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Number of Free Messages for {userName || "User"}
-                  </label>
+                  </label> */}
                   <input
                     type="number"
                     id="credits"

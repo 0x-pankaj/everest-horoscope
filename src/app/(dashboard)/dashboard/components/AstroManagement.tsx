@@ -182,11 +182,13 @@ export default function AstroManagement() {
                   className="rounded-full"
                 />
               </div>
+
               <div>
                 <h2 className="text-xl font-semibold text-yellow-800">
                   {astro.name}
                 </h2>
                 <p className="text-yellow-600">Email: {astro.email}</p>
+                <p> UserId: {astro.user_id}</p>
               </div>
             </div>
             <p className="text-yellow-700 mb-2">{astro.bio}</p>
@@ -207,6 +209,7 @@ export default function AstroManagement() {
               Languages: {astro.language.join(", ")}
             </p>
             <div className="flex justify-between">
+              ``
               <button
                 onClick={() => editAstrologer(astro)}
                 className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded inline-flex items-center"
@@ -273,6 +276,24 @@ export default function AstroManagement() {
                   name="email"
                   type="email"
                   value={currentAstrologer.email}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-yellow-300 shadow-sm focus:border-yellow-300 focus:ring focus:ring-yellow-200 focus:ring-opacity-50"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="user_id"
+                  className="block text-sm font-medium text-yellow-700"
+                >
+                  User ID
+                </label>
+                <input
+                  id="user_id"
+                  name="user_id"
+                  type="text"
+                  value={currentAstrologer.user_id}
                   onChange={handleInputChange}
                   className="mt-1 block w-full rounded-md border-yellow-300 shadow-sm focus:border-yellow-300 focus:ring focus:ring-yellow-200 focus:ring-opacity-50"
                   required
