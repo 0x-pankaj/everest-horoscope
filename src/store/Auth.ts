@@ -239,9 +239,12 @@ export const useAuthStore = create<IAuthStore>()(
         try {
           account.createOAuth2Session(
             OAuthProvider.Google,
-            `${process.env.NEXT_PUBLIC_BASE_URL}/auth-callback`, // Success URL
-            `${process.env.NEXT_PUBLIC_BASE_URL}/login`, // Failure URL
-            ["profile", "email"], // Requested scopes
+            `https://everestastro.com/auth-callback`,
+            `https://everestastro.com/login`,
+            ["profile", "email"],
+            // `${process.env.NEXT_PUBLIC_BASE_URL}/auth-callback`, // Success URL
+            // `${process.env.NEXT_PUBLIC_BASE_URL}/login`, // Failure URL
+            // ["profile", "email"], // Requested scopes
           );
           return { success: true };
         } catch (error) {
