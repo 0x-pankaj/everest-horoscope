@@ -158,7 +158,17 @@ export const useAuthStore = create<IAuthStore>()(
 
       async createAccount(email, password, name) {
         try {
+          try {
+            await account.getSession("current");
+            // If this succeeds, we have an active session
+            console.log("Active session found, logging out first");
+            await account.deleteSession("current");
+          } catch (sessionError) {
+            // No active session, proceed with login
+            console.log("No active session found, proceeding with login");
+          }
           console.log("create account hitted");
+          console.log(email, password, name);
           const x = await account.create(ID.unique(), email, password, name);
           const session = await account.createEmailPasswordSession(
             email,

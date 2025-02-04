@@ -36,6 +36,9 @@ const SignUp = () => {
         toast.success("check Your Email for Verification");
         router.push("/login");
       }
+      if (userData.error) {
+        setError(userData.error.message);
+      }
     } catch (error: any) {
       setError(error.message);
     }
