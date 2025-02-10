@@ -19,8 +19,10 @@ export async function PATCH(
   { params }: { params: { userId: string } }
 ) {
   try {
-    const { prefs } = await request.json();
-    const result = await users.updatePrefs(params.userId, prefs);
+    console.log("hitted 2");
+    const { updatedPrefs } = await request.json();
+    console.log("prefs: ", updatedPrefs);
+    const result = await users.updatePrefs(params.userId, updatedPrefs);
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update user preferences' }, { status: 500 });

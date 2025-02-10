@@ -7,6 +7,8 @@ import { persist } from "zustand/middleware";
 import { AppwriteException, ID, Models, OAuthProvider } from "appwrite";
 
 import { account } from "@/appwrite/clientConfig";
+import axios from "axios";
+import { users } from "@/appwrite/serverConfig";
 
 type BalanceOperation = "ADD" | "SUBTRACT";
 export type UserRole = "admin" | "astrologer" | "translator" | "simpleuser";
@@ -361,21 +363,32 @@ export const useAuthStore = create<IAuthStore>()(
 
       updateFreeMessageCredits: async (userId: string, credits: number) => {
         try {
-          const targetUser = await account.get();
-          if (!targetUser?.prefs) {
+          // const targetUser = await account.get();
+          const targetUser = await axios.get(`/api/getUser/${userId}`);
+          // console.log("targetUser: ", targetUser.data);
+          if (!targetUser?.data?.prefs) {
             return {
               success: false,
               error: "User not found",
             };
           }
-
+          // console.log("targetUser.data.prefs: ", targetUser.data.prefs);
+          const currentCredits = targetUser.data.prefs.freeMessageCredits;
           const updatedPrefs = {
-            ...targetUser.prefs,
-            freeMessageCredits: credits,
+            ...targetUser.data.prefs,
+            freeMessageCredits: currentCredits + credits,
           };
 
-          await account.updatePrefs(updatedPrefs);
+          // console.log("updatedPrefs: ", updatedPrefs);
 
+          // await account.updatePrefs(updatedPrefs);
+          // src/app/api/users/[userId]/prefs/route.ts
+          // await axios.patch(`/api/users/${userId}/prefs`, updatedPrefs);
+          // await axios.patch(`/api/updateUser/${userId}`, updatedPrefs);
+          const result = await users.updatePrefs(
+            userId, // userId
+            updatedPrefs // prefs
+        );
           return { success: true };
         } catch (error) {
           console.error("Error updating free message credits:", error);

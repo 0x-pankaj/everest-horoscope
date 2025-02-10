@@ -26,6 +26,9 @@ const FreeCreditManager: React.FC<FreeCreditManagerProps> = ({
   initialPosition = { x: 20, y: 20 },
   buttonPosition,
 }) => {
+
+    console.log("userId whom credited: ", userId);
+
   const [isOpen, setIsOpen] = useState(false);
   const [credits, setCredits] = useState<number>(0);
   const [position, setPosition] = useState<InitionPosition>(initialPosition);
@@ -39,7 +42,7 @@ const FreeCreditManager: React.FC<FreeCreditManagerProps> = ({
     const result = await updateFreeMessageCredits(userId, credits);
     if (result.success) {
       toast.success(
-        `Successfully added ${credits} free message credits for ${userName || "user"}`,
+        `Successfully added ${credits} free message credits`,
       );
       setCredits(0);
       setIsOpen(false);
