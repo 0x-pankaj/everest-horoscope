@@ -12,6 +12,7 @@ import { TbZodiacVirgo } from "react-icons/tb";
 import { RiCustomerServiceLine } from "react-icons/ri";
 import { Md5G, MdGTranslate } from "react-icons/md";
 import { FaMessage } from "react-icons/fa6";
+import { IoMdContacts } from "react-icons/io";
 
 export const sidebarItems = [
   {
@@ -79,4 +80,9 @@ export const sidebarItems = [
     icon: FaMessage,
     path: "astro-chat-management",
   },
+  {
+    name: "Contact US INFORMATION",
+    icon: IoMdContacts,
+    path: "contact-messages"
+  }
 ];

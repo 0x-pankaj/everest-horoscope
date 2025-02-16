@@ -62,6 +62,9 @@ const conf = {
   appwriteAuspiciousServiceCollectionId: String(
     process.env.NEXT_PUBLIC_AUSPICIOUS_SERVICE_DATA,
   ),
-};
+  appwriteContactUsMessageCollectionId: String(
+    process.env.NEXT_PUBLIC_CONTACT_US_MESSAGE_COLLECTION_ID,
+  ),
+}; 
 
 export default conf;

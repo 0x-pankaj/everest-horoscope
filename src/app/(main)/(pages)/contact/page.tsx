@@ -2,26 +2,48 @@
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import toast from "react-hot-toast";
+import { database } from "@/appwrite/clientConfig"; // Import databases from your Appwrite config
+import { ID } from "appwrite"; // Import ID from appwrite
+import conf from "@/conf/conf";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    subject: "",
+    number: "",
     message: "",
   });
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    toast.success("form submitted successfully!");
-    console.log("Form submitted:", formData);
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    });
+    try {
+      // Create document in Appwrite collection 
+      await database.createDocument(
+        conf.appwriteHoroscopeDatabaseId, // Your database ID
+        conf.appwriteContactUsMessageCollectionId, // Your contact collection ID
+        ID.unique(),
+        {
+          name: formData.name,
+          email: formData.email,
+          number: formData.number,
+          message: formData.message,
+          // createdAt: new Date().toISOString(),
+        }
+      );
+
+      toast.success("Message sent successfully!");
+      
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        number: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message. Please try again.");
+    }
   };
 
   const handleChange = (e: any) => {
@@ -109,7 +131,8 @@ const ContactPage = () => {
                 <label
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
-                >
+                >   
+                
                   Name
                 </label>
                 <input
@@ -143,16 +166,16 @@ const ContactPage = () => {
 
               <div>
                 <label
-                  htmlFor="subject"
+                  htmlFor="number"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Subject
+                  Number
                 </label>
                 <input
                   type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
+                  id="number"
+                  name="number"
+                  value={formData.number}
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   required
