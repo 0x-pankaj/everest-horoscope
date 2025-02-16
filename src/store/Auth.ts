@@ -212,7 +212,7 @@ export const useAuthStore = create<IAuthStore>()(
         try {
           await account.createRecovery(
             email,
-            `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password`,
+            `https://everestastro.com/reset-password`,
           );
           return { success: true };
         } catch (error) {
@@ -387,8 +387,8 @@ export const useAuthStore = create<IAuthStore>()(
           // await axios.patch(`/api/updateUser/${userId}`, updatedPrefs);
           const result = await users.updatePrefs(
             userId, // userId
-            updatedPrefs // prefs
-        );
+            updatedPrefs, // prefs
+          );
           return { success: true };
         } catch (error) {
           console.error("Error updating free message credits:", error);
