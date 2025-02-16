@@ -212,7 +212,7 @@ export const useAuthStore = create<IAuthStore>()(
         try {
           await account.createRecovery(
             email,
-            `https://everestastro.com/reset-password`,
+            `https://everestastro.com/recovery`,
           );
           return { success: true };
         } catch (error) {
