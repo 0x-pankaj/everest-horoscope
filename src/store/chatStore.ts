@@ -17,7 +17,7 @@ interface Message {
 interface ChatUser {
   userId: string;
   name: string;
-}
+} 
 interface Question {
   question: null;
 }
@@ -195,36 +195,63 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
   },
 
-  setChattedUsers: async (astroId: string) => {
-    try {
-      const response = await database.listDocuments(
+setChattedUsers: async (astroId: string) => {
+  try {
+    // First query to get unique users based on sender_id
+    const uniqueUsersQuery = await database.listDocuments(
+      conf.appwriteHoroscopeDatabaseId,
+      conf.appwriteMessageCollectionId,
+      [
+        Query.equal("receiver_id", [astroId]),
+        Query.orderDesc("$createdAt"),
+        Query.limit(100),
+      ]
+    );
+
+    // Create a Set to store unique user IDs
+    const uniqueUserIds = new Set<string>();
+    const uniqueUsers = new Map<string, ChatUser>();
+
+    // Process first batch of documents
+    uniqueUsersQuery.documents.forEach((doc: Models.Document) => {
+      if (!uniqueUserIds.has(doc.sender_id)) {
+        uniqueUserIds.add(doc.sender_id);
+        uniqueUsers.set(doc.sender_id, {
+          userId: doc.sender_id,
+          name: doc.name || "Unknown User",
+        });
+      }
+    });
+
+    // If we need more users, fetch with different offset
+    if (uniqueUsers.size < 100) {
+      const secondBatch = await database.listDocuments(
         conf.appwriteHoroscopeDatabaseId,
         conf.appwriteMessageCollectionId,
         [
           Query.equal("receiver_id", [astroId]),
-          // Query.equal("sender_id", [astroId]),
           Query.orderDesc("$createdAt"),
-          Query.limit(200),
-        ],
+          Query.offset(100),
+          Query.limit(100),
+        ]
       );
-      console.log("response: ", response);
 
-      const uniqueUsers = new Map<string, ChatUser>();
-      response.documents.forEach((doc: Models.Document) => {
-        if (doc.receiver_id === astroId && !uniqueUsers.has(doc.sender_id)) {
+      secondBatch.documents.forEach((doc: Models.Document) => {
+        if (!uniqueUserIds.has(doc.sender_id)) {
+          uniqueUserIds.add(doc.sender_id);
           uniqueUsers.set(doc.sender_id, {
             userId: doc.sender_id,
             name: doc.name || "Unknown User",
           });
         }
       });
-
-      console.log("unique user: ", uniqueUsers);
-
-      set({ chattedUsers: Array.from(uniqueUsers.values()) });
-    } catch (error) {
-      console.log("Failed to fetch chatted users:", error);
-      set({ error: "Failed to fetch chatted users" });
     }
-  },
+
+    console.log("Total unique users found:", uniqueUsers.size);
+    set({ chattedUsers: Array.from(uniqueUsers.values()) });
+  } catch (error) {
+    console.log("Failed to fetch chatted users:", error);
+    set({ error: "Failed to fetch chatted users" });
+  }
+}
 }));
