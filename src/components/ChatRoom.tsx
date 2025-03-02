@@ -22,7 +22,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
     sendMessage,
     fetchMessages,
     resetMessages,
-    setUpdatedMessage,
+    setUpdatedMessage, 
     question,
   } = useChatStore();
   const { user } = useAuthStore();

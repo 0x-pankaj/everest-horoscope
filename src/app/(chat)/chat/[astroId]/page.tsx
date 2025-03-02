@@ -73,7 +73,7 @@ const ChatPageForSidebar = ({ params }: { params: { astroId: string } }) => {
           </div>
 
           {selectedUserId ? (
-            <ChatRoom
+            <ChatRoom 
               key={selectedUserId}
               senderId={params.astroId}
               receiverId={selectedUserId}

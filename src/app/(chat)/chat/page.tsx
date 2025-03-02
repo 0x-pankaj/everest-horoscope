@@ -47,12 +47,12 @@ const AstrologerCard: React.FC<{
       />
       <div className="flex-1">
         <h3 className="font-semibold text-lg">{astrologer.name}</h3>
-        <div className="text-sm text-gray-600">
+        {/* <div className="text-sm text-gray-600">
           <p>
             ⭐ {astrologer.rating.toFixed(1)} • {astrologer.experience} yrs
           </p>
           <p>${astrologer.hourlyRate}/hr</p>
-        </div>
+        </div> */}
       </div>
       <div
         className={`w-3 h-3 rounded-full ${astrologer.isOnline ? "bg-green-500" : "bg-gray-400"}`}
