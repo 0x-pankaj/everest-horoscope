@@ -1,8 +1,8 @@
 // src/lib/api/users.ts
-import axios from 'axios';
-import { User, UserFilters } from '@/types/user';
+import axios from "axios";
+import { User, UserFilters } from "@/types/user";
 
-const API_BASE_URL = '/api/users';
+const API_BASE_URL = "/api/users";
 /*
  export const fetchUsers = async (page: number, limit: number, filters: UserFilters) => {
    const response = await axios.get(API_BASE_URL, {
@@ -12,15 +12,15 @@ const API_BASE_URL = '/api/users';
  };
  */
 
- export const fetchUserById = async(userId: string) => {
-  const response = await axios.get(`${API_BASE_URL}/${userId}`)
+export const fetchUserById = async (userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/${userId}`);
   return response.data;
- }
+};
 
-export const fetchUsers = async() => {
+export const fetchUsers = async () => {
   const response = await axios.get(API_BASE_URL);
   return response.data;
-}
+};
 
 export const fetchUserByEmail = async (email: string) => {
   const response = await axios.get(`${API_BASE_URL}?email=${email}`);
@@ -49,7 +49,9 @@ export const updateUserPhone = async (userId: string, phone: string) => {
 };
 
 export const updateUserPassword = async (userId: string, password: string) => {
-  const response = await axios.patch(`${API_BASE_URL}/${userId}/password`, { password });
+  const response = await axios.patch(`${API_BASE_URL}/${userId}/password`, {
+    password,
+  });
   return response.data;
 };
 
@@ -63,13 +65,23 @@ export const updateUserStatus = async (userId: string, status: boolean) => {
   return response.data;
 };
 
-export const updateUserEmailVerification = async (userId: string, emailVerification: boolean) => {
-  const response = await axios.patch(`${API_BASE_URL}/${userId}`, { emailVerification });
+export const updateUserEmailVerification = async (
+  userId: string,
+  emailVerification: boolean,
+) => {
+  const response = await axios.patch(`${API_BASE_URL}/${userId}`, {
+    emailVerification,
+  });
   return response.data;
 };
 
-export const updateUserPhoneVerification = async (userId: string, phoneVerification: boolean) => {
-  const response = await axios.patch(`${API_BASE_URL}/${userId}`, { phoneVerification });
+export const updateUserPhoneVerification = async (
+  userId: string,
+  phoneVerification: boolean,
+) => {
+  const response = await axios.patch(`${API_BASE_URL}/${userId}`, {
+    phoneVerification,
+  });
   return response.data;
 };
 
@@ -82,25 +94,30 @@ export const getUserPrefs = async (userId: string) => {
   return response.data;
 };
 
-export const updateUserPrefs = async (userId: string, prefs: Record<string, any>) => {
-    const response = await axios.patch(`${API_BASE_URL}/${userId}/prefs`, { prefs });
-    return response.data;
-  };
-  
-  export const listUserSessions = async (userId: string) => {
-    const response = await axios.get(`${API_BASE_URL}/${userId}/sessions`);
-    return response.data;
-  };
-  
-  export const deleteUserSessions = async (userId: string) => {
-    await axios.delete(`${API_BASE_URL}/${userId}/sessions`);
-  };
-  
-  export const deleteUserSession = async (userId: string, sessionId: string) => {
-    await axios.delete(`${API_BASE_URL}/${userId}/sessions/${sessionId}`);
-  };
-  
-  export const listUserLogs = async (userId: string) => {
-    const response = await axios.get(`${API_BASE_URL}/${userId}/logs`);
-    return response.data;
-  };
+export const updateUserPrefs = async (
+  userId: string,
+  prefs: Record<string, any>,
+) => {
+  const response = await axios.patch(`${API_BASE_URL}/${userId}/prefs`, {
+    prefs,
+  });
+  return response.data;
+};
+
+export const listUserSessions = async (userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/${userId}/sessions`);
+  return response.data;
+};
+
+export const deleteUserSessions = async (userId: string) => {
+  await axios.delete(`${API_BASE_URL}/${userId}/sessions`);
+};
+
+export const deleteUserSession = async (userId: string, sessionId: string) => {
+  await axios.delete(`${API_BASE_URL}/${userId}/sessions/${sessionId}`);
+};
+
+export const listUserLogs = async (userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/${userId}/logs`);
+  return response.data;
+};

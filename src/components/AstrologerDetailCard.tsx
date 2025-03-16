@@ -47,11 +47,11 @@ export const AstrologerDetailCard: React.FC<AstrologerCardProps> = ({
         <div className="flex-1">
           <div className="flex justify-between items-start">
             <h2 className="text-2xl font-bold">{astrologer.name}</h2>
-            <div className="text-right">
+            {/* <div className="text-right">
               <p className="text-xl font-semibold">
                 ₹{astrologer.hourlyRate}/hr
               </p>
-            </div>
+            </div> */}
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-4">
