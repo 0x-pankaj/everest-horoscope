@@ -65,6 +65,10 @@ const conf = {
   appwriteContactUsMessageCollectionId: String(
     process.env.NEXT_PUBLIC_CONTACT_US_MESSAGE_COLLECTION_ID,
   ),
-}; 
+
+  appwriteReviewsCollectionId: String(
+    process.env.NEXT_PUBLIC_REVIEW_COLLECTION_ID,
+  ),
+};
 
 export default conf;

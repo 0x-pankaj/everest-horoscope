@@ -30,7 +30,7 @@ const UserManagement: React.FC = () => {
 
   const fetchUsers = async (page: number) => {
     const response = await axios.get<UsersResponse>(`/api/users`, {
-      params: {
+      params: { 
         page,
         limit: USERS_PER_PAGE
       }

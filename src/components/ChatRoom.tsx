@@ -3,10 +3,11 @@ import conf from "@/conf/conf";
 import { useChatStore } from "@/store/chatStore";
 import { Models } from "appwrite";
 import React, { useEffect, useRef, useState } from "react";
-import { FaPaperPlane, FaLanguage } from "react-icons/fa";
+import { FaPaperPlane, FaLanguage, FaStar } from "react-icons/fa";
 import { MESSAGE_COST, useAuthStore } from "@/store/Auth";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import ReviewSystem from "@/components/ReviewSystem";
 
 interface ChatRoomProps {
   senderId: string;
@@ -22,7 +23,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
     sendMessage,
     fetchMessages,
     resetMessages,
-    setUpdatedMessage, 
+    setUpdatedMessage,
     question,
   } = useChatStore();
   const { user } = useAuthStore();
@@ -42,7 +43,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   const [targetLanguage, setTargetLanguage] = useState("");
   const [receiver, setReceiver] = useState<Models.User<Models.Preferences>>();
 
-  console.log("senderId: ", senderId, "receiverId: ", receiverId);
+  // New state for the review system
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [receiverRating, setReceiverRating] = useState<number | null>(null);
+
+  // console.log("senderId: ", senderId, "receiverId: ", receiverId);
 
   const fetchMoreMessages = async () => {
     if (!hasMore || loading) return;
@@ -55,6 +60,19 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   };
 
   // const languages = ["English", "Spanish", "French", "German", "Italian"];
+
+  // Fetch receiver's average rating
+  const fetchReceiverRating = async () => {
+    try {
+      const response = await fetch(`/api/getAstrologerRating/${receiverId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setReceiverRating(data.averageRating);
+      }
+    } catch (error) {
+      console.error("Error fetching astrologer rating:", error);
+    }
+  };
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -79,6 +97,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
         }
       })
       .catch((error) => console.log("error fetching receiver", error));
+    fetchReceiverRating(); //added
   }, [receiverId]);
 
   useEffect(() => {
@@ -242,6 +261,27 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
       className="flex flex-col h-screen bg-gray-100"
       style={{ height: "calc(100vh - 4rem)" }}
     >
+      {/* Astrologer Info Header with Rating */}
+      <div className="bg-white p-4 border-b flex items-center justify-between">
+        <div className="flex items-center">
+          <div className="font-semibold text-lg">
+            {receiver?.name || "Astrologer"}
+          </div>
+          {receiverRating !== null && (
+            <div className="flex items-center ml-2">
+              <FaStar className="text-yellow-400 mr-1" />
+              <span>{receiverRating.toFixed(1)}</span>
+            </div>
+          )}
+        </div>
+        <button
+          onClick={() => setShowReviewModal(true)}
+          className="text-blue-500 hover:text-blue-700 text-sm flex items-center"
+        >
+          <FaStar className="mr-1" /> Rate & Review
+        </button>
+      </div>
+
       <div
         ref={chatContainerRef}
         className="flex-grow overflow-y-auto px-4 py-4"
@@ -289,6 +329,23 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
           </form>
         </div>
       </div>
+
+      {/* Review Modal */}
+      {showReviewModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-90vh overflow-y-auto">
+            <ReviewSystem
+              astrologerId={receiverId}
+              userId={senderId}
+              onClose={() => setShowReviewModal(false)}
+              onReviewSubmit={() => {
+                setShowReviewModal(false);
+                fetchReceiverRating(); // Refresh the rating after review submission
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

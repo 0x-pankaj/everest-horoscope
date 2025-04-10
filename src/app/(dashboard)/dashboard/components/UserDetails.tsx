@@ -1,6 +1,8 @@
-'use client'
-import React, { useEffect, useState } from 'react';
-import { User } from '@/types/user';
+"use client";
+import React, { useEffect, useState } from "react";
+import { User } from "@/types/user";
+import { useChatStore } from "@/store/chatStore";
+import { FaPaperPlane } from "react-icons/fa";
 import {
   updateUserEmail,
   updateUserName,
@@ -15,9 +17,9 @@ import {
   deleteUserSessions,
   deleteUserSession,
   listUserLogs,
-  fetchUserById
-} from '@/lib/api/users';
-import { users } from '@/appwrite/serverConfig';
+  fetchUserById,
+} from "@/lib/api/users";
+import { users } from "@/appwrite/serverConfig";
 
 interface UserDetailsProps {
   user: User;
@@ -25,9 +27,14 @@ interface UserDetailsProps {
   onUpdate: () => void;
 }
 
-const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) => {
+const UserDetails: React.FC<UserDetailsProps> = ({
+  user,
+  onClose,
+  onUpdate,
+}) => {
   const [editedUser, setEditedUser] = useState(user);
   const [userPrefs, setUserPrefs] = useState<any>({});
+  const { sendMessage } = useChatStore();
 
   useEffect(() => {
     fetchUserPrefs();
@@ -38,7 +45,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
       const prefs = await users.getPrefs(user.$id);
       setUserPrefs(prefs);
     } catch (error) {
-      console.error('Error fetching user preferences:', error);
+      console.error("Error fetching user preferences:", error);
     }
   };
 
@@ -50,7 +57,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
         setUserPrefs(updatedUser.prefs);
       }
     } catch (error) {
-      console.error('Error refreshing user data:', error);
+      console.error("Error refreshing user data:", error);
     }
   };
 
@@ -58,10 +65,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
     const { name, value, type, checked } = e.target;
     setEditedUser((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
-
 
   const handlePrefChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -79,28 +85,28 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
   };
 
   const updateField = async (field: string, value: any) => {
-    console.log("prefs: ", userPrefs )
+    console.log("prefs: ", userPrefs);
     try {
       switch (field) {
-        case 'name':
+        case "name":
           await updateUserName(user.$id, value);
           break;
-        case 'email':
+        case "email":
           await updateUserEmail(user.$id, value);
           break;
-        case 'phone':
+        case "phone":
           await updateUserPhone(user.$id, value);
           break;
-        case 'status':
+        case "status":
           await updateUserStatus(user.$id, value);
           break;
-        case 'emailVerification':
+        case "emailVerification":
           await updateUserEmailVerification(user.$id, value);
           break;
-        case 'phoneVerification':
+        case "phoneVerification":
           await updateUserPhoneVerification(user.$id, value);
           break;
-        case 'labels':
+        case "labels":
           await updateUserLabels(user.$id, value);
           break;
         default:
@@ -120,28 +126,28 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm("Are you sure you want to delete this user?")) {
       try {
         await deleteUser(user.$id);
         onClose();
         onUpdate();
-        alert('User deleted successfully');
+        alert("User deleted successfully");
       } catch (error) {
-        console.error('Error deleting user:', error);
-        alert('Error deleting user');
+        console.error("Error deleting user:", error);
+        alert("Error deleting user");
       }
     }
   };
 
   const handleUpdatePassword = async () => {
-    const newPassword = prompt('Enter new password:');
+    const newPassword = prompt("Enter new password:");
     if (newPassword) {
       try {
         await updateUserPassword(user.$id, newPassword);
-        alert('Password updated successfully');
+        alert("Password updated successfully");
       } catch (error) {
-        console.error('Error updating password:', error);
-        alert('Error updating password');
+        console.error("Error updating password:", error);
+        alert("Error updating password");
       }
     }
   };
@@ -151,32 +157,32 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
       const sessions = await listUserSessions(user.$id);
       alert(JSON.stringify(sessions, null, 2));
     } catch (error) {
-      console.error('Error fetching sessions:', error);
-      alert('Error fetching sessions');
+      console.error("Error fetching sessions:", error);
+      alert("Error fetching sessions");
     }
   };
 
   const handleDeleteAllSessions = async () => {
-    if (window.confirm('Are you sure you want to delete all sessions?')) {
+    if (window.confirm("Are you sure you want to delete all sessions?")) {
       try {
         await deleteUserSessions(user.$id);
-        alert('All sessions deleted successfully');
+        alert("All sessions deleted successfully");
       } catch (error) {
-        console.error('Error deleting all sessions:', error);
-        alert('Error deleting all sessions');
+        console.error("Error deleting all sessions:", error);
+        alert("Error deleting all sessions");
       }
     }
   };
 
   const handleDeleteSession = async () => {
-    const sessionId = prompt('Enter session ID to delete:');
+    const sessionId = prompt("Enter session ID to delete:");
     if (sessionId) {
       try {
         await deleteUserSession(user.$id, sessionId);
-        alert('Session deleted successfully');
+        alert("Session deleted successfully");
       } catch (error) {
-        console.error('Error deleting session:', error);
-        alert('Error deleting session');
+        console.error("Error deleting session:", error);
+        alert("Error deleting session");
       }
     }
   };
@@ -186,13 +192,20 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
       const logs = await listUserLogs(user.$id);
       alert(JSON.stringify(logs, null, 2));
     } catch (error) {
-      console.error('Error fetching logs:', error);
-      alert('Error fetching logs');
+      console.error("Error fetching logs:", error);
+      alert("Error fetching logs");
     }
   };
 
-  const renderField = (label: string, name: string, type: string = 'text', isPreference: boolean = false) => {
-    const value = isPreference ? userPrefs[name] : editedUser[name as keyof User];
+  const renderField = (
+    label: string,
+    name: string,
+    type: string = "text",
+    isPreference: boolean = false,
+  ) => {
+    const value = isPreference
+      ? userPrefs[name]
+      : editedUser[name as keyof User];
     const onChange = isPreference ? handlePrefChange : handleInputChange;
 
     return (
@@ -202,12 +215,14 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
           <input
             type={type}
             name={name}
-            value={value || ''}
+            value={value || ""}
             onChange={onChange}
             className="w-full p-2 border rounded mr-2"
           />
           <button
-            onClick={() => updateField(name, isPreference ? userPrefs[name] : value)}
+            onClick={() =>
+              updateField(name, isPreference ? userPrefs[name] : value)
+            }
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
             Update
@@ -217,6 +232,18 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
     );
   };
 
+  const [inputMessage, setInputMessage] = useState("");
+  async function handleSendMessage() {
+    await sendMessage(
+      "66bc549e002495fbc0f1",
+      user.$id,
+      inputMessage.trim(),
+      user?.name,
+      user.prefs.preferredLanguage,
+      user.prefs.preferredLanguage,
+      false,
+    );
+  }
 
   return (
     <div className="bg-white p-4 rounded shadow">
@@ -224,17 +251,42 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
       <div>
         <div className="mb-4">
           <label className="block mb-2">ID:</label>
-          <input type="text" value={user.$id} readOnly className="w-full p-2 border rounded" />
+          <input
+            type="text"
+            value={user.$id}
+            readOnly
+            className="w-full p-2 border rounded"
+          />
+          <div className="bg-white border-t border-gray-200 px-4 py-3 sticky bottom-0 left-0 right-0">
+            <div className="relative">
+              <form onSubmit={handleSendMessage} className="flex items-center">
+                <input
+                  // ref={inputRef}
+                  type="text"
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  className="flex-grow bg-gray-100 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Type your message..."
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <FaPaperPlane className="h-5 w-5" />
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
-        {renderField('Name', 'name')}
-        {renderField('Email', 'email', 'email')}
-        {renderField('Phone', 'phone', 'tel')}
-        {renderField('Date of Birth', 'dob', 'text', true)}
-        {renderField('Country', 'birthCountry', 'text', true)}
-        {renderField('State', 'birthState', 'text', true)}
-        {renderField('District', 'birthDistrict', 'text', true)}
-        {renderField('City', 'birthCity', 'text', true)}
-        
+        {renderField("Name", "name")}
+        {renderField("Email", "email", "email")}
+        {renderField("Phone", "phone", "tel")}
+        {renderField("Date of Birth", "dob", "text", true)}
+        {renderField("Country", "birthCountry", "text", true)}
+        {renderField("State", "birthState", "text", true)}
+        {renderField("District", "birthDistrict", "text", true)}
+        {renderField("City", "birthCity", "text", true)}
+
         <div className="mb-4">
           <label className="block mb-2">Status:</label>
           <div className="flex items-center">
@@ -247,14 +299,14 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
             />
             <span>Active</span>
             <button
-              onClick={() => updateField('status', editedUser.status)}
+              onClick={() => updateField("status", editedUser.status)}
               className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
             >
               Update
             </button>
           </div>
         </div>
-        
+
         <div className="mb-4">
           <label className="block mb-2">Email Verification:</label>
           <div className="flex items-center">
@@ -267,7 +319,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
             />
             <span>Verified</span>
             <button
-              onClick={() => updateField('emailVerification', editedUser.emailVerification)}
+              onClick={() =>
+                updateField("emailVerification", editedUser.emailVerification)
+              }
               className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
             >
               Update
@@ -287,17 +341,19 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
             />
             <span>Verified</span>
             <button
-              onClick={() => updateField('phoneVerification', editedUser.phoneVerification)}
+              onClick={() =>
+                updateField("phoneVerification", editedUser.phoneVerification)
+              }
               className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
             >
               Update
             </button>
           </div>
         </div>
-        
+
         <div className="mb-4">
           <label className="block mb-2">Labels:</label>
-          {['admin', 'astro', 'user', 'translator'].map((label) => (
+          {["admin", "astro", "user", "translator"].map((label) => (
             <label key={label} className="mr-2">
               <input
                 type="checkbox"
@@ -308,34 +364,55 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user, onClose, onUpdate }) =>
             </label>
           ))}
           <button
-            onClick={() => updateField('labels', editedUser.labels)}
+            onClick={() => updateField("labels", editedUser.labels)}
             className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
           >
             Update Labels
           </button>
         </div>
       </div>
-      
+
       <div className="mt-4">
-        <button onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded mr-2">
+        <button
+          onClick={handleDelete}
+          className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+        >
           Delete User
         </button>
-        <button onClick={handleUpdatePassword} className="bg-yellow-500 text-white px-4 py-2 rounded mr-2">
+        <button
+          onClick={handleUpdatePassword}
+          className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
+        >
           Update Password
         </button>
-        <button onClick={handleViewSessions} className="bg-pink-500 text-white px-4 py-2 rounded mr-2">
+        <button
+          onClick={handleViewSessions}
+          className="bg-pink-500 text-white px-4 py-2 rounded mr-2"
+        >
           View Sessions
         </button>
-        <button onClick={handleDeleteAllSessions} className="bg-red-700 text-white px-4 py-2 rounded mr-2">
+        <button
+          onClick={handleDeleteAllSessions}
+          className="bg-red-700 text-white px-4 py-2 rounded mr-2"
+        >
           Delete All Sessions
         </button>
-        <button onClick={handleDeleteSession} className="bg-orange-500 text-white px-4 py-2 rounded mr-2">
+        <button
+          onClick={handleDeleteSession}
+          className="bg-orange-500 text-white px-4 py-2 rounded mr-2"
+        >
           Delete Session
         </button>
-        <button onClick={handleViewLogs} className="bg-teal-500 text-white px-4 py-2 rounded mr-2">
+        <button
+          onClick={handleViewLogs}
+          className="bg-teal-500 text-white px-4 py-2 rounded mr-2"
+        >
           View Logs
         </button>
-        <button onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded">
+        <button
+          onClick={onClose}
+          className="bg-gray-500 text-white px-4 py-2 rounded"
+        >
           Close
         </button>
       </div>
