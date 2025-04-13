@@ -18,6 +18,106 @@ const DobComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [hidden, setHidden] = useState<boolean>(false);
 
+  // Generate years (from current year down to 100 years ago)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
+
+  // Months array
+  const months = [
+    { value: "01", label: "January" },
+    { value: "02", label: "February" },
+    { value: "03", label: "March" },
+    { value: "04", label: "April" },
+    { value: "05", label: "May" },
+    { value: "06", label: "June" },
+    { value: "07", label: "July" },
+    { value: "08", label: "August" },
+    { value: "09", label: "September" },
+    { value: "10", label: "October" },
+    { value: "11", label: "November" },
+    { value: "12", label: "December" },
+  ];
+
+  // Days array (1-31)
+  const days = Array.from({ length: 31 }, (_, i) =>
+    (i + 1).toString().padStart(2, "0"),
+  );
+
+  // Generate time options (every 15 minutes)
+  const generateTimeOptions = () => {
+    const options = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const formattedHour = hour.toString().padStart(2, "0");
+        const formattedMinute = minute.toString().padStart(2, "0");
+        options.push(`${formattedHour}:${formattedMinute}`);
+      }
+    }
+    return options;
+  };
+
+  const timeOptions = generateTimeOptions();
+
+  // Common countries list
+  const countries = [
+    "Afghanistan",
+    "Albania",
+    "Algeria",
+    "Andorra",
+    "Angola",
+    "Argentina",
+    "Australia",
+    "Austria",
+    "Bangladesh",
+    "Belgium",
+    "Bhutan",
+    "Brazil",
+    "Canada",
+    "China",
+    "Denmark",
+    "Egypt",
+    "Finland",
+    "France",
+    "Germany",
+    "Greece",
+    "India",
+    "Indonesia",
+    "Iran",
+    "Iraq",
+    "Ireland",
+    "Israel",
+    "Italy",
+    "Japan",
+    "Kenya",
+    "Malaysia",
+    "Mexico",
+    "Nepal",
+    "Netherlands",
+    "New Zealand",
+    "Nigeria",
+    "Norway",
+    "Pakistan",
+    "Philippines",
+    "Poland",
+    "Portugal",
+    "Russia",
+    "Saudi Arabia",
+    "Singapore",
+    "South Africa",
+    "South Korea",
+    "Spain",
+    "Sri Lanka",
+    "Sweden",
+    "Switzerland",
+    "Thailand",
+    "Turkey",
+    "Ukraine",
+    "United Arab Emirates",
+    "United Kingdom",
+    "United States",
+    "Vietnam",
+  ];
+
   // Available languages list
   const availableLanguages = [
     { code: "english", name: "English" },
@@ -144,65 +244,184 @@ const DobComponent: React.FC = () => {
             </h2>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="number"
-                placeholder="Year"
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="number"
-                placeholder="Month"
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="number"
-                placeholder="Day"
-                value={day}
-                onChange={(e) => setDay(e.target.value)}
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="text"
-                placeholder="Country"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="text"
-                placeholder="State"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="text"
-                placeholder="District"
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="text"
-                placeholder="City"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="w-full p-2 border rounded"
-              />
+              {/* Year Dropdown */}
+              <div className="w-full">
+                <label
+                  htmlFor="year"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Year of Birth
+                </label>
+                <select
+                  id="year"
+                  value={year}
+                  onChange={(e) => setYear(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  required
+                >
+                  <option value="">Select Year</option>
+                  {years.map((yr) => (
+                    <option key={yr} value={yr}>
+                      {yr}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Month Dropdown */}
+              <div className="w-full">
+                <label
+                  htmlFor="month"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Month
+                </label>
+                <select
+                  id="month"
+                  value={month}
+                  onChange={(e) => setMonth(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  required
+                >
+                  <option value="">Select Month</option>
+                  {months.map((m) => (
+                    <option key={m.value} value={m.value}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Day Dropdown */}
+              <div className="w-full">
+                <label
+                  htmlFor="day"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Day
+                </label>
+                <select
+                  id="day"
+                  value={day}
+                  onChange={(e) => setDay(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  required
+                >
+                  <option value="">Select Day</option>
+                  {days.map((d) => (
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Time Dropdown */}
+              <div className="w-full">
+                <label
+                  htmlFor="time"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Time of Birth
+                </label>
+                <select
+                  id="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  required
+                >
+                  <option value="">Select Time</option>
+                  {timeOptions.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Country Dropdown */}
+              <div className="w-full">
+                <label
+                  htmlFor="country"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Country
+                </label>
+                <select
+                  id="country"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  required
+                >
+                  <option value="">Select Country</option>
+                  {countries.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* State, District, City as text inputs since they're highly variable */}
+              <div className="w-full">
+                <label
+                  htmlFor="state"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  State/Province
+                </label>
+                <input
+                  type="text"
+                  id="state"
+                  placeholder="State/Province"
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  required
+                />
+              </div>
+
+              <div className="w-full">
+                <label
+                  htmlFor="district"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  District
+                </label>
+                <input
+                  type="text"
+                  id="district"
+                  placeholder="District"
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  required
+                />
+              </div>
+
+              <div className="w-full">
+                <label
+                  htmlFor="city"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  City
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  placeholder="City"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  required
+                />
+              </div>
 
               {/* Language Selection */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+              <div className="w-full">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Select Preferred Language
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -228,19 +447,21 @@ const DobComponent: React.FC = () => {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
-                onClick={() => setHidden(!hidden)}
-              >
-                Close
-              </button>
+              <div className="flex space-x-2 pt-4">
+                <button
+                  type="submit"
+                  className="flex-1 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="flex-1 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+                  onClick={() => setHidden(!hidden)}
+                >
+                  Close
+                </button>
+              </div>
             </form>
           </div>
         </div>
