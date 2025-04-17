@@ -99,7 +99,7 @@ const ReviewSystem: React.FC<ReviewProps> = ({
             {
               rating,
               comment,
-              updated_at: new Date().toISOString(),
+              // updated_at: new Date().toISOString(),
             },
           );
 

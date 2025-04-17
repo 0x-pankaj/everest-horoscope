@@ -43,21 +43,6 @@ const DobComponent: React.FC = () => {
     (i + 1).toString().padStart(2, "0"),
   );
 
-  // Generate time options (every 15 minutes)
-  const generateTimeOptions = () => {
-    const options = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 15) {
-        const formattedHour = hour.toString().padStart(2, "0");
-        const formattedMinute = minute.toString().padStart(2, "0");
-        options.push(`${formattedHour}:${formattedMinute}`);
-      }
-    }
-    return options;
-  };
-
-  const timeOptions = generateTimeOptions();
-
   // Common countries list
   const countries = [
     "Afghanistan",
@@ -316,28 +301,25 @@ const DobComponent: React.FC = () => {
                 </select>
               </div>
 
-              {/* Time Dropdown */}
+              {/* Time Input (Exact time as requested) */}
               <div className="w-full">
                 <label
                   htmlFor="time"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Time of Birth
+                  Time of Birth (Exact)
                 </label>
-                <select
+                <input
+                  type="time"
                   id="time"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
                   className="w-full p-2 border rounded"
                   required
-                >
-                  <option value="">Select Time</option>
-                  {timeOptions.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Please enter the exact time of birth (HH:MM)
+                </p>
               </div>
 
               {/* Country Dropdown */}

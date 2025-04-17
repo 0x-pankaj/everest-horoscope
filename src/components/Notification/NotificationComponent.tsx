@@ -114,9 +114,9 @@ const NotificationComponent: React.FC = () => {
       }
     });
 
-    return () => {
-      unsubscribe();
-    };
+    // return () => {
+    //   unsubscribe();
+    // };
   }, [user?.$id, isTranslator]);
 
   const handleNotificationClick = () => {
