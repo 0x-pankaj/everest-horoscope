@@ -9,6 +9,8 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import ReviewSystem from "@/components/ReviewSystem";
 
+import { parseISO, format } from "date-fns";
+
 interface ChatRoomProps {
   senderId: string;
   receiverId: string;
@@ -48,6 +50,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
   const [receiverRating, setReceiverRating] = useState<number | null>(null);
 
   // console.log("senderId: ", senderId, "receiverId: ", receiverId);
+
+  const formatDateTime = (timestamp: any) => {
+    try {
+      // console.log("timestapm: ", timestamp);
+      const date = parseISO(timestamp);
+      console.log("date: ", date);
+      console.log(format(date, "MMM d, h:mm a"));
+      return format(date, "MMM d, h:mm a"); // Mar 6, 8:21 PM
+    } catch (error) {
+      return timestamp;
+    }
+  };
 
   const fetchMoreMessages = async () => {
     if (!hasMore || loading) return;
@@ -303,6 +317,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ senderId, receiverId }) => {
               {message.is_temp && message.receiver_id == user?.$id
                 ? ""
                 : message.body}
+            </div>
+            <div className="text-xs  mt-1 ml-1">
+              {" "}
+              {formatDateTime(message.$createdAt)}
             </div>
           </div>
         ))}
