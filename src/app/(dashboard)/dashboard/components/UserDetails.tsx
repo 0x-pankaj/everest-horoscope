@@ -35,6 +35,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({
   const [editedUser, setEditedUser] = useState(user);
   const [userPrefs, setUserPrefs] = useState<any>({});
   const { sendMessage } = useChatStore();
+  const [hasNepaliDate, setHasNepaliDate] = useState<boolean>(false);
 
   useEffect(() => {
     fetchUserPrefs();
@@ -44,6 +45,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({
     try {
       const prefs = await users.getPrefs(user.$id);
       setUserPrefs(prefs);
+      // Check if nepaliDob exists
+      setHasNepaliDate(!!prefs.nepaliDob);
     } catch (error) {
       console.error("Error fetching user preferences:", error);
     }
@@ -55,6 +58,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({
       if (updatedUser) {
         setEditedUser(updatedUser);
         setUserPrefs(updatedUser.prefs);
+        setHasNepaliDate(!!updatedUser.prefs?.nepaliDob);
       }
     } catch (error) {
       console.error("Error refreshing user data:", error);
@@ -75,6 +79,21 @@ const UserDetails: React.FC<UserDetailsProps> = ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  const toggleNepaliDateVisibility = () => {
+    if (!hasNepaliDate) {
+      // If enabling Nepali date, initialize with empty value if it doesn't exist
+      if (!userPrefs.nepaliDob) {
+        setUserPrefs((prev: any) => ({
+          ...prev,
+          nepaliDob: "",
+        }));
+      }
+    } else {
+      // If disabling Nepali date, handle removal during update rather than here
+    }
+    setHasNepaliDate(!hasNepaliDate);
   };
 
   const handleLabelChange = (label: string) => {
@@ -108,6 +127,19 @@ const UserDetails: React.FC<UserDetailsProps> = ({
           break;
         case "labels":
           await updateUserLabels(user.$id, value);
+          break;
+        case "nepaliDob":
+          // Handle enabling/disabling of Nepali DOB
+          if (hasNepaliDate) {
+            const updatedPrefs = { ...userPrefs, [field]: value };
+            await users.updatePrefs(user.$id, updatedPrefs);
+            setUserPrefs(updatedPrefs);
+          } else {
+            // Remove nepaliDob field if checkbox is unchecked
+            const { nepaliDob, ...remainingPrefs } = userPrefs;
+            await users.updatePrefs(user.$id, remainingPrefs);
+            setUserPrefs(remainingPrefs);
+          }
           break;
         default:
           // For preferences
@@ -231,11 +263,26 @@ const UserDetails: React.FC<UserDetailsProps> = ({
       </div>
     );
   };
-
+  const astrologers = [
+    {
+      id: "66bc549e002495fbc0f1",
+      name: "bigyan",
+    },
+    {
+      id: "3",
+      name: "rahul",
+    },
+  ];
   const [inputMessage, setInputMessage] = useState("");
-  async function handleSendMessage() {
+  const [selectedAstrologer, setSelectedAstrologer] = useState(astrologers[0]);
+
+  async function handleSendMessage(e: any) {
+    e.preventDefault();
+    if (inputMessage.trim() === "") return;
+
     await sendMessage(
-      "66bc549e002495fbc0f1",
+      // "66bc549e002495fbc0f1",
+      selectedAstrologer.id,
       user.$id,
       inputMessage.trim(),
       user?.name,
@@ -243,6 +290,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({
       user.prefs.preferredLanguage,
       false,
     );
+
+    setInputMessage("");
   }
 
   return (
@@ -258,6 +307,38 @@ const UserDetails: React.FC<UserDetailsProps> = ({
             className="w-full p-2 border rounded"
           />
           <div className="bg-white border-t border-gray-200 px-4 py-3 sticky bottom-0 left-0 right-0">
+            <label className="block mb-2"> Select Astrologer</label>
+            <div className="relative mb-4">
+              <select
+                value={selectedAstrologer.id}
+                onChange={(e) => {
+                  const selected = astrologers.find(
+                    (astro) => astro.id === e.target.value,
+                  );
+
+                  if (selected) {
+                    setSelectedAstrologer(selected);
+                  }
+                }}
+                className="w-full p-2 border rounded appearance-none bg-white pr-8"
+              >
+                {astrologers.map((astro) => (
+                  <option key={astro.id} value={astro.id}>
+                    {astro.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                  <path
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+
             <div className="relative">
               <form onSubmit={handleSendMessage} className="flex items-center">
                 <input
@@ -282,6 +363,37 @@ const UserDetails: React.FC<UserDetailsProps> = ({
         {renderField("Email", "email", "email")}
         {renderField("Phone", "phone", "tel")}
         {renderField("Date of Birth", "dob", "text", true)}
+
+        {/* Nepali Date of Birth Section */}
+        <div className="mb-4 border-l-4 border-blue-200 pl-3">
+          <div className="flex items-center mb-2">
+            <input
+              type="checkbox"
+              id="hasNepaliDate"
+              checked={hasNepaliDate}
+              onChange={toggleNepaliDateVisibility}
+              className="mr-2"
+            />
+            <label htmlFor="hasNepaliDate" className="font-medium">
+              Nepali Date of Birth (Bikram Sambat)
+            </label>
+          </div>
+
+          {hasNepaliDate && (
+            <div className="ml-6">
+              {renderField(
+                "Nepali Date (YYYY-MM-DD)",
+                "nepaliDob",
+                "text",
+                true,
+              )}
+              <p className="text-xs text-gray-500 mt-1">
+                Format: YYYY-MM-DD (e.g., 2060-05-15 for Shrawan 15, 2060 B.S.)
+              </p>
+            </div>
+          )}
+        </div>
+
         {renderField("Country", "birthCountry", "text", true)}
         {renderField("State", "birthState", "text", true)}
         {renderField("District", "birthDistrict", "text", true)}
@@ -359,6 +471,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({
                 type="checkbox"
                 checked={editedUser.labels.includes(label)}
                 onChange={() => handleLabelChange(label)}
+                className="mr-1"
               />
               {label}
             </label>

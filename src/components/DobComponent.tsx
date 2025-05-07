@@ -18,9 +18,18 @@ const DobComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [hidden, setHidden] = useState<boolean>(false);
 
+  // Nepali date fields (optional)
+  const [useNepaliDate, setUseNepaliDate] = useState<boolean>(false);
+  const [nepaliYear, setNepaliYear] = useState("");
+  const [nepaliMonth, setNepaliMonth] = useState("");
+  const [nepaliDay, setNepaliDay] = useState("");
+
   // Generate years (from current year down to 100 years ago)
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
+
+  // Generate Nepali years (approximately 2000-2090 BS)
+  const nepaliYears = Array.from({ length: 90 }, (_, i) => 2000 + i);
 
   // Months array
   const months = [
@@ -38,8 +47,29 @@ const DobComponent: React.FC = () => {
     { value: "12", label: "December" },
   ];
 
+  // Nepali months array
+  const nepaliMonths = [
+    { value: "01", label: "Baishakh" },
+    { value: "02", label: "Jestha" },
+    { value: "03", label: "Ashadh" },
+    { value: "04", label: "Shrawan" },
+    { value: "05", label: "Bhadra" },
+    { value: "06", label: "Ashwin" },
+    { value: "07", label: "Kartik" },
+    { value: "08", label: "Mangsir" },
+    { value: "09", label: "Poush" },
+    { value: "10", label: "Magh" },
+    { value: "11", label: "Falgun" },
+    { value: "12", label: "Chaitra" },
+  ];
+
   // Days array (1-31)
   const days = Array.from({ length: 31 }, (_, i) =>
+    (i + 1).toString().padStart(2, "0"),
+  );
+
+  // Nepali days (1-32 as some Nepali months can have up to 32 days)
+  const nepaliDays = Array.from({ length: 32 }, (_, i) =>
     (i + 1).toString().padStart(2, "0"),
   );
 
@@ -137,6 +167,16 @@ const DobComponent: React.FC = () => {
         setSelectedLanguage(user.prefs.preferredLanguage);
       }
 
+      // Pre-fill Nepali date if available
+      if (user.prefs?.nepaliDob) {
+        setUseNepaliDate(true);
+        const [date] = user.prefs.nepaliDob.split(" ");
+        const [nyear, nmonth, nday] = date.split("-");
+        setNepaliYear(nyear);
+        setNepaliMonth(nmonth);
+        setNepaliDay(nday);
+      }
+
       // Check if any required field is missing
       checkDOBAndBirthPlace();
     }
@@ -183,6 +223,14 @@ const DobComponent: React.FC = () => {
     if (!district) missingFields.push("District");
     if (!city) missingFields.push("City");
     if (!selectedLanguage) missingFields.push("Preferred Language");
+
+    // Only validate Nepali date fields if the user has opted to use them
+    if (useNepaliDate) {
+      if (!nepaliYear) missingFields.push("Nepali Year");
+      if (!nepaliMonth) missingFields.push("Nepali Month");
+      if (!nepaliDay) missingFields.push("Nepali Day");
+    }
+
     return missingFields;
   };
 
@@ -198,14 +246,24 @@ const DobComponent: React.FC = () => {
 
     const dob = `${year}-${month}-${day} ${time}`;
     try {
-      await account.updatePrefs({
+      const userPrefs: any = {
         dob,
         birthCountry: country,
         birthState: state,
         birthDistrict: district,
         birthCity: city,
         preferredLanguage: selectedLanguage,
-      });
+      };
+
+      // Add Nepali date if provided
+      if (useNepaliDate && nepaliYear && nepaliMonth && nepaliDay) {
+        userPrefs.nepaliDob = `${nepaliYear}-${nepaliMonth}-${nepaliDay}`;
+      } else {
+        // Remove nepaliDob if user unchecked the option
+        userPrefs.nepaliDob = null;
+      }
+
+      await account.updatePrefs(userPrefs);
       setShowModal(false);
 
       const updatedUser = await account.get();
@@ -229,6 +287,9 @@ const DobComponent: React.FC = () => {
             </h2>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-4">
+              <h3 className="text-lg font-medium py-2">
+                Date of Birth (Gregorian)
+              </h3>
               {/* Year Dropdown */}
               <div className="w-full">
                 <label
@@ -322,8 +383,106 @@ const DobComponent: React.FC = () => {
                 </p>
               </div>
 
+              {/* Optional Nepali Date Section */}
+              <div className="w-full pt-4">
+                <div className="flex items-center mb-4">
+                  <input
+                    type="checkbox"
+                    id="useNepaliDate"
+                    checked={useNepaliDate}
+                    onChange={(e) => setUseNepaliDate(e.target.checked)}
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="useNepaliDate"
+                    className="ml-2 text-sm font-medium text-gray-700"
+                  >
+                    Add Nepali Date (Bikram Sambat)
+                  </label>
+                </div>
+
+                {useNepaliDate && (
+                  <div className="space-y-4 pl-4 border-l-2 border-blue-200">
+                    <h3 className="text-md font-medium">Nepali Date (B.S.)</h3>
+
+                    {/* Nepali Year */}
+                    <div className="w-full">
+                      <label
+                        htmlFor="nepaliYear"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Nepali Year
+                      </label>
+                      <select
+                        id="nepaliYear"
+                        value={nepaliYear}
+                        onChange={(e) => setNepaliYear(e.target.value)}
+                        className="w-full p-2 border rounded"
+                        required={useNepaliDate}
+                      >
+                        <option value="">Select Nepali Year</option>
+                        {nepaliYears.map((yr) => (
+                          <option key={yr} value={yr}>
+                            {yr} B.S.
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Nepali Month */}
+                    <div className="w-full">
+                      <label
+                        htmlFor="nepaliMonth"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Nepali Month
+                      </label>
+                      <select
+                        id="nepaliMonth"
+                        value={nepaliMonth}
+                        onChange={(e) => setNepaliMonth(e.target.value)}
+                        className="w-full p-2 border rounded"
+                        required={useNepaliDate}
+                      >
+                        <option value="">Select Nepali Month</option>
+                        {nepaliMonths.map((m) => (
+                          <option key={m.value} value={m.value}>
+                            {m.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Nepali Day */}
+                    <div className="w-full">
+                      <label
+                        htmlFor="nepaliDay"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Nepali Day
+                      </label>
+                      <select
+                        id="nepaliDay"
+                        value={nepaliDay}
+                        onChange={(e) => setNepaliDay(e.target.value)}
+                        className="w-full p-2 border rounded"
+                        required={useNepaliDate}
+                      >
+                        <option value="">Select Nepali Day</option>
+                        {nepaliDays.map((d) => (
+                          <option key={d} value={d}>
+                            {d}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Country Dropdown */}
-              <div className="w-full">
+              <div className="w-full pt-4">
+                <h3 className="text-lg font-medium py-2">Birth Location</h3>
                 <label
                   htmlFor="country"
                   className="block text-sm font-medium text-gray-700 mb-1"
@@ -402,7 +561,10 @@ const DobComponent: React.FC = () => {
               </div>
 
               {/* Language Selection */}
-              <div className="w-full">
+              <div className="w-full pt-4">
+                <h3 className="text-lg font-medium py-2">
+                  Language Preference
+                </h3>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Select Preferred Language
                 </label>
