@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# EverestAstro 🌌
 
-## Getting Started
+A full-stack astrology platform built with **Next.js**, featuring real-time chat, a complete admin panel, and modern state management. The platform connects users with astrologers and translators, providing a seamless experience for consultations, blogs, and payments.  
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Live Chat System**  
+  Real-time chat between users and astrologers with optional translator support.  
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Admin Panel**  
+  Full admin dashboard for managing users, astrologers, translators, and payments.  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **User Management**  
+  Role-based access (User, Premium User, Admin, Translator, Astro) with secure authentication.  
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Payment System**  
+  Integrated payment gateway for premium services, consultations, and subscriptions.  
 
-## Learn More
+- **State Management with Zustand**  
+  Lightweight and scalable global state management for smooth UI interactions.  
 
-To learn more about Next.js, take a look at the following resources:
+- **Blog Management**  
+  Add, update, and manage astrology-related blogs with SEO-friendly structure.  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Responsive UI**  
+  Mobile-first design with clean and modern layouts.  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 🛠️ Tech Stack
 
-## Deploy on Vercel
+- **Frontend:** [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [Tailwind CSS](https://tailwindcss.com/)  
+- **State Management:** Zustand
+- **Backend:** Next.js API routes + integrated services    
+- **Chat & Real-time Communication:** 
+- **Authentication:** NextAuth.js (role-based)  
+- **Payment:** Paypal  
+- **Deployment:** Vercel   
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📂 Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
